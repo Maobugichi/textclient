@@ -1,4 +1,3 @@
-import Table from "../components/table"
 import RentInput from "../components/rentNumber/rentInput"
 import TableCont from "../components/table-cont"
 
