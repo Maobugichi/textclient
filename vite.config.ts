@@ -9,6 +9,6 @@ export default defineConfig({
       '/api': 'http://localhost:3001',
     },
   },
-  base:'/textflex/',
+  base:'/textclient/',
   plugins: [react(),tailwindcss()],
 })
