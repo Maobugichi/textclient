@@ -20,7 +20,7 @@ const RentInput = () => {
     const [ stock , setStock ] = useState<any>('');
     const [ cost , setCost ] = useState<any>('')
     useEffect(() => {
-        axios.get('/api/sms/countries')
+        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
             setApiResponse(response.data)
          })
@@ -45,7 +45,7 @@ const RentInput = () => {
     useEffect(() => {
        if ( info.countryId !== '' && info.duration !== '' && info.period !== '') {
          setTimeout(async () => {
-            await axios.post('/api/rent/countries', info)
+            await axios.post('https://textflex-axd2.onrender.com/api/rent/countries', info)
              .then(function(res) {
                 const { data } = res.data;
                 const { limits } = data;
@@ -96,7 +96,7 @@ const RentInput = () => {
     return(
         
         <Form
-         className='w-[32%] h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center bg-red-200'
+         className='w-[32%] h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
         >
             <Fieldset
              provider='Country'
@@ -131,13 +131,13 @@ const RentInput = () => {
             <Fieldset
              provider="Stock"
             >
-               <input className="p-2.5  rounded-sm outline-1 w-[95%] mx-auto" disabled type="text" value={stock ?? ''}/>
+               <input className="p-2.5  rounded-sm outline-1 outline-[#5252] w-[95%] mx-auto cursor-not-allowed" disabled type="text" value={stock ?? ''}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-               <input className="p-2.5  rounded-sm outline-1 w-[95%] mx-auto" disabled type="text" value={cost ?? ''} />
+               <input className="p-2.5  rounded-sm outline-1 w-[95%] outline-[#5252] mx-auto cursor-not-allowed" disabled type="text" value={cost ?? ''} />
             </Fieldset>
 
         </Form>
