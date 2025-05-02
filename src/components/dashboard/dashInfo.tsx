@@ -1,11 +1,10 @@
 import BlockCont from "./block-cont";
 import Blocks from "../../ui/blocks";
 import ForwardBlocks from "./forwardBlocks";
-import { Link , useNavigate } from "react-router-dom";
+import { Link  } from "react-router-dom";
 
 
 const DashInfo = () => {
-    const navigate = useNavigate();
     /*function paystackPop() {
         axios.post('http://localhost:3001/initialize-transaction', {
             email: 'customer@email.com',
