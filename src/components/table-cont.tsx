@@ -1,7 +1,7 @@
 import Table from "./table"
 
 interface TableContProps {
-    tableValues:any;
+    tableValues?:any;
 }
 
 const TableCont:React.FC<TableContProps> = ({tableValues}) => {
