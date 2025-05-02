@@ -21,7 +21,7 @@ function App() {
         <Route path="signup/:1" element={<Signup />} />
           <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="dashboard/:1" />} />
-          <Route path="dashboard/:id" element={<Signup />}/>
+          <Route path="dashboard/:id" element={<DashBoard/>}/>
           <Route path="sms/:id" element={<ReceiveSms/>}/>
           <Route path="number/:id" element={<RentNumber/>}/>
           <Route path="settings/:1" element={<Settings/>}/>
