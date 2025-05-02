@@ -34,7 +34,7 @@ const Button:React.FC<ButtonProps> = ({content , width , className , onClick , c
       
         return(
             <button  onClick={onClick ? onClick : load} className={`bg-[#0032a5] ${width} ${className} grid place-items-center`}>
-              {showLoader ?  <img className="h-10" src={interwind} alt="" /> : content }  
+              {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : content }  
             </button>
         )
 }

@@ -3,7 +3,7 @@ import Form from "../components/form";
 import {  useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
-
+import interwind from "../assets/Interwind.svg"
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -15,16 +15,28 @@ const Signup = () => {
         number:'',
         email:'',
         password:''
-    })
+    });
+     const [ showLoader , setShowLoader ] = useState<any>(false);
    
-    function submitCredentias(e:React.FormEvent<HTMLFormElement>) {
+    async function submitCredentias(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        axios.post('https://textflex-axd2.onrender.com/api/register/', credentials , { withCredentials: true })
+        setShowLoader(true)
+        const { username , number , email , password } = credentials
+        if ( username == '' || number == '' || email == '' || password == '') {
+            return
+            setShowLoader(false)
+        }
+        await axios.post('https://textflex-axd2.onrender.com/api/register/', credentials , { withCredentials: true })
           .then(function (response) {
             console.log('Success:', response.data);
+            setShowLoader(false)
             setUserData(response.data)
             navigate('/dashboard/1')
           })
+          .catch((err) => {
+            console.log(err)
+            setShowLoader(false);
+          });
     }
     function input(e:React.ChangeEvent<HTMLInputElement>) {
         const name = e.target.name;
@@ -53,15 +65,22 @@ const Signup = () => {
         
     }
     return(
+     <div className="w-full md:w-[50%] h-fit  min-h-[45vh] grid md:min-h-[80vh]">
+        <div className="text-center h-15 grid">
+            <h2 className="text-2xl font-semibold">Create an account</h2>
+            <p>Enter your details below to create your account</p>
+        </div>
        <Form 
-       onSubmit={submitCredentias}
+        onSubmit={submitCredentias}
+        className="flex flex-col justify-between  h-[300px]"
        >
-           <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username}/>
-           <input onChange={input} type='text' name="number" placeholder="number" value={credentials.number}/>
-           <input onChange={input} type='email' name="email" placeholder="Email" value={credentials.email}/>
-           <input onChange={input} type="password" name="password" placeholder="password" value={credentials.password}/>
-           <button  type="submit">Register</button>
+           <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <input onChange={input} type='text' name="number" placeholder="Enter your email" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <input onChange={input} type='email' name="email" placeholder="Phone Number" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-2 rounded-sm">{ showLoader ? <img className="h-10" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
+      </div>  
     )
 }
 
