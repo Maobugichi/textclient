@@ -65,7 +65,7 @@ const Signup = () => {
         
     }
     return(
-     <div className="w-full md:w-[50%] h-fit  min-h-[45vh] grid md:min-h-[80vh]">
+     <div className="w-[90%] mx-auto md:w-[50%] h-fit  min-h-[45vh] grid md:min-h-[80vh]">
         <div className="text-center h-15 grid">
             <h2 className="text-2xl font-semibold">Create an account</h2>
             <p>Enter your details below to create your account</p>
@@ -78,7 +78,7 @@ const Signup = () => {
            <input onChange={input} type='text' name="number" placeholder="Enter your email" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type='email' name="email" placeholder="Phone Number" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-2 rounded-sm">{ showLoader ? <img className="h-10" src={interwind} alt="" /> : 'Sign up' }</button>
+           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm">{ showLoader ? <img className="h-10" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
       </div>  
     )

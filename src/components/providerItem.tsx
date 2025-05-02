@@ -22,7 +22,7 @@ const ProviderItem:React.FC<ProviderItemProps> = ({ short, text , availability ,
                     <motion.div 
                     initial={{ scale:0, opacity:0 }}
                     animate={{ scale:1 , opacity:1 , transition: { delay: .2 , type:'tween' }}}
-                    exit={{ opacity: 0 }}
+                    exit={{ opacity: 0 , scale:0 }}
                     id={id} onClick={(e) => onClick(e,id)} className="flex h-[90%] p-1 w-[95%] mx-auto relative z-30 bg-white rounded-sm justify-between items-center">
                         <div className={`${show ? 'flex' : 'hidden'} pointer-events-none flex w-full  items-center gap-2 `}>
                             <div className=" pointer-events-none w-12 h-12 grid place-items-center rounded-full short bg-[#f1f5f9]">
