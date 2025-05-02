@@ -1,9 +1,11 @@
 import BlockCont from "./block-cont";
 import Blocks from "../../ui/blocks";
 import ForwardBlocks from "./forwardBlocks";
+import { Link , useNavigate } from "react-router-dom";
 
 
 const DashInfo = () => {
+    const navigate = useNavigate();
     /*function paystackPop() {
         axios.post('http://localhost:3001/initialize-transaction', {
             email: 'customer@email.com',
@@ -24,19 +26,22 @@ const DashInfo = () => {
             extra:'Balance',
             amount:'0.00',
             icon:"",
-            content:' + Fund Wallet'
+            content:' + Fund Wallet',
+            link:''
         } ,
         {
             extra:'Purchase Number',
             amount:'0',
             icon:"",
-            content:'Receive SMS'
+            content:'Receive SMS',
+            link:'/sms/1'
         },
         {
             extra:'Rented Numbers',
             amount:'0',
             icon:"",
-            content:'Rent Number'
+            content:'Rent Number',
+            link:'/number/1'
         }
     ]
     const forwardInfo = [
@@ -49,12 +54,30 @@ const DashInfo = () => {
             forward:'Join our telegram channel for more info and updates'
         }
     ]
+
+    const checkAuth =  () => {
+        try {
+            const token = localStorage.getItem("token");
+           
+            if (!token) {
+              return null 
+            } else {
+               return true
+            }
+          } catch {
+            //navigate('/signup/:1');
+          }
+       }
+        //checkAuth();
     const blocks = blockInfo.map(info => (
-        <Blocks
-         extra={info.extra}
-         amount={info.amount}
-         content={info.content}
+        <Link to={checkAuth() ? info.link : '/signup/:1'}>
+         <Blocks
+          extra={info.extra}
+          amount={info.amount}
+          content={info.content}
         />
+        </Link>
+        
     ));
 
     const forward = forwardInfo.map(item => (

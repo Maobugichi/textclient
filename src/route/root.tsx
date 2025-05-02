@@ -1,23 +1,10 @@
 import SideNav from "../components/nav/sideNav"
 import Header from "../ui/header";
-import { useEffect } from "react";
+
 import { Outlet } from "react-router-dom";
 
-const Root = () => {
-    useEffect(() => {
-        /*axios.get('/api/data')
-        .then(function(response) {
-         console.log(response.data[0].phoneNumber)
-        })
-        .catch(function (error) {
-         console.log(error)
-        })
-        .finally(function () {
- 
-        })*/
 
-        
-    },[])
+const Root = () => {
    
     return(
         <div className="h-auto min-h-[100vh] overflow-hidden w-full">

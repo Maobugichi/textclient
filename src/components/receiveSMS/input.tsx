@@ -1,8 +1,10 @@
 import Fieldset from "../fieldset";
 import { useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect , useContext } from "react";
 import Select from "../select";
+import { ShowContext } from "../context-provider";
+
 
 interface InputPorps {
     type?: string;
@@ -10,14 +12,20 @@ interface InputPorps {
 }
 
 const Input:React.FC<InputPorps> = () => {
+  const myContext = useContext(ShowContext);
+    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
+    const { userData } = myContext;
     const [ provider , setProvider ] = useState('Swift');
     const [ countries , setCountries ] = useState<any>({})
     const [ option , setOption ] = useState<any>(null)
     const [ countryOption , setCountryOption ] = useState<any>(<option>United States</option>);
     const [ target, setTarget ] = useState<any>({
       country:'usa',
-      service:''
-    })
+      service:'',
+      user_id:userData.userId
+    });
+    const [ tableValues , setTableValues ] = useState<any>('')
+    
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
@@ -44,14 +52,56 @@ const Input:React.FC<InputPorps> = () => {
          })
     },[])
 
+
    
 
     useEffect(() => {
-      if (target.service && target.country) {
-        axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-      }
+      const run = async () => {
+      async function postToBackEnd() {
+        const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
+        return response.data
+        }
+
+        const pollSMS = (request_id: string) => {
+          let attempts = 0;
+          const maxAttempts = 15;
+          const interval = setInterval(async () => {
+            
+            const res = await axios.get(`/api/sms/status/${request_id}`);
+            if (res.data.sms_code || attempts >= maxAttempts) {
+              clearInterval(interval);
+              if (res.data.sms_code) {
+                console.log("✅ SMS received:", res.data.sms);
+                // Handle the SMS in UI
+              } else {
+                console.warn("⏱️ SMS polling timed out");
+              }
+            }
+            attempts++;
+          }, 2000);
+        };
+      
+        if (target.service && target.country) {
+          const response = await postToBackEnd();
+          setTableValues(response.phone)
+          const id = response.phone.request_id
+          if (response.phone.request_id) {
+            pollSMS(id)
+          }
+         
+        }
+      } 
+    run();
     },[target]);
 
+   
+
+   useEffect(() => {
+    //const { request_id , application_id , country_id , number } = tableValues;
+    console.log(tableValues)
+
+   },[tableValues])
+   
     
     function handleInputChange(e:React.ChangeEvent<HTMLSelectElement>) {
       setProvider(e.target.value)
