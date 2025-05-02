@@ -23,8 +23,8 @@ const Signup = () => {
         setShowLoader(true)
         const { username , number , email , password } = credentials
         if ( username == '' || number == '' || email == '' || password == '') {
-            return
             setShowLoader(false)
+            return
         }
         await axios.post('https://textflex-axd2.onrender.com/api/register/', credentials , { withCredentials: true })
           .then(function (response) {
