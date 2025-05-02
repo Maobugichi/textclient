@@ -1,17 +1,19 @@
 import Fieldset from "../fieldset";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useEffect , useContext } from "react";
 import Select from "../select";
 import { ShowContext } from "../context-provider";
-
+import {Dispatch , SetStateAction } from 'react'
 
 interface InputPorps {
     type?: string;
     label?:string;
+    tableValues:any;
+    setTableValues:Dispatch<SetStateAction<any>> ;
 }
 
-const Input:React.FC<InputPorps> = () => {
+const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -24,7 +26,7 @@ const Input:React.FC<InputPorps> = () => {
       service:'',
       user_id:userData.userId
     });
-    const [ tableValues , setTableValues ] = useState<any>('')
+   
     
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -62,15 +64,14 @@ const Input:React.FC<InputPorps> = () => {
         return response.data
         }
 
-        const pollSMS = (request_id: string) => {
+        const pollSMS = async (request_id: string) => {
           let attempts = 0;
           const maxAttempts = 15;
-        
           const interval = setInterval(async () => {
             try {
               const res = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${request_id}`);
+              console.log(res.data)
               const sms = res.data?.sms_code;
-        
               if (sms || attempts >= maxAttempts) {
                 clearInterval(interval);
                 if (sms) {
@@ -91,9 +92,10 @@ const Input:React.FC<InputPorps> = () => {
         
       
         if (target.service && target.country) {
-          const response = await postToBackEnd();
-          setTableValues(response.phone)
-          const id = response.phone.request_id
+           const response = await postToBackEnd();
+           setTableValues(response.phone)
+           const id = response.phone.request_id
+           console.log(id)
           if (response.phone.request_id) {
             pollSMS(id)
           }
@@ -108,7 +110,6 @@ const Input:React.FC<InputPorps> = () => {
    useEffect(() => {
     //const { request_id , application_id , country_id , number } = tableValues;
     console.log(tableValues)
-
    },[tableValues])
    
     

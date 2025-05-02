@@ -1,4 +1,9 @@
-const Table = () => {
+interface TableProps {
+   tableValue?:any
+}
+
+
+const Table:React.FC<TableProps> = () => {
     return (
       <div className="overflow-x-auto  md:w-full min-h-[130px] h-fit rounded-sm bg-white border border-solid border-[#5252]">
         <table className=" table-auto w-[500px] md:w-full border-collapse ">
@@ -14,7 +19,7 @@ const Table = () => {
             </tr>
           </thead>
           <tbody>
-             No Results
+            
            
           </tbody>
         </table>

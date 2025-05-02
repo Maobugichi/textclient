@@ -9,7 +9,7 @@ interface SelectProps {
 
 const Select:React.FC<SelectProps> = ({ children , onChange , id , className}) => {
     return(
-        <select onChange={(e) => onChange?.(e)} id={id} className={`p-2.5  rounded-sm outline-1 bg-white outline-[#5252] w-[95%] mx-auto ${className}`}>
+        <select onChange={(e) => onChange?.(e)} id={id} className={`p-2.5 h-12  rounded-sm outline-1 bg-white outline-[#5252] w-[95%] mx-auto ${className}`}>
             {children}
         </select>
     )
