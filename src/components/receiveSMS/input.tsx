@@ -65,21 +65,30 @@ const Input:React.FC<InputPorps> = () => {
         const pollSMS = (request_id: string) => {
           let attempts = 0;
           const maxAttempts = 15;
+        
           const interval = setInterval(async () => {
-            
-            const res = await axios.get(`/api/sms/status/${request_id}`);
-            if (res.data.sms_code || attempts >= maxAttempts) {
-              clearInterval(interval);
-              if (res.data.sms_code) {
-                console.log("✅ SMS received:", res.data.sms);
-                // Handle the SMS in UI
-              } else {
-                console.warn("⏱️ SMS polling timed out");
+            try {
+              const res = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${request_id}`);
+              const sms = res.data?.sms_code;
+        
+              if (sms || attempts >= maxAttempts) {
+                clearInterval(interval);
+                if (sms) {
+                  console.log("✅ SMS received:", res.data.sms);
+                  // Handle the SMS in UI
+                } else {
+                  console.warn("⏱️ SMS polling timed out");
+                }
               }
+            } catch (err) {
+              console.error("❌ Error polling SMS:", err);
+              clearInterval(interval); // optional: stop polling on error
             }
+        
             attempts++;
           }, 2000);
         };
+        
       
         if (target.service && target.country) {
           const response = await postToBackEnd();
@@ -143,11 +152,12 @@ const Input:React.FC<InputPorps> = () => {
       
         <Fieldset
          provider={`${provider} SMS`}
-         className="bg-[#fdf4ee] w-[32%] h-[330px] rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]"
+         className="bg-[#fdf4ee] w-[95%] mx-auto md:w-[32%] h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
          fclass="pl-5 text-sm"
         >
             <Fieldset
              provider="Service Provider"
+             
             >
             <Select
              id="providers"

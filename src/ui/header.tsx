@@ -5,8 +5,14 @@ import ModalSelect from "./modalSelect";
 import Provider from "./provider";
 import { useState } from "react";
 import Theme from "./theme";
+import { Menu } from "lucide-react";
 
-const Header = () => {
+
+interface HeaderProps {
+     setIsShow: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const Header:React.FC<HeaderProps> = ({ setIsShow }) => {
     const isItem = modalOptions;
     const [ isShow , setShow] = useState(false);
     const modalDetails = modalOptions.map((option, i) => (
@@ -21,6 +27,9 @@ const Header = () => {
             />
     ));
     const [ showProviders, setProviders ] = useState(false);
+    function openNav() {
+        setIsShow(true)
+    }
     return(
         <header className="h-16 grid place-items-center bg-white border-b border-solid border-[#5252]">
             <Modal
@@ -29,7 +38,9 @@ const Header = () => {
             >
                 {modalDetails}
             </Modal>
-            <div className="flex items-center h-[80%] w-[95%]  justify-end gap-5">
+            <div className="flex items-center h-[80%] w-[95%] justify-between pl-3 md:justify-end gap-5">
+                <Menu className="md:hidden" onClick={openNav}/>
+                <div className="flex items-center w-[70%] md:w-[50%] justify-between md:justify-end gap-5">
                 <ModalSelect
                 icon={isItem[0].icon}
                 text={isItem[0].text}
@@ -42,6 +53,7 @@ const Header = () => {
                 <Theme
                  listItem={listItem}
                 />
+            </div>
             </div>
            
         </header>

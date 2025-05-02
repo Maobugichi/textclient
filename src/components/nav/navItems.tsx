@@ -9,8 +9,11 @@ import {
   } from 'lucide-react';
 import List from '../listItem';
 import { Link } from 'react-router-dom';
+interface NavProps {
+    closeNav?: () => void
+}
 
-const NavItems = () => {
+const NavItems:React.FC<NavProps> = ({ closeNav }) => {
     const navItems = [
         {
             icon:<Home size={17}/>,
@@ -49,10 +52,27 @@ const NavItems = () => {
         },
     ]
 
+    const checkAuth =  () => {
+        try {
+            const token = localStorage.getItem("token");
+           
+            if (!token || token == 'undefined') {
+               console.log(`token: ${token}`)
+               return null 
+            } else {
+               return true
+            }
+          } catch {
+            //navigate('/signup/:1');
+            console.log('error')
+          }
+       }
+
     const items = navItems.map(item => (
-        <Link to={item.link}>
+        <Link to={checkAuth() ?  item.link : '/signup/:1'}>
            <List
             className="flex h-10 items-center  gap-2 rounded-sm mx-auto w-[80%]"
+            onClick={closeNav}
            >
             {item.icon} {item.text}
            </List>

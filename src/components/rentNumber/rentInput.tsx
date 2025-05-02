@@ -96,7 +96,7 @@ const RentInput = () => {
     return(
         
         <Form
-         className='w-[32%] h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
+         className='w-[95%] mx-auto md:w-[32%] h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
         >
             <Fieldset
              provider='Country'

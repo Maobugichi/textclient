@@ -58,16 +58,17 @@ const DashInfo = () => {
         try {
             const token = localStorage.getItem("token");
            
-            if (!token) {
-              return null 
+            if (!token || token == 'undefined') {
+               console.log(`token: ${token}`)
+               return null 
             } else {
                return true
             }
           } catch {
             //navigate('/signup/:1');
+            console.log('error')
           }
        }
-        //checkAuth();
     const blocks = blockInfo.map(info => (
         <Link to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks
@@ -86,19 +87,19 @@ const DashInfo = () => {
         />
     ))
     return(
-        <div className="  w-full flex flex-col gap-12">
-            <div className="h-auto grid  gap-6">
+        <div className="h-fit  w-full flex flex-col gap-12">
+            <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
                 <BlockCont>
                     {blocks}
                 </BlockCont>
             </div>
             <div className="h-auto flex flex-col gap-4">
-                <div className="flex flex-col md:flex-row  w-full justify-between ">
+                <div className="flex flex-col md:flex-row  w-full justify-between gap-3 md:gap-0">
                     {forward}
                 </div>
 
-                <div className="h-auto flex flex-col gap-3">
+                <div className="h-fit flex flex-col gap-3">
                     <h2 className="text-xl font-semibold">Recent Transactions</h2>
                     <p>No transactions available</p>
                     <div>

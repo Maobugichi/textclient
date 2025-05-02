@@ -1,7 +1,8 @@
-import { Sun } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
-import List from '../components/listItem'
-import { useState } from 'react'
+import { Sun } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import List from '../components/listItem';
+import { useState } from 'react';
+
 
 interface ThemeProps {
     listItem: string[]
@@ -20,8 +21,8 @@ const Theme:React.FC<ThemeProps> = ({ listItem }) => {
     ));
     return(
         <div 
-        onClick={revealTheme}
-        className='relative bg-amber-50 w-[3%] grid place-items-center h-6 '>
+         onClick={revealTheme}
+         className='relative bg-amber-50 w-[10%] md:w-[5%] grid place-items-center h-6 '>
               <Sun size={20}/>
               <AnimatePresence>
                 {

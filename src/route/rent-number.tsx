@@ -3,9 +3,9 @@ import TableCont from "../components/table-cont"
 
 const RentNumber = () => {
     return(
-        <div className="grid  gap-5">
+        <div className="md:grid w-full  gap-5">
             <h2 className="font-semibold text-2xl">Rent Number</h2>
-            <div className="flex justify-between w-full gap-5">
+            <div className="flex flex-col md:flex-row justify-between w-full gap-5">
              <RentInput/>
              <TableCont/>
             </div>

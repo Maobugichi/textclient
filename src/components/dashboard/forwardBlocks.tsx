@@ -9,7 +9,7 @@ const ForwardBlocks:React.FC<ForwardBlocksProps> = ({ text , forward}) => {
             <p>
                 {text}
             </p>
-            <p className="hover:underline text-blue-500 cursor-pointer">{forward}</p>
+            <p className="hover:underline text-blue-500 cursor-pointer text-sm">{forward}</p>
         </div>
     )
 }

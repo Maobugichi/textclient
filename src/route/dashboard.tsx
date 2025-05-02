@@ -6,8 +6,9 @@ const DashBoard = () => {
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
     useEffect(() => {
-        //console.log(userData)
-        localStorage.setItem("token", userData.token);
+        if (userData.token) {
+            localStorage.setItem("token", userData.token);
+        }
     },[userData]);
     return(
         <DashInfo/>

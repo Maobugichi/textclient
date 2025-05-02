@@ -10,7 +10,7 @@ interface BlocksProps {
 
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content }) => {
     return(
-        <div className="h-[130px] rounded-lg bg-white w-[306px] grid place-items-center border border-solid border-[#5252]">
+        <div className="h-[130px] rounded-lg bg-white w-full md:w-[306px] grid place-items-center border border-solid border-[#5252]">
             <div className="flex w-[90%]">
                 <p className="flex flex-col text-lg font-semibold">
                     <span className="text-sm">
