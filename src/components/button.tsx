@@ -18,7 +18,7 @@ const Button:React.FC<ButtonProps> = ({content , width , className , onClick , c
         useEffect(() => {
             if (message !== '') {
                 setShowLoader(false)
-                console.log('hello')
+
             } 
         },[message]);
  

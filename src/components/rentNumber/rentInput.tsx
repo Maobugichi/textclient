@@ -55,6 +55,17 @@ const RentInput = () => {
                 } else {
                     setStock(0)
                 }
+                if (data) {
+                    setTimeout(() => {
+                        setInfo({
+                            countryId:'',
+                            duration:'',
+                            period:''
+                        })
+                        setStock('')
+                    }, 3000)
+                    
+                }
                
              })
           }, 1000);
@@ -96,13 +107,14 @@ const RentInput = () => {
     return(
         
         <Form
-         className='w-[95%] mx-auto md:w-[32%] h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
+         className='w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
         >
             <Fieldset
              provider='Country'
             > 
                <Select 
                 onChange={getCountryId}
+                value={info.countryId}
                >
                   <option value=""  disabled selected hidden>Select a Country</option>
                  {list}
@@ -110,17 +122,20 @@ const RentInput = () => {
             </Fieldset>
             <Fieldset
              provider='Duration'
-             className=" flex items-center"
+             className=" flex  flex-col w-[97%] gap-4"
             > 
                <Select
                 onChange={changeDuration}
+                value={info.duration}
+                className="ml-3"
                >
                  <option value=""  disabled selected hidden>Select a time</option>
                  <Duration/>
                </Select>
                <Select 
                 onChange={changePeriod}
-                className={`${info.duration !== '' ? 'block' : 'hidden'}`}
+                value={info.period}
+                className={`${info.duration !== '' ? 'block' : 'hidden'} ml-3`}
                 >
                     <option value='' disabled selected hidden>Select a period</option>
                     <Period
@@ -131,13 +146,13 @@ const RentInput = () => {
             <Fieldset
              provider="Stock"
             >
-               <input className="p-2.5  rounded-sm outline-1 outline-[#5252] w-[95%] mx-auto cursor-not-allowed" disabled type="text" value={stock ?? ''}/>
+               <input className="p-3.5  rounded-sm outline-1 outline-[#5252] w-[95%] mx-auto cursor-not-allowed" disabled type="text" value={stock ?? ''}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-               <input className="p-2.5  rounded-sm outline-1 w-[95%] outline-[#5252] mx-auto cursor-not-allowed" disabled type="text" value={cost ?? ''} />
+               <input className="p-3.5  rounded-sm outline-1 w-[95%] outline-[#5252] mx-auto cursor-not-allowed" disabled type="text" value={cost ?? ''} />
             </Fieldset>
 
         </Form>

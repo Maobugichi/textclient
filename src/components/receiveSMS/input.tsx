@@ -4,7 +4,8 @@ import axios from "axios";
 import { useEffect , useContext } from "react";
 import Select from "../select";
 import { ShowContext } from "../context-provider";
-import {Dispatch , SetStateAction } from 'react'
+import {Dispatch , SetStateAction } from 'react';
+import spinner from "../../assets/dualring.svg";
 
 interface InputPorps {
     type?: string;
@@ -20,13 +21,13 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
     const [ provider , setProvider ] = useState('Swift');
     const [ countries , setCountries ] = useState<any>({})
     const [ option , setOption ] = useState<any>(null)
-    const [ countryOption , setCountryOption ] = useState<any>(<option>United States</option>);
+    const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
-      country:'usa',
+      country:'5',
       service:'',
-      user_id:userData.userId
+      user_id: userData.userId
     });
-   
+    const [ number , setNumber ] = useState<any>('')
     
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -38,12 +39,39 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
            })
            .finally(function () {
          })
-
-         axios.get('https://textflex-axd2.onrender.com/api/sms/service')
+       
+         if (countryOption.props) {
+           if (countryOption.props.value == '5') {
+              const countries = async () => {
+                const res = await axios.get('https://textflex-axd2.onrender.com/api/sms/price', {
+                  params: {
+                    id:countryOption.props.value ,
+                  }
+                });
+                const service = await  axios.get('https://textflex-axd2.onrender.com/api/sms/service');
+                type ResItem = { application_id: number; [key: string]: any };
+                type ServiceItem = { id: number; [key: string]: any };
+                const resArray: ResItem[] = Array.from(Object.values(res.data));
+                const serviceArray: ServiceItem[] = Array.from(Object.values(service.data));
+                const matched = serviceArray.filter(serviceItem =>
+                  resArray.find(resItem => resItem.application_id === serviceItem.id)
+                );
+                if (matched) {
+                  const option = matched.map((item:any) => (
+                    <option key={item.id} value={item.id}>{item.title}</option>
+                  ))
+                  setOption(option)
+                }
+              
+              }
+            countries()
+           }
+         } else {
+          axios.get('https://textflex-axd2.onrender.com/api/sms/service')
           .then(function(response) {
               const serviceArray = Array.from(Object.values(response.data));
               const option = serviceArray.map((item:any) => (
-                <option value={item.id}>{item.title}</option>
+                <option key={item.id} value={item.id}>{item.title}</option>
               ))
               setOption(option)
           })
@@ -52,16 +80,17 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
            })
            .finally(function () {
          })
-    },[])
-
-
-   
+         }
+         
+    },[countryOption])
 
     useEffect(() => {
       const run = async () => {
+      
       async function postToBackEnd() {
-        const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-        return response.data
+         const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
+          setNumber(response.data.phone.number)
+         return response.data
         }
 
         const pollSMS = async (request_id: string) => {
@@ -87,15 +116,13 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
             }
         
             attempts++;
-          }, 2000);
+          }, 10000);
         };
-        
-      
+       
         if (target.service && target.country) {
            const response = await postToBackEnd();
            setTableValues(response.phone)
            const id = response.phone.request_id
-           console.log(id)
           if (response.phone.request_id) {
             pollSMS(id)
           }
@@ -109,7 +136,7 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
 
    useEffect(() => {
     //const { request_id , application_id , country_id , number } = tableValues;
-    console.log(tableValues)
+    //console.log(tableValues)
    },[tableValues])
    
     
@@ -117,7 +144,6 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
       setProvider(e.target.value)
       if (e.target.value == 'Dynamic') {
          const countriesArray = Array.from(Object.values(countries));
-         console.log(countriesArray)
          const country = countriesArray.map((item:any) => {
            return(
             <option value={item.id}>
@@ -127,11 +153,12 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
          });
         setCountryOption(country);
       } else {
-        setCountryOption(<option>United States</option>)
+        setCountryOption(<option value="5">USA</option>)
       }  
     }
 
-    function handleCountryChange(e:React.ChangeEvent<HTMLSelectElement>) {
+    async function handleCountryChange(e:React.ChangeEvent<HTMLSelectElement>) {
+      
       setTarget((prev:any) => {
         return({
           ...prev,
@@ -156,6 +183,7 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
          className="bg-[#fdf4ee] w-[95%] mx-auto md:w-[32%] h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
          fclass="pl-5 text-sm"
         >
+          <h1>{number.length > 1 && number}</h1>
             <Fieldset
              provider="Service Provider"
              
@@ -182,13 +210,16 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
             <Fieldset
              provider="Service"
             >
+             <div className="relative w-full grid ">
+              <Select 
+                onChange={extractCode} 
+                id="services"
+                >
+                  { option }
+              </Select> 
+              {!option && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
+             </div>
              
-             <Select 
-              onChange={extractCode} 
-              id="services"
-               >
-                { option }
-             </Select> 
             </Fieldset> 
 
         </Fieldset>
