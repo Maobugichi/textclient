@@ -17,6 +17,7 @@ interface ButtonProps {
 const Button:React.FC<ButtonProps> = ({content , width , className , onClick , checkUser, message , password , icon}) => {
     const [ showLoader , setShowLoader ] = useState<any>(false);
         useEffect(() => {
+            
             if (message !== '') {
                 setShowLoader(false)
 
@@ -24,10 +25,7 @@ const Button:React.FC<ButtonProps> = ({content , width , className , onClick , c
         },[message]);
  
         function load() {
-            if (password)  {
-                setShowLoader(false)
-                return
-            }
+            console.log(checkUser)
             if (checkUser) {
               setShowLoader(true)
             }  

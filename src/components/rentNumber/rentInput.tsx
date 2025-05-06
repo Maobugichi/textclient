@@ -26,6 +26,10 @@ const RentInput = () => {
     const [ showBtn , setShowBtn ] = useState<boolean>(false);
     const [ showErr , setShowErr ] = useState<boolean>(false)
     const [ rentDetails , setRentDetails ] = useState<any>('');
+    const [ trio, setTrio ] = useState<any>({
+        message:"",
+        checkUser:false
+    })
 
     useEffect(() => {
         axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -86,6 +90,20 @@ const RentInput = () => {
        }
     },[info])
 
+    useEffect(() => {
+        if (rentDetails !== '') {
+            setTrio((prev:any) => ({
+                ...prev,
+                message:rentDetails
+            }))
+        }
+        
+    },[rentDetails])
+
+    useEffect(() => {
+        console.log(trio)
+    },[trio])
+
    function getCountryId(e:React.ChangeEvent<HTMLSelectElement>) {
      const target = e.target.value;
      setInfo((prev:any) => ({
@@ -124,7 +142,12 @@ const RentInput = () => {
        const { countryId , duration, period } = info;
        if (countryId !== '' && duration !== '' && period !== '') {
           const response = await axios.post(`https://textflex-axd2.onrender.com/api/rent-number`, info);
-          console.log(response.data)
+           if (response.data) {
+            setTrio((prev:any) => ({
+                ...prev,
+                checkUser:true
+            }))
+           }
           setRentDetails(response)
           setInfo({
             countryId:'',
@@ -204,6 +227,8 @@ const RentInput = () => {
                     <Button
                       content="Rent Number"
                       className="w-full bg-[#0032a5]  h-10 rounded-sm text-white"
+                      message={trio.message}
+                      checkUser={trio.checkUser}
                     />
                 </div>
                ) 
