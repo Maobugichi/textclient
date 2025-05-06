@@ -14,7 +14,7 @@ interface ButtonProps {
 }
 
 
-const Button:React.FC<ButtonProps> = ({content , width , className , onClick , checkUser, message , password , icon}) => {
+const Button:React.FC<ButtonProps> = ({content , width , className , onClick , checkUser, message , icon}) => {
     const [ showLoader , setShowLoader ] = useState<any>(false);
         useEffect(() => {
             
