@@ -9,11 +9,12 @@ interface ButtonProps {
     onClick?:() => {};
     checkUser?:boolean;
     message?:any;
-    password?:any
+    password?:any;
+    icon?:React.ReactNode;
 }
 
 
-const Button:React.FC<ButtonProps> = ({content , width , className , onClick , checkUser, message , password}) => {
+const Button:React.FC<ButtonProps> = ({content , width , className , onClick , checkUser, message , password , icon}) => {
     const [ showLoader , setShowLoader ] = useState<any>(false);
         useEffect(() => {
             if (message !== '') {
@@ -33,10 +34,10 @@ const Button:React.FC<ButtonProps> = ({content , width , className , onClick , c
         }
       
         return(
-            <button  onClick={onClick ? onClick : load} className={`bg-[#0032a5] ${width} ${className} grid place-items-center`}>
+            <button  onClick={onClick ? onClick : load} className={` ${width} ${className} ${icon ? 'flex justify-center gap-3' : 'grid'}  place-items-center`}>
               {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : content }  
+              {icon && icon}
             </button>
         )
 }
-
 export default Button

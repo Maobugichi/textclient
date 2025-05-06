@@ -12,9 +12,11 @@ interface InputPorps {
     label?:string;
     tableValues:any;
     setTableValues:Dispatch<SetStateAction<any>> ;
+    setNumberInfo?:Dispatch<SetStateAction<any>> ;
+    setIsShow:Dispatch<SetStateAction<boolean>>
 }
 
-const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
+const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInfo, setIsShow}) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -23,16 +25,17 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
     const [ option , setOption ] = useState<any>(null)
     const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
+      provider:provider,
       country:'5',
       service:'',
       user_id: userData.userId
     });
-    const [ number , setNumber ] = useState<any>('')
     
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
              setCountries(response.data);
+             //console.log(response.data)
          })
          .catch(function (error) {
             console.log(error)
@@ -86,10 +89,17 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
 
     useEffect(() => {
       const run = async () => {
-      
       async function postToBackEnd() {
          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-          setNumber(response.data.phone.number)
+          console.log(response.data)
+          if (setNumberInfo && response.data.phone.number) {
+            setNumberInfo((prev: any) => ({
+              ...prev,
+              number: response.data.phone.number,
+            }));
+            setIsShow(true)
+          }
+
          return response.data
         }
 
@@ -104,13 +114,32 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
               if (sms || attempts >= maxAttempts) {
                 clearInterval(interval);
                 if (sms) {
-                  console.log("✅ SMS received:", res.data.sms);
-                  // Handle the SMS in UI
+                  if (setNumberInfo) {
+                    setNumberInfo((prev:any) => ({
+                        ...prev,
+                         sms: res.data.sms_code
+                      }))
+                  }
+                  
+                  console.log("✅ SMS received:", res.data.sms_code);
                 } else {
+                  if (setNumberInfo) {
+                    setNumberInfo((prev:any) => ({
+                      ...prev,
+                       sms: "⏱️ SMS polling timed out"
+                    }))
+                  }
+                  
                   console.warn("⏱️ SMS polling timed out");
                 }
               }
             } catch (err) {
+              if (setNumberInfo) {
+                setNumberInfo((prev:any) => ({
+                  ...prev,
+                   sms: "❌ Error polling SMS:"
+                }))
+              }
               console.error("❌ Error polling SMS:", err);
               clearInterval(interval); // optional: stop polling on error
             }
@@ -183,7 +212,6 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
          className="bg-[#fdf4ee] w-[95%] mx-auto md:w-[32%] h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
          fclass="pl-5 text-sm"
         >
-          <h1>{number.length > 1 && number}</h1>
             <Fieldset
              provider="Service Provider"
              
@@ -199,12 +227,15 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues}) => {
             <Fieldset
              provider="Country"
             >
+            <div className="relative w-full grid ">
               <Select 
                onChange={handleCountryChange} 
                id="country" 
               >
-                    { countryOption }
-             </Select> 
+                  { countryOption }
+              </Select> 
+             {!countryOption && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
+            </div> 
             </Fieldset>
 
             <Fieldset

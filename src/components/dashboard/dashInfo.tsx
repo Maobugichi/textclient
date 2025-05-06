@@ -2,9 +2,20 @@ import BlockCont from "./block-cont";
 import Blocks from "../../ui/blocks";
 import ForwardBlocks from "./forwardBlocks";
 import { Link  } from "react-router-dom";
+import {
+    DollarSign,
+    Users,   
+    CreditCard,
+    ArrowUpRight,
+    Plus
+  } from 'lucide-react';
 
 
-const DashInfo = () => {
+interface DashProps {
+    info: any
+}
+
+const DashInfo:React.FC<DashProps> = ({info}) => {
     /*function paystackPop() {
         axios.post('http://localhost:3001/initialize-transaction', {
             email: 'customer@email.com',
@@ -24,22 +35,25 @@ const DashInfo = () => {
         {
             extra:'Balance',
             amount:'0.00',
-            icon:"",
-            content:' + Fund Wallet',
+            icon:<DollarSign size={17}/>,
+            content:'Fund Wallet',
+            btnIcon:<Plus size={17}/>,
             link:''
         } ,
         {
             extra:'Purchase Number',
-            amount:'0',
-            icon:"",
+            amount:info,
+            icon:<Users size={17}/>,
             content:'Receive SMS',
+            btnIcon:<ArrowUpRight size={17} />,
             link:'/sms/1'
         },
         {
             extra:'Rented Numbers',
             amount:'0',
-            icon:"",
+            icon:<CreditCard size={17}/>,
             content:'Rent Number',
+            btnIcon:<ArrowUpRight  size={17}/>,
             link:'/number/1'
         }
     ]
@@ -73,8 +87,10 @@ const DashInfo = () => {
         <Link to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks
           extra={info.extra}
+          icon={info.icon}
           amount={info.amount}
           content={info.content}
+          btnIcon={info.btnIcon}
         />
         </Link>
         

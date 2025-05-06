@@ -20,12 +20,12 @@ const Modal:React.FC<ModalProps> = ({children , isShow , setShow }) => {
      <AnimatePresence>
         {
             isShow && ( 
-            <motion.div
+               <motion.div
                 initial={{  opacity:0 }}
                 animate={{ opacity:isShow ? 1 : 0 }}
                 exit={{opacity: 0 , transition: { delay:.5 }}}
                 transition={{ type:"tween" ,  duration: .4}}
-                className="w-full bg-black/80 fixed inset-0 h-[100vh] z-20">
+                className="w-full bg-black/80 fixed inset-0 h-[100vh] z-30">
                    <motion.div
                     initial={{ scale:0 , opacity:0 }}
                     animate={{ scale:isShow ? 1 : 0  , opacity:isShow ? 1 : 0  }}
@@ -41,7 +41,8 @@ const Modal:React.FC<ModalProps> = ({children , isShow , setShow }) => {
                        </div>
                        {children}
                    </motion.div>
-               </motion.div>)
+               </motion.div>
+               )
         }
        
      </AnimatePresence>

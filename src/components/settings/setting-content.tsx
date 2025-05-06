@@ -108,7 +108,7 @@ const SettingsContent = () => {
                     <input onChange={changeDetails} type="text" name='phonenumber' value={userNumber} className="outline py-2 rounded-sm outline-[#5252] pl-4"/>
                     <input type="email" name='email' value={userEmail} disabled className="outline py-2 rounded-sm outline-[#5252] pl-4 cursor-not-allowed text-gray-400"/>
                     <Button
-                     className='w-[30%] md:w-[20%] h-[15%] md:h-[20%] text-white text-sm  rounded'
+                     className='w-[30%] md:w-[20%] h-[15%] bg-[#0032a5] md:h-[20%] text-white text-sm  rounded'
                      content='Update Profile'
                      checkUser={userInput}
                      password={false}
@@ -127,7 +127,7 @@ const SettingsContent = () => {
                     <input onChange={changeDetails} type="password" name='olpassword' value={password.oldPassword} className="outline py-2 rounded-sm outline-[#5252] pl-4 placeholder:text-gray-400" placeholder="Enter old Password"/>
                     <input onChange={changeDetails} type="password" name='nepassword' value={password.newPassword} className="outline py-2 rounded-sm outline-[#5252] pl-4 placeholder:text-gray-400" placeholder="Enter new Password"/>
                     <Button
-                     className='w-[20%] md:w-[10%] h-[20%] md:h-[25%] text-white text-sm  rounded'
+                     className='w-[20%] md:w-[10%] h-[20%] bg-[#0032a5] md:h-[25%] text-white text-sm  rounded'
                      content='Save'
                      checkUser={userInput}
                      message={message}

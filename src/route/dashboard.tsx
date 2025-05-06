@@ -1,7 +1,9 @@
 import DashInfo from "../components/dashboard/dashInfo"
-import { useEffect , useContext } from "react"
-import { ShowContext } from "../components/context-provider"
+import { useEffect , useContext, useState } from "react"
+import { ShowContext } from "../components/context-provider";
+import axios from "axios";
 const DashBoard = () => {
+    const [ purchasedNumber , setPurchasedNumber ] = useState<any>(0)
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -19,9 +21,27 @@ const DashBoard = () => {
                 // Optionally: redirect to login
             }
         }
+       
     },[userData]);
+
+
+
+    useEffect(() => {
+        const getUserData = async () => {
+            const response = await axios.get('https://textflex-axd2.onrender.com/api/orders', { 
+                params: { userId: userData.userId  }
+            });
+            const purchaseArray = response.data.filter((item:any) => (
+                item.purchased_number !== null
+            ))
+            setPurchasedNumber(purchaseArray.length);
+        }
+        getUserData();
+    },[])
     return(
-        <DashInfo/>
+        <DashInfo
+         info={purchasedNumber}
+        />
     )
 }
 
