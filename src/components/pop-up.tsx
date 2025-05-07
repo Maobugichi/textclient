@@ -5,10 +5,13 @@ import {Dispatch , SetStateAction } from 'react';
 
 interface PopProps {
     numberInfo:any;
+    errorInfo:any;
     show:boolean;
-     setIsShow:Dispatch<SetStateAction<boolean>>;
+    setIsShow:Dispatch<SetStateAction<boolean>>;
+    error:boolean;
+    setIsError:Dispatch<SetStateAction<boolean>>;
 }
-const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow}) => {
+const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo}) => {
     const [ copied , setCopied ] = useState<any>({
         number:false,
         sms:false
@@ -48,6 +51,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow}) => {
 
     const hidePopUp = () => {
         setIsShow(false)
+        setIsError(false)
     }
 
 
@@ -73,6 +77,23 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow}) => {
                     
                 </motion.div>
             </motion.div> 
+            )
+        }
+        {
+            error && (
+                <motion.div 
+                initial={{ scale: 0}}
+                animate={{ scale: 1}}
+                exit={{scale: 0}}
+                className="bg-gray-500/20 h-full w-full fixed grid place-items-center z-50 top-0 left-0">
+                   <X onClick={hidePopUp} size={24} className="absolute top-10 right-10"/>
+                   <motion.div className="bg-white h-[40%] rounded-md grid  place-items-center w-[80%] md:w-[25%]  mx-auto p-5">
+                       <div className="flex items-center justify-between w-full  h-[40%]">
+                            {errorInfo}
+                       </div>
+                       
+                   </motion.div>
+               </motion.div> 
             )
         }
      </AnimatePresence>

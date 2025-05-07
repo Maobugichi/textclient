@@ -13,7 +13,9 @@ interface InputPorps {
     tableValues:any;
     setTableValues:Dispatch<SetStateAction<any>> ;
     setNumberInfo?:Dispatch<SetStateAction<any>> ;
-    setIsShow:Dispatch<SetStateAction<boolean>>
+    setIsShow:Dispatch<SetStateAction<boolean>>;
+    setIsError:Dispatch<SetStateAction<any>>
+    setErrorInfo:Dispatch<SetStateAction<any>>
 }
 
 type ServiceInfo = {
@@ -23,7 +25,7 @@ type ServiceInfo = {
 };
 
 
-const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}) => {
+const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -32,7 +34,7 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
     const [ option , setOption ] = useState<any>(null)
     const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
-      provider:'',
+      provider:provider,
       country:'5',
       service:'',
       user_id: userData.userId
@@ -40,6 +42,10 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
     const [fullList, setFullList] = useState<ServiceInfo[]>([]);
     const [page, setPage] = useState(1);
     const PAGE_SIZE = 100;
+    const [ status , setStatus ] = useState<any>({
+      stat:'',
+      req_id:''
+    });
     
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -51,21 +57,6 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
            })
            .finally(function () {
          })
-       
-         if (countryOption.props) {
-           if (countryOption.props.value == '5') {
-              const countries = async () => {
-                const res = await axios.get('https://textflex-axd2.onrender.com/api/sms/price', {
-                  params: {
-                    id:countryOption.props.value ,
-                  }
-                });
-                setOption( Object.values(res.data))
-              }
-            countries()
-           }
-         } else {
-          setOption(null)
           axios.get('https://textflex-axd2.onrender.com/api/sms/service')
           .then(function(response) {
               const serviceArray = response.data.price
@@ -90,25 +81,51 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
            })
            .finally(function () {
          })
-         }
-         
+
     },[countryOption,page])
+
+    useEffect(() => {
+      const checkStatus = async () => {
+        if (status.stat !== '' && status.req_id !== '') {
+            const response = await axios.get(`https://textflex-axd2.onrender.com/api/cancel-sms?request_id=${status.req_id}&status=${status.stat}`);
+            console.log(response.data)
+           return response.data
+        }
+      }
+      checkStatus()
+    },[status]);
+
 
     useEffect(() => {
       const run = async () => {
       async function postToBackEnd() {
-         const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-         console.log(response.data)
-          if (setNumberInfo && response.data.phone.number) {
-           
-            setNumberInfo((prev: any) => ({
-              ...prev,
-              number: response.data.phone.number,
-            }));
-            setIsShow(true)
+        try {
+          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
+          console.log(response.data)
+           if (setNumberInfo && response.data.phone.number) {
+             setNumberInfo((prev: any) => ({
+               ...prev,
+               number: response.data.phone.number,
+             }));
+             setStatus((prev:any) => ({
+               ...prev,
+               stat:'ready',
+               req_id:response.data.phone.request_id
+             }))
+             setIsShow(true)
+             
+           }
+          return response.data
+         } catch(err:any) {
+          if (err.response) {
+            console.error('Status:', err.response.status);
+            console.error('Message:', err.response.data?.error || err.response.data?.message);
+            setErrorInfo( err.response.data?.error || err.response.data?.message);
+            setIsError(true)
           }
-
-         return response.data
+        
+        }
+       
         }
 
         const pollSMS = async (request_id: string) => {
@@ -127,18 +144,31 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
                         ...prev,
                          sms: res.data.sms_code
                       }))
+                      setStatus((prev:any) => ({
+                        ...prev,
+                        stat:'used',
+                        req_id:request_id
+                      }))
                   }
-                  
+                 
                   console.log("✅ SMS received:", res.data.sms_code);
                 } else {
                   if (setNumberInfo) {
                     setNumberInfo((prev:any) => ({
                       ...prev,
-                       sms: "⏱️ SMS polling timed out"
+                       sms: "⏱️ SMS polling timed out,code not sent."
                     }))
                   }
                   
-                  console.warn("⏱️ SMS polling timed out");
+                  setTimeout(() => {
+                    setIsShow(false)
+                    setStatus((prev:any) => ({
+                      ...prev,
+                      stat:'reject',
+                      req_id:request_id
+                    }))
+                  }, 8000);
+                  
                 }
               }
             } catch (err) {
@@ -147,7 +177,13 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
                   ...prev,
                    sms: "❌ Error polling SMS:"
                 }))
+                
               }
+              setStatus((prev:any) => ({
+                ...prev,
+                stat:'reject',
+                req_id:request_id
+              }))
               console.error("❌ Error polling SMS:", err);
               clearInterval(interval); // optional: stop polling on error
             }
@@ -155,16 +191,30 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
             attempts++;
           }, 10000);
         };
+
+        const countries = async () => {
+          setOption(null)
+          const res = await axios.get('https://textflex-axd2.onrender.com/api/sms/price', {
+            params: {
+              id:target.country ,
+            }
+          });
+          setOption(Object.values(res.data))
+        }
+       countries()
        
         if (target.service && target.country) {
            const response = await postToBackEnd();
-           setTableValues(response.phone)
+           setTableValues(response?.phone)
+           setTarget((prev:any) => ({
+            ...prev,
+            service:''
+           }))
            const id = response.phone.request_id
           if (response.phone.request_id) {
             pollSMS(id)
           }
-         
-        }
+        } 
       } 
     run();
     },[target]);
@@ -178,6 +228,10 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
       }))
       if (e.target.value == 'Dynamic') {
          const countriesArray = Array.from(Object.values(countries));
+         setTarget((prev:any) => ({
+          ...prev,
+          country: (countriesArray as { id: string , title: string , code: string}[])[0].id
+         }))
          const country = countriesArray.map((item:any) => {
            return(
             <option value={item.id}>
@@ -187,6 +241,10 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
          });
         setCountryOption(country);
       } else {
+        setTarget((prev:any) => ({
+          ...prev,
+          country: '5'
+         }))
         setCountryOption(<option value="5">USA</option>)
       }  
     }
@@ -257,6 +315,7 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}
              >
               <Select 
                 onChange={extractCode} 
+                value={target.service}
                 id="services"
                 >
                   {option?.map((item:any) => (

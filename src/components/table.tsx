@@ -70,7 +70,7 @@ const Table:React.FC<TableProps> = ({tableValue}) => {
               <div className="h-9 border-b border-[#5252] flex items-center text-[11px] md:text-sm font-light pl-3">Code</div>
               <div className="flex flex-col text-[11px] border-r border-[#5252]">{tableContent.code}</div>
             </div>
-            <div className="w-fit min-w-[50px]">
+            <div className="w-fit min-w-[82px]">
               <div className="h-9 border-b border-[#5252] text-[11px] flex items-center md:text-sm font-light pl-3">Country</div>
               <div className="text-[11px] border-r border-[#5252]">{tableContent.country}</div>
             </div>
