@@ -43,10 +43,13 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                        <X onClick={closeNav} className="md:hidden"/>
                    </div>
                    
-                   <NavItems
-                    closeNav={closeNav}
-                   />
-                   <SignOut/>
+                   <div className=" h-[70%]">
+                        <NavItems
+                        closeNav={closeNav}
+                        />
+
+                        <SignOut/>
+                    </div>
                </motion.nav>) :
                 (<nav
                 className="fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5 bg-[#f9fbfd] border-r border-solid border-[#5252]">
@@ -54,12 +57,14 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                         <img className="h-[60%]" src={textPlug} alt="logo" />
                         <X onClick={closeNav} className="md:hidden"/>
                     </div>
-                    
-                    <NavItems
-                    closeNav={closeNav}
-                    />
+                    <div className=" h-[95%]">
+                        <NavItems
+                        closeNav={closeNav}
+                        />
 
-                    <SignOut/>
+                        <SignOut/>
+                    </div>
+                   
                 </nav> )   
             )
            

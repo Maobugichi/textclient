@@ -4,6 +4,8 @@ import TableCont from "../components/table-cont";
 import { useEffect, useState , useContext } from "react";
 import { ShowContext } from "../components/context-provider";
 import axios from "axios";
+import checkAuth from "../components/checkauth";
+
 const ReceiveSms = () => {
     const [ tableValues , setTableValues ] = useState<any>('');
     const [ numberInfo , setNumberInfo ] = useState<any>({
@@ -29,10 +31,11 @@ const ReceiveSms = () => {
             setTableValues(purchaseArray);
         }
 
-        setInterval(() => {
-            getUserData();
-        }, 5000);
-        
+        if (checkAuth()) {
+            setInterval(() => {
+                getUserData();
+            }, 5000);    
+        }
     },[])
     return(
         <div className="w-full md:grid flex flex-col gap-4 h-fit">

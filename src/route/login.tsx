@@ -33,7 +33,6 @@ const Login = () => {
     async function submitCredentias(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setShowLoader(true)
-        console.log('h')
         const { email , password } = credentials
         if (  email == '' || password == '') {
             setShowLoader(false)
@@ -42,6 +41,7 @@ const Login = () => {
         await axios.post('https://textflex-axd2.onrender.com/api/login', credentials , { withCredentials: true })
           .then(function (response) {
             if (response.data) {
+                console.log(response.data)
                 setCredentials({
                     email:'',
                     password:''
@@ -60,8 +60,8 @@ const Login = () => {
             setShowLoader(false);
           });
     }
-    return(
-    <div className="w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[80vh] grid md:min-h-[50vh]">
+  return(
+      <div className="w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
         <div className="text-center h-25 grid">
             <h2 className="text-2xl font-semibold">Log In</h2>
             <p>Enter your details below to log into your account</p>

@@ -9,7 +9,7 @@ import {
     ArrowUpRight,
     Plus
   } from 'lucide-react';
-
+import checkAuth from "../checkauth";
 
 interface DashProps {
     info: any
@@ -68,21 +68,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         }
     ]
 
-    const checkAuth =  () => {
-        try {
-            const token = localStorage.getItem("token");
-           
-            if (!token || token == 'undefined') {
-               console.log(`token: ${token}`)
-               return null 
-            } else {
-               return true
-            }
-          } catch {
-            //navigate('/signup/:1');
-            console.log('error')
-          }
-       }
+   
     const blocks = blockInfo.map(info => (
         <Link to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks

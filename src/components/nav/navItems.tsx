@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 interface NavProps {
     closeNav?: () => void
 }
-
+import checkAuth from '../checkauth';
 const NavItems:React.FC<NavProps> = ({ closeNav }) => {
     const navItems = [
         {
@@ -52,21 +52,7 @@ const NavItems:React.FC<NavProps> = ({ closeNav }) => {
         },
     ]
 
-    const checkAuth =  () => {
-        try {
-            const token = localStorage.getItem("token");
-           
-            if (!token || token == 'undefined') {
-               console.log(`token: ${token}`)
-               return null 
-            } else {
-               return true
-            }
-          } catch {
-            //navigate('/signup/:1');
-            console.log('error')
-          }
-       }
+   
 
     const items = navItems.map(item => (
         <Link to={checkAuth() ?  item.link : '/signup/:1'}>

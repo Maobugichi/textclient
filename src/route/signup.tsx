@@ -1,9 +1,10 @@
 import axios from "axios";
 import Form from "../components/form";
-import {  useState, useContext } from "react";
+import {  useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
 import interwind from "../assets/Interwind.svg"
+import Toast from "../components/toast";
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -17,7 +18,8 @@ const Signup = () => {
         password:''
     });
      const [ showLoader , setShowLoader ] = useState<any>(false);
-   
+     const [ errorMssg , setErrorMessage ] = useState<string>('')
+     const [ show , setShow ] = useState<boolean>(false);
     async function submitCredentias(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setShowLoader(true)
@@ -27,16 +29,23 @@ const Signup = () => {
             return
         }
         await axios.post('https://textflex-axd2.onrender.com/api/register/', credentials , { withCredentials: true })
-          .then(function (response) {
+        .then(function (response) {
             console.log('Success:', response.data);
             setShowLoader(false)
             setUserData(response.data)
             navigate('/dashboard/1')
-          })
-          .catch((err) => {
-            console.log(err)
+        })
+        .catch((err) => {
+            setErrorMessage(err.response.data.message)
+            setShow(true);
             setShowLoader(false);
-          });
+        });
+        setCredentials({
+            username:'',
+            number:'',
+            email:'',
+            password:''
+        })
     }
     function input(e:React.ChangeEvent<HTMLInputElement>) {
         const name = e.target.name;
@@ -64,13 +73,26 @@ const Signup = () => {
     
         
     }
+    
+    useEffect(() => {
+       if (show) {
+        setTimeout(() => {
+            setShow(false)
+        }, 3000);
+       
+       }
+    },[show])
     return(
      <div className="w-[90%] mx-auto md:w-[40%] h-fit mt-20  min-h-[45vh] grid md:min-h-[80vh]">
+        <Toast
+          show={show}
+          errorMssg={errorMssg}
+        />
         <div className="text-center h-25 grid">
             <h2 className="text-2xl font-semibold">Create an account</h2>
             <p>Enter your details below to create your account</p>
         </div>
-       <Form 
+        <Form 
         onSubmit={submitCredentias}
         className="flex flex-col justify-between  h-[300px]"
        >
@@ -78,7 +100,7 @@ const Signup = () => {
            <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type='number' name="number" placeholder="Phone Number" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm">{ showLoader ? <img className="h-10" src={interwind} alt="" /> : 'Sign up' }</button>
+           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm h-12">{ showLoader ? <img className="h-10" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
         <span className="text-center">have an account?   <Link className="text-blue-400 underline" to="/login/:1">sign in</Link></span>
       </div>  

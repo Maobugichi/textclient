@@ -2,6 +2,7 @@ import DashInfo from "../components/dashboard/dashInfo"
 import { useEffect , useContext, useState } from "react"
 import { ShowContext } from "../components/context-provider";
 import axios from "axios";
+import checkAuth from "../components/checkauth";
 const DashBoard = () => {
     const [ purchasedNumber , setPurchasedNumber ] = useState<any>(0)
     const myContext = useContext(ShowContext)
@@ -37,7 +38,10 @@ const DashBoard = () => {
             
             setPurchasedNumber(purchaseArray.length);
         }
-        getUserData();
+
+        if (checkAuth()) {
+            getUserData();
+        } 
     },[])
     return(
         <DashInfo
