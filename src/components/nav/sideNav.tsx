@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import { useEffect, useState } from "react";
 
 import SignOut from "./logout";
+import checkAuth from "../checkauth";
 
 interface SideNavProps {
     show?:boolean;
@@ -48,7 +49,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                         closeNav={closeNav}
                         />
 
-                        <SignOut/>
+                        {checkAuth() && <SignOut/> }
                     </div>
                </motion.nav>) :
                 (<nav
@@ -62,7 +63,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                         closeNav={closeNav}
                         />
 
-                        <SignOut/>
+                        {checkAuth() && <SignOut/>}
                     </div>
                    
                 </nav> )   
