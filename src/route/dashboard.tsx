@@ -34,6 +34,7 @@ const DashBoard = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
+            
             setPurchasedNumber(purchaseArray.length);
         }
         getUserData();

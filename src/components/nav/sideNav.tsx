@@ -4,6 +4,8 @@ import { motion , AnimatePresence } from "motion/react";
 import { X } from 'lucide-react';
 import { useEffect, useState } from "react";
 
+import SignOut from "./logout";
+
 interface SideNavProps {
     show?:boolean;
     setIsShow: React.Dispatch<React.SetStateAction<any>>;
@@ -55,6 +57,8 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                     <NavItems
                     closeNav={closeNav}
                     />
+
+                    <SignOut/>
                 </nav> )   
             )
            

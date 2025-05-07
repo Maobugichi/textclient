@@ -21,7 +21,7 @@ const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow }) => {
         setIsShow(true)
     }
     return(
-        <header className="fixed w-full top-0 h-16 grid place-items-center bg-white border-b border-solid border-[#5252] z-10">
+        <header className="fixed w-full top-0 h-16 grid place-items-center bg-white border-b border-solid border-[#5252] z-20">
             
             <div className="flex items-center h-[80%] w-[95%] justify-between pl-3 md:justify-end gap-5">
                 <Menu className="md:hidden" onClick={openNav}/>

@@ -11,6 +11,7 @@ import RentNumber from "./route/rent-number";
 import Signup from "./route/signup";
 import Settings from "./route/settings";
 import { ContextProvider } from "./components/context-provider";
+import Login from "./route/login";
 
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
     <HashRouter>
       <ContextProvider>
         <Routes>
-        <Route path="signup/:1" element={<Signup />} />
+         <Route path="signup/:1" element={<Signup />} />
+         <Route path="login/:1" element={<Login />} />
           <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="dashboard/:1" />} />
           <Route path="dashboard/:id" element={<DashBoard/>}/>

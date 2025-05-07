@@ -16,7 +16,14 @@ interface InputPorps {
     setIsShow:Dispatch<SetStateAction<boolean>>
 }
 
-const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInfo, setIsShow}) => {
+type ServiceInfo = {
+  application: string;
+  cost: string;
+  application_id:any
+};
+
+
+const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow}) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -25,17 +32,19 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
     const [ option , setOption ] = useState<any>(null)
     const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
-      provider:provider,
+      provider:'',
       country:'5',
       service:'',
       user_id: userData.userId
     });
+    const [fullList, setFullList] = useState<ServiceInfo[]>([]);
+    const [page, setPage] = useState(1);
+    const PAGE_SIZE = 100;
     
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
              setCountries(response.data);
-             //console.log(response.data)
          })
          .catch(function (error) {
             console.log(error)
@@ -51,33 +60,31 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
                     id:countryOption.props.value ,
                   }
                 });
-                const service = await  axios.get('https://textflex-axd2.onrender.com/api/sms/service');
-                type ResItem = { application_id: number; [key: string]: any };
-                type ServiceItem = { id: number; [key: string]: any };
-                const resArray: ResItem[] = Array.from(Object.values(res.data));
-                const serviceArray: ServiceItem[] = Array.from(Object.values(service.data));
-                const matched = serviceArray.filter(serviceItem =>
-                  resArray.find(resItem => resItem.application_id === serviceItem.id)
-                );
-                if (matched) {
-                  const option = matched.map((item:any) => (
-                    <option key={item.id} value={item.id}>{item.title}</option>
-                  ))
-                  setOption(option)
-                }
-              
+                setOption( Object.values(res.data))
               }
             countries()
            }
          } else {
+          setOption(null)
           axios.get('https://textflex-axd2.onrender.com/api/sms/service')
           .then(function(response) {
-              const serviceArray = Array.from(Object.values(response.data));
-              const option = serviceArray.map((item:any) => (
-                <option key={item.id} value={item.id}>{item.title}</option>
-              ))
-              setOption(option)
-          })
+              const serviceArray = response.data.price
+              const parsed = typeof serviceArray === 'string' ? JSON.parse(serviceArray) : serviceArray;
+              const result: ServiceInfo[] = [];
+              Object.values(parsed).forEach((outer: any) => {
+                Object.values(outer).forEach((inner: any) => {
+                  if (inner?.application && inner?.cost) {
+                    result.push({
+                      application: inner.application,
+                      application_id:inner.application_id,
+                      cost: inner.cost
+                    });
+                  }
+                });
+              });
+              setFullList(result);
+              setOption(result.slice(0, page * PAGE_SIZE))
+             })
           .catch(function (error) {
             console.log(error)
            })
@@ -85,14 +92,15 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
          })
          }
          
-    },[countryOption])
+    },[countryOption,page])
 
     useEffect(() => {
       const run = async () => {
       async function postToBackEnd() {
          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-          console.log(response.data)
+         console.log(response.data)
           if (setNumberInfo && response.data.phone.number) {
+           
             setNumberInfo((prev: any) => ({
               ...prev,
               number: response.data.phone.number,
@@ -161,16 +169,13 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
     run();
     },[target]);
 
-   
-
-   useEffect(() => {
-    //const { request_id , application_id , country_id , number } = tableValues;
-    //console.log(tableValues)
-   },[tableValues])
-   
     
     function handleInputChange(e:React.ChangeEvent<HTMLSelectElement>) {
       setProvider(e.target.value)
+      setTarget((prev:any) => ({
+        ...prev,
+        provider:e.target.value
+      }))
       if (e.target.value == 'Dynamic') {
          const countriesArray = Array.from(Object.values(countries));
          const country = countriesArray.map((item:any) => {
@@ -187,7 +192,6 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
     }
 
     async function handleCountryChange(e:React.ChangeEvent<HTMLSelectElement>) {
-      
       setTarget((prev:any) => {
         return({
           ...prev,
@@ -197,16 +201,24 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
     }
 
     function extractCode(e:React.ChangeEvent<HTMLSelectElement>) {
-      setTarget((prev:any) => {
-        return({
-          ...prev,
-          service:e.target.value
-        })
-       })
-       
+      const val = e.target.value;
+      console.log(val)
+      if (val === "__load_more__") {
+        setPage(prev => prev + 1);
+         console.log('hello')
+         return;
+      }  else {
+        setTarget((prev:any) => {
+          return({
+            ...prev,
+            service:e.target.value
+          })
+         })
+      }
     }
+
+   
     return(
-      
         <Fieldset
          provider={`${provider} SMS`}
          className="bg-[#fdf4ee] w-[95%] mx-auto md:w-[32%] h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
@@ -241,12 +253,18 @@ const Input:React.FC<InputPorps> = ({tableValues , setTableValues , setNumberInf
             <Fieldset
              provider="Service"
             >
-             <div className="relative w-full grid ">
+             <div className="relative w-full grid h-fit"
+             >
               <Select 
                 onChange={extractCode} 
                 id="services"
                 >
-                  { option }
+                  {option?.map((item:any) => (
+                      <option key={item.application_id} value={item.application_id}>{`${item.application} - ${item.cost}`}</option>
+                    ))}
+                  {option?.length < fullList?.length && (
+                    <option value="__load_more__">⬇ Load more...</option>
+                  )}
               </Select> 
               {!option && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
              </div>

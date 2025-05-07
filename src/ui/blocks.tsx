@@ -14,7 +14,7 @@ interface BlocksProps {
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon }) => {
     return(
         <div className="h-[150px] rounded-lg bg-[#0032a5] w-full md:w-[306px] grid place-items-center border border-solid border-[#5252] text-white relative">
-            <div className="flex w-[90%]  justify-between ">
+            <div className="flex w-[90%]  justify-between relative z-10">
                 <p className="flex flex-col text-lg font-semibold">
                     <span className="text-sm">
                         {extra}
