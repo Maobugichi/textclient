@@ -1,6 +1,4 @@
 import { useState , createContext , useMemo , useEffect } from "react";
-import checkAuth from "./checkauth";
-
 interface ContextProps {
     children: React.ReactNode,
    
