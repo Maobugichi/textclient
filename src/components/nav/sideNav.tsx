@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import SignOut from "./logout";
 import checkAuth from "../checkauth";
+import { Link } from "react-router-dom";
 
 interface SideNavProps {
     show?:boolean;
@@ -40,7 +41,9 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                 exit={{ x: -500}}
                 className="fixed z-20 w-[60%] md:w-[20%] md:fixed h-[100vh] top-0 md:flex flex-col gap-5 bg-[#f9fbfd] border-r border-solid border-[#5252]">
                    <div className="h-16 flex items-center justify-around  border-b border-solid border-[#5252]">
-                       <img className="h-[60%]" src={textPlug} alt="logo" />
+                   <Link to="/homepage/1">
+                          <img className="h-[60%]" src={textPlug} alt="logo" />
+                        </Link>
                        <X onClick={closeNav} className="md:hidden"/>
                    </div>
                    
@@ -55,8 +58,9 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                 (<nav
                 className="fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5 bg-[#f9fbfd] border-r border-solid border-[#5252]">
                     <div className="h-fit min-h-[64px] flex items-center justify-around  border-b border-solid border-[#5252]">
-                        <img className="h-[60%]" src={textPlug} alt="logo" />
-                        <X onClick={closeNav} className="md:hidden"/>
+                        <Link to="/homepage/1">
+                          <img className="h-[60%]" src={textPlug} alt="logo" />
+                        </Link>
                     </div>
                     <div className=" h-[95%]">
                         <NavItems

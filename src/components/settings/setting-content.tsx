@@ -15,7 +15,6 @@ const SettingsContent = () => {
         if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
         const { userData , setUserData } = myContext;
         const { userEmail , userId , userNumber , username } = userData;
-
         useEffect(() => {
             if (message !== '') {
                 setUserInput(false)

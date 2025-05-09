@@ -12,6 +12,7 @@ import Signup from "./route/signup";
 import Settings from "./route/settings";
 import { ContextProvider } from "./components/context-provider";
 import Login from "./route/login";
+import LandingPage from "./route/landing-page";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Routes>
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
+          <Route path="homepage/:1" element={<LandingPage/>} />
           <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="dashboard/:1" />} />
           <Route path="dashboard/:id" element={<DashBoard/>}/>

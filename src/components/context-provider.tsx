@@ -17,9 +17,9 @@ const  ContextProvider:React.FC<ContextProps> = ({ children }) => {
         return saved ? JSON.parse(saved) : {};
       });
     
-      // Update localStorage when userData changes
       useEffect(() => {
         localStorage.setItem("userData", JSON.stringify(userData));
+        console.log(userData)
       }, [userData]);
     const contextValue = useMemo(() => (
         { userData, setUserData }

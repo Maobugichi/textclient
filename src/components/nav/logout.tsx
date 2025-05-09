@@ -10,11 +10,12 @@ const SignOut = () => {
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , setUserData } = myContext;
     async function logout() {
+        
         await axios.post(`https://textflex-axd2.onrender.com/api/logout/`, {}, { withCredentials: true });
             localStorage.removeItem("token");
             localStorage.removeItem("userData");
             setUserData({}); 
-        navigate('/login/1');
+            navigate('homepage/:1');
     }
     return(
         <div className="flex  items-center justify-between pl-5 pr-5  md:p-5">
