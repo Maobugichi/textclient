@@ -25,7 +25,7 @@ function App() {
          <Route path="login/:1" element={<Login />} />
           <Route path="homepage/:1" element={<LandingPage/>} />
           <Route path="/" element={<Root />}>
-          <Route index element={<Navigate to="dashboard/:1" />} />
+          <Route index element={<Navigate to="homepage/:1" />} />
           <Route path="dashboard/:id" element={<DashBoard/>}/>
           <Route path="sms/:id" element={<ReceiveSms/>}/>
           <Route path="number/:id" element={<RentNumber/>}/>
