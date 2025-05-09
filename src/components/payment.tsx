@@ -9,3 +9,5 @@ const Payment = () => {
         </Form>
     )
 }
+
+export default Payment
