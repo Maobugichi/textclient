@@ -17,8 +17,8 @@ interface BlocksProps {
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon , className , isMerge }) => {
     return(
         <div className={`${className}`}>
-            <div className="flex w-[90%]  justify-between relative z-10">
-                <p className="flex flex-col text-lg font-semibold">
+            <div className="flex w-[90%]   justify-between relative z-10">
+                <p className="flex  flex-col text-lg font-semibold">
                     <span className="text-sm">
                         {extra}
                     </span>
@@ -31,7 +31,7 @@ const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon
            
             <Overlay/>
             <Button
-             width={isMerge ? "h-8 rounded-full text-white text-sm bg-[rgba(255,255,255,0.5)] backdrop-blur-md hover:bg-[rgba(255,255,255,0.4)] font-bold  transition-colors duration-300 relative z-10 w-[80%]" :"w-[80%] h-10 rounded-full text-white text-sm bg-[rgba(255,255,255,0.5)] backdrop-blur-md hover:bg-[rgba(255,255,255,0.4)] font-bold  transition-colors duration-300 relative z-10"}
+             width={isMerge ? "h-7 md:h-8 rounded-full text-white text-sm bg-[rgba(255,255,255,0.5)] backdrop-blur-md hover:bg-[rgba(255,255,255,0.4)] font-bold  transition-colors duration-300 relative z-10 w-[80%]" :"w-[80%] h-10 rounded-full text-white text-sm bg-[rgba(255,255,255,0.5)] backdrop-blur-md hover:bg-[rgba(255,255,255,0.4)] font-bold  transition-colors duration-300 relative z-10"}
              content={content}
              icon={btnIcon}
             />
