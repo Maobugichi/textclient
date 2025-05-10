@@ -13,7 +13,7 @@ const WavePattern = () => {
       return () =>  window.removeEventListener('resize' , handleWidth);
    },[])
    return(
-      <img className={`absolute top-[0px] object-contain md:left-0 h-fit  w-fit z-0 inset-0 ${width <= 400 ? 'left-0' : 'left-2'}`} src={width <= 600 ? patt2 : patt}/>
+      <img className={`absolute top-[0px] object-cover md:left-0 h-fit  w-fit z-0 inset-0 ${width <= 400 ? 'left-0' : 'left-2'}`} src={width <= 600 ? patt2 : patt}/>
    )
    
 };
