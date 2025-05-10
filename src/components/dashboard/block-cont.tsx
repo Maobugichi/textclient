@@ -7,7 +7,7 @@ interface BlockContProps {
 
 const BlockCont:React.FC<BlockContProps> = ({ children }) => {
     return (
-        <div className="flex md:flex-row flex-col flex-wrap bg-[#f5f5f4]  rounded-lg justify-between p-3.5 md:gap-0 gap-4">
+        <div className=" md:w-[84%] flex md:flex-row flex-col flex-wrap bg-[#f5f5f4]  rounded-lg items-center h-fit min-h-[61vh] md:min-h-[20vh] md:max-h-[42vh] md:p-3.5 md:gap-5 gap-4">
             {children}
         </div>
     )

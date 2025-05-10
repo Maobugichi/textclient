@@ -15,7 +15,7 @@ const SignOut = () => {
             localStorage.removeItem("token");
             localStorage.removeItem("userData");
             setUserData({}); 
-            navigate('homepage/:1');
+            navigate('/homepage/1');
     }
     return(
         <div className="flex  items-center justify-between pl-5 pr-5  md:p-5">

@@ -1,9 +1,22 @@
-import patt from "../../assets/circuit.svg";
+import patt from "../../assets/sett.svg";
+import patt2 from "../../assets/circuit.svg";
+import { useEffect, useState } from "react";
+const WavePattern = () => {
+   const [ width , setWidth ] = useState<any>(window.innerWidth)
 
-const WavePattern = () => (
-    
-   <img className="absolute top-[-3px] object-contain left-2 h-fit max-h-[150px] w-fit z-0 inset-0" src={patt}/>
-  );
+   useEffect(() => {
+      const handleWidth = () => {
+         setWidth(window.innerWidth);
+      }
+
+      window.addEventListener('resize' , handleWidth);
+      return () =>  window.removeEventListener('resize' , handleWidth);
+   },[])
+   return(
+      <img className="absolute top-[0px] object-contain left-0 h-fit  w-fit z-0 inset-0" src={width <= 600 ? patt2 : patt}/>
+   )
+   
+};
   
   export default WavePattern;
   
