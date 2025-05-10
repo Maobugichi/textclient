@@ -95,20 +95,6 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         </Link>
     ));
 
-    const blocksSmall = blockInfo.map(info => (
-        <Link className="h-[180px] w-[90%]" to={checkAuth() ? info.link : '/signup/:1'}>
-         <Blocks
-          extra={info.extra}
-          icon={info.icon}
-          amount={info.amount}
-          content={info.content}
-          btnIcon={info.btnIcon}
-          className="md:hidden h-full rounded-lg bg-[#0032a5] w-full  md:w-[350px] grid place-items-center border border-solid border-[#5252] text-white relative"
-          isMerge={false}
-        />
-        </Link>
-    ));
-
     const lastTwoBlocks =  blockInfo.slice(- 2).map(info => (
         <Link className="w-full"  to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks
