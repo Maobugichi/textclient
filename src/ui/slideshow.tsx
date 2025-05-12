@@ -15,7 +15,7 @@ const SlideShow = () => {
     },[])
       
     return(
-        <div className="w-[85%] md:w-full mx-auto overflow-hidden  h-[110px]  flex items-center">
+        <div className="w-[85%] md:w-full mx-auto overflow-hidden  h-[80px]  flex items-center">
            <AnimatePresence mode="wait">
                 <motion.div
                 key={slides[index].id}

@@ -14,6 +14,8 @@ import { ContextProvider } from "./components/context-provider";
 import Login from "./route/login";
 import LandingPage from "./route/landing-page";
 
+import AdminImg from "./route/adminn/adminImg";
+
 
 function App() {
   
@@ -24,6 +26,7 @@ function App() {
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
           <Route path="homepage/:1" element={<LandingPage/>} />
+          <Route path="admin/:1" element={<AdminImg/>} />
           <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="homepage/:1" />} />
           <Route path="dashboard/:id" element={<DashBoard/>}/>

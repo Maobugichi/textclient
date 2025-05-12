@@ -12,6 +12,7 @@ import {
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 interface DashProps {
     info: any
@@ -33,7 +34,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
 
     }*/
    const [ width , setWidth ] = useState<any>(window.innerWidth)
-   
+   const [ url , setUrl ] = useState<string>('')
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
@@ -43,6 +44,15 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
 
+      useEffect(()=> {
+        async function run() {
+            const response = await axios.get('https://textflex-axd2.onrender.com/api/image')
+            setUrl(response.data.data.url)
+        }
+
+        setInterval(run,3000)
+        
+      },[])
     const blockInfo = [
         {
             extra:'Balance',
@@ -89,7 +99,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
           amount={info.amount}
           content={info.content}
           btnIcon={info.btnIcon}
-          className="w-full h-[180px] md:h-[210px] rounded-lg bg-[#0032a5]  md:w-[350px] grid place-items-center border border-solid border-[#5252] text-white relative"
+          className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-lg bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={false}
         />
         </Link>
@@ -103,7 +113,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
           amount={info.amount}
           content={info.content}
           btnIcon={info.btnIcon}
-          className=" h-fit min-h-[100px] overflow-hidden md:h-[100px] rounded-lg bg-[#0032a5]  md:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
+          className=" h-fit  md:h-[80px] lg:h-[100px] min-h-[100px] overflow-hidden rounded-lg bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={true}
         />
         </Link>
@@ -123,14 +133,14 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
                 <BlockCont>
                     {blocks}
                    
-                    <div className="flex flex-col h-fit min-h-[23vh] justify-between gap-2 w-[90%] md:w-[45%]">
+                    <div className=" flex flex-col h-fit min-h-[23vh] md:min-h-[15vh] justify-between gap-2 w-[90%] md:w-[48%] lg::w-[45%]">
                      {lastTwoBlocks}
                     </div>
                     {width <= 600 && <SlideShow/>}
                 </BlockCont>
                 {width > 600 && <SlideShow/>}
             </div>
-           
+           <img src={url} alt="test" />
             <div className="h-auto flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row  w-full justify-between gap-3 md:gap-0">
                     {forward}

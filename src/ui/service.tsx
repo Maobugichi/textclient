@@ -21,7 +21,6 @@ const Service = () => {
                 for (const brand of brandNames) {
                      const response = await axios.get(`https://api.brandfetch.io/v2/search/${brand}?c=${bearer}`)
                      const brandArray = response.data
-                      console.log()
                      for (const brandData of brandArray) {
                         const normalizedBrandName = brandData.name.toLowerCase().trim();
                         if (!seenBrands.has(normalizedBrandName)) {
@@ -44,10 +43,6 @@ const Service = () => {
         } 
       fetchBrandData()
       },[])
-      
-      useEffect(() => {
-        console.log(brand)
-      },[brand])
 
       function handleClick(e:React.MouseEvent<HTMLDivElement>) {
         const target = e.currentTarget.innerText;

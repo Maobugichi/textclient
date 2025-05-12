@@ -19,7 +19,7 @@ const  ContextProvider:React.FC<ContextProps> = ({ children }) => {
     
       useEffect(() => {
         localStorage.setItem("userData", JSON.stringify(userData));
-        console.log(userData)
+        
       }, [userData]);
     const contextValue = useMemo(() => (
         { userData, setUserData }
