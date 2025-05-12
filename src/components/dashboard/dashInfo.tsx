@@ -12,7 +12,7 @@ import {
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 
 interface DashProps {
     info: any
