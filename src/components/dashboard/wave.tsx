@@ -1,5 +1,4 @@
 import patt from "../../assets/sett.svg";
-import patt2 from "../../assets/circuit.svg";
 import { useEffect, useState } from "react";
 const WavePattern = () => {
    const [ width , setWidth ] = useState<any>(window.innerWidth)
