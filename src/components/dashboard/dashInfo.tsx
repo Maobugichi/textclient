@@ -44,15 +44,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
 
-      useEffect(()=> {
-        async function run() {
-            const response = await axios.get('https://textflex-axd2.onrender.com/api/image')
-            setUrl(response.data.data.url)
-        }
-
-        setInterval(run,3000)
-        
-      },[])
+      
     const blockInfo = [
         {
             extra:'Balance',
