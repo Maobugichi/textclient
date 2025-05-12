@@ -34,7 +34,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
 
     }*/
    const [ width , setWidth ] = useState<any>(window.innerWidth)
-   const [ url , setUrl ] = useState<string>('')
+  
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
