@@ -140,7 +140,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
                 </BlockCont>
                 {width > 600 && <SlideShow/>}
             </div>
-           <img src={url} alt="test" />
+           
             <div className="h-auto flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row  w-full justify-between gap-3 md:gap-0">
                     {forward}
