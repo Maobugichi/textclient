@@ -29,7 +29,7 @@ const Table:React.FC<TableProps> = ({tableValue}) => {
           <p className="h-8 text-center overflow-x-auto  grid place-content-center">{item.purchased_number}</p>
       ));
       const country = safeTableValue.map((item:any) => (
-          <p className="h-8 pl-2 w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.country}</p>
+          <p className="h-8 p-4 w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.country}</p>
       ))
       const code = safeTableValue.map((item:any) => (
         <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.sms}</p>
@@ -38,10 +38,10 @@ const Table:React.FC<TableProps> = ({tableValue}) => {
         <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.status}</p>
       ))  
       const service = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.service}</p>
+        <p className="h-8   w-full p-4 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.service}</p>
       ))   
       const provider = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.provider}</p>
+        <p className="h-8  w-full p-2 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.provider}</p>
       ))      
       setTableContent({
         ref:myTable,

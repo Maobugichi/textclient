@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
 const Hero = () => {
     return(
-        <div className="w-full bg-[linear-gradient(to_right,_#fcfbfa,_#fef7f2)]  h-fit relative z-10 top-24">
+        <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit relative z-10 top-24">
             <div className=" h-fit min-h-[100vh] w-[90%] md:w-[80%] mx-auto flex items-center">
                 <div className=" h-fit min-h-[60vh]  w-full md:w-[60%]  grid gap-4 place-items-center">
                     <div className="w-[95%] ">

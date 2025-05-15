@@ -166,9 +166,8 @@ const RentInput = () => {
        
     }
     return(
-        
         <Form
-         className='w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252]'
+         className='w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] bg-[#EEF4FD]'
          onSubmit={getNumber}
         >
             <Fieldset
@@ -208,13 +207,13 @@ const RentInput = () => {
             <Fieldset
              provider="Stock"
             >
-               <input className="p-3.5  rounded-sm outline-1 outline-[#5252] w-[95%] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.count ?? ''}/>
+               <input className="p-3.5  rounded-sm outline-1 outline-[#5252] bg-white w-[95%] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.count ?? ''}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-               <input className="p-3.5  rounded-sm outline-1 w-[95%] outline-[#5252] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.cost ?? ''} />
+               <input className="p-3.5  rounded-sm outline-1 w-[95%] bg-white outline-[#5252] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.cost ?? ''} />
             </Fieldset>
             {
                showBtn &&

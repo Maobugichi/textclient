@@ -1,33 +1,44 @@
-import { motion , AnimatePresence } from "motion/react";
-import { useState , useEffect } from "react";
+import { motion } from "motion/react";
+import { useState , useEffect , useRef } from "react";
 const slides = [
     { id: 1, content: 'Slide 1', bg: 'bg-red-300' },
     { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
     { id: 3, content: 'Slide 3', bg: 'bg-blue-300' }
   ];
+  
 const SlideShow = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
     const [ index , setIndex ] = useState(0);
-
+   
     useEffect(() => {
-        setInterval(() => {
-            setIndex((prev:any) => (prev + 1) % slides.length)
-        }, 3000);
-    },[])
+      const container = containerRef.current;
+      if (!container) return;
+  
+      const slideInterval = setInterval(() => {
+        const nextIndex = (index + 1) % slides.length;
+        const slideWidth = container.offsetWidth * 0.85; // match w-[85%]
+        container.scrollTo({
+          left: nextIndex * slideWidth,
+          behavior: "smooth"
+        });
+        setIndex(nextIndex);
+      }, 3000);
+  
+      return () => clearInterval(slideInterval);
+    },[index])
       
     return(
-        <div className="w-[85%] md:w-full mx-auto overflow-hidden  h-[80px]  flex items-center">
-           <AnimatePresence mode="wait">
-                <motion.div
-                key={slides[index].id}
-                className={` inset-0 flex items-center justify-center h-[85%] w-full md:w-[84%] rounded-lg text-2xl font-bold text-white ${slides[index].bg}`}
-                initial={{ opacity: 0, x: 100, y:0  }}
-                animate={{ opacity: 1, x: 0 , y: -5 }}
-                exit={{ opacity: 0, x: -100 , y: 0 }}
-                transition={{ duration: 0.6 }}
-                >
-                 {slides[index].content}
-                </motion.div>
-            </AnimatePresence>
+        <div
+        ref={containerRef}
+        style={{ scrollSnapType: "x mandatory" }}
+        className=" w-[85%] transition-all scroll-smooth gap-5 md:w-[84%] overflow-x-scroll h-[80px] hide-scrollbar  flex items-center">
+           {slides.map((item:any) => (
+            <motion.div
+            style={{ scrollSnapAlign: "start" }}
+            key={item.id} className={`flex-shrink-0 ${item.bg} w-full h-full`}>
+                {item.content}
+            </motion.div>
+           ))}
         </div>
     )
 }
