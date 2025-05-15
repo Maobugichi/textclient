@@ -52,7 +52,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
             icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,
-            link:''
+            link:'/payment/1'
         } ,
         {
             extra:'Purchase Number',
@@ -122,7 +122,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         <div className="h-fit  w-full flex flex-col gap-12">
             <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
-                <BlockCont>
+                 <BlockCont>
                     {blocks}
                    
                     <div className=" flex flex-col h-fit min-h-[23vh] md:min-h-[15vh] justify-between gap-2 w-[90%] md:w-[48%] lg::w-[45%]">

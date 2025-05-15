@@ -22,7 +22,7 @@ const Root = () => {
     />
 ));
     return(
-        <div className="h-fit min-h-[80vh]  w-full">
+        <div className="h-fit min-h-[90vh]   w-full">
             <Header
              setIsShow={setIsShow}
              setShow={setShow}

@@ -13,7 +13,7 @@ import Settings from "./route/settings";
 import { ContextProvider } from "./components/context-provider";
 import Login from "./route/login";
 import LandingPage from "./route/landing-page";
-
+import Payment from "./components/payment";
 import AdminImg from "./route/adminn/adminImg";
 
 
@@ -29,6 +29,7 @@ function App() {
           <Route path="admin/:1" element={<AdminImg/>} />
           <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="homepage/:1" />} />
+          <Route path="payment/:1" element={<Payment/>} />
           <Route path="dashboard/:id" element={<DashBoard/>}/>
           <Route path="sms/:id" element={<ReceiveSms/>}/>
           <Route path="number/:id" element={<RentNumber/>}/>
