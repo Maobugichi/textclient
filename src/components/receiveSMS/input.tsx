@@ -73,8 +73,8 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
     useEffect(() => {
       const run = async () => {
         if (cost > balance) {
+           setError(true)
           return
-          setError(true)
         }
         async function postToBackEnd() {
         try {
