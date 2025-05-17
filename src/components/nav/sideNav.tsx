@@ -11,9 +11,10 @@ import { Link } from "react-router-dom";
 interface SideNavProps {
     show?:boolean;
     setIsShow: React.Dispatch<React.SetStateAction<any>>;
+    theme:boolean
 }
 
-const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
+const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
     const [isMobile, setIsMobile] = useState(() => window.innerWidth < 500);
 
     useEffect(() => {
@@ -39,8 +40,8 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                 initial={{x: -500 }}
                 animate={show ? { x: [-500, -300, 0] } : {}}
                 exit={{ x: -500}}
-                className="fixed z-20 w-[60%] md:w-[20%] md:fixed h-[100vh] top-0 md:flex flex-col gap-5 bg-[#f9fbfd] border-r border-solid border-[#5252]">
-                   <div className="h-16 flex items-center justify-around  border-b border-solid border-[#5252]">
+                className={`fixed z-20 w-[60%] md:w-[20%] md:fixed h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
+                   <div className={`h-16 flex items-center justify-around  border-b border-solid border-[#5252] ${theme ? 'border-blue-100': 'border-[#5252]'}`}>
                    <Link to="/homepage/1">
                           <img className="h-[60%]" src={textPlug} alt="logo" />
                         </Link>
@@ -56,15 +57,16 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow}) => {
                     </div>
                </motion.nav>) :
                 (<nav
-                className="fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5 bg-[#f9fbfd] border-r border-solid border-[#5252]">
-                    <div className="h-fit min-h-[64px] flex items-center justify-around  border-b border-solid border-[#5252]">
+                className={`fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
+                    <div className={`h-fit min-h-[64px] flex items-center justify-around  border-b border-solid ${theme ? 'border-blue-100': 'border-[#5252]'}`}>
                         <Link to="/homepage/1">
                           <img className="h-[60%]" src={textPlug} alt="logo" />
                         </Link>
                     </div>
-                    <div className=" h-[95%]">
+                    <div className={`h-[95%] ${theme ? 'text-gray-200' : 'text-black'}`}>
                         <NavItems
                         closeNav={closeNav}
+                        
                         />
 
                         {checkAuth() && <SignOut/>}

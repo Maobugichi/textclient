@@ -17,7 +17,7 @@ const ReceiveSms = () => {
     const [ errorInfo , setErrorInfo ] = useState<any>('')
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { userData } = myContext;
+    const { userData , theme } = myContext;
 
     useEffect(() => {
         const getUserData = async () => {
@@ -27,7 +27,6 @@ const ReceiveSms = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
-           
             setTableValues(purchaseArray);
         }
 
@@ -38,7 +37,7 @@ const ReceiveSms = () => {
         }
     },[])
     return(
-        <div className="w-full md:grid flex flex-col gap-4 h-fit">
+        <div className={`w-full md:grid flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
             <PopUp
              numberInfo={numberInfo}
              show={isShow}
@@ -46,6 +45,7 @@ const ReceiveSms = () => {
              error={error}
              errorInfo={errorInfo}
              setIsError={setIsError}
+            
             />
              <h2 className="font-semibold text-2xl">Receive SMS</h2>
             <div className=" w-full h-fit  min-h-[65vh]  md:min-h-[80vh] flex flex-col md:flex-row gap-4">
@@ -56,9 +56,11 @@ const ReceiveSms = () => {
                  setIsShow={setIsShow}
                  setErrorInfo={setErrorInfo}
                  setIsError={setIsError}
+                 theme={theme}
                 />
                 <TableCont
                  tableValues={tableValues}
+                 theme={theme}
                 />
             </div>
         </div>

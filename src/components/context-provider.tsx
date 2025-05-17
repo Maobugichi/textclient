@@ -7,8 +7,8 @@ interface ContextProps {
 interface UserContextType {
     userData: any; 
     setUserData: React.Dispatch<React.SetStateAction<any>>;
-    theme:string;
-    setTheme:React.Dispatch<React.SetStateAction<string>>;
+    theme:boolean;
+    setTheme:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ShowContext =  createContext<UserContextType | undefined>(undefined);
@@ -18,7 +18,7 @@ const  ContextProvider:React.FC<ContextProps> = ({ children }) => {
         const saved = localStorage.getItem("userData");
         return saved ? JSON.parse(saved) : {};
       });
-    const [ theme , setTheme ] = useState<any>('bg-white')  
+    const [ theme , setTheme ] = useState<boolean>(false)  
     
       useEffect(() => {
         localStorage.setItem("userData", JSON.stringify(userData));
@@ -26,7 +26,7 @@ const  ContextProvider:React.FC<ContextProps> = ({ children }) => {
       }, [userData]);
     const contextValue = useMemo(() => (
         { userData, setUserData , theme , setTheme }
-    ),[ userData])
+    ),[ userData , theme])
     return(
         <ShowContext.Provider value={contextValue}>
             {children}

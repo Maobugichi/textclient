@@ -8,9 +8,10 @@ import { AnimatePresence, motion } from 'motion/react';
 interface ProviderProps {
     showProviders: boolean;
     setProviders:Dispatch<SetStateAction<boolean>> ;
+    theme:boolean;
 }
 
-const Provider:React.FC<ProviderProps> = ({showProviders, setProviders}) => {
+const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme}) => {
     const [ isActive , setActive ] = useState('sm');
     const [ showCheck , setShowCheck ] = useState(false);
 
@@ -62,7 +63,7 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders}) => {
     
     
     return(
-        <div onClick={openProviderList} className='cursor-pointer bg-[#f4f7fa] h-10  w-32 rounded-md flex items-center justify-center gap-4 relative z-10'>
+        <div onClick={openProviderList} className={`cursor-pointer ${ theme ? 'bg-[#333333]' : 'bg-[#f4f7fa]'} h-10  w-32 rounded-md flex items-center justify-center gap-4 relative z-10`}>
             <p className='flex flex-col text-[10px] md:text-[14px]'>
                 <span className='text-[9px] md:text-[10px]'>Provider</span>
                 Dynamic SMS

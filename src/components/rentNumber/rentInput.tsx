@@ -8,8 +8,11 @@ import Duration from "./duration";
 import Period from "./period";
 import Button from "../button";
 
+interface RentProps {
+    theme:boolean
+}
 
-const RentInput = () => {
+const RentInput:React.FC<RentProps> = ({ theme }) => {
     const [ apiResponse , setApiResponse ] = useState<any>('');
     const [ list , setList ] = useState<any>('');
     const [ max , setMax ] = useState<number>(24);
@@ -167,7 +170,7 @@ const RentInput = () => {
     }
     return(
         <Form
-         className='w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] bg-[#EEF4FD]'
+         className={`w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
          onSubmit={getNumber}
         >
             <Fieldset
@@ -176,6 +179,7 @@ const RentInput = () => {
                <Select 
                 onChange={getCountryId}
                 value={info.countryId}
+                theme={theme}
                >
                   <option value=""  disabled selected hidden>Select a Country</option>
                  {list}
@@ -189,6 +193,7 @@ const RentInput = () => {
                 onChange={changeDuration}
                 value={info.duration}
                 className="ml-3"
+                theme={theme}
                >
                  <option value=""  disabled selected hidden>Select a time</option>
                  <Duration/>
@@ -196,6 +201,7 @@ const RentInput = () => {
                <Select 
                 onChange={changePeriod}
                 value={info.period}
+                theme={theme}
                 className={`${info.duration !== '' ? 'block' : 'hidden'} ml-3`}
                 >
                     <option value='' disabled selected hidden>Select a period</option>
@@ -207,13 +213,13 @@ const RentInput = () => {
             <Fieldset
              provider="Stock"
             >
-               <input className="p-3.5  rounded-sm outline-1 outline-[#5252] bg-white w-[95%] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.count ?? ''}/>
+               <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-               <input className="p-3.5  rounded-sm outline-1 w-[95%] bg-white outline-[#5252] mx-auto cursor-not-allowed text-gray-400" disabled type="text" value={limits.cost ?? ''} />
+                 <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
             </Fieldset>
             {
                showBtn &&

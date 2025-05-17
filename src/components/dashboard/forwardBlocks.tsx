@@ -1,11 +1,12 @@
 interface ForwardBlocksProps {
     text:string;
     forward:string;
+    theme:boolean
 }
 
-const ForwardBlocks:React.FC<ForwardBlocksProps> = ({ text , forward}) => {
+const ForwardBlocks:React.FC<ForwardBlocksProps> = ({ text , forward , theme}) => {
     return(
-        <div className="w-full md:w-[49.5%] p-3 border border-solid border-[#5252] rounded-md bg-white">
+        <div className={`w-full md:w-[49.5%] p-3  border border-solid  rounded-md ${theme ? 'bg-transparent text-white border-gray-500' :'bg-white border-[#5252]'}`}>
             <p>
                 {text}
             </p>

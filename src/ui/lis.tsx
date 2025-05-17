@@ -2,6 +2,7 @@ import { ShieldCheck } from "lucide-react";
 
 interface LisProps {
     content:string;
+    
 }
 const Lis:React.FC<LisProps> = ({ content }) => {
     return(

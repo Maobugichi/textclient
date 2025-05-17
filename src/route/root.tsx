@@ -10,7 +10,7 @@ import { ShowContext } from "../components/context-provider";
 const Root = () => {
     const myContext = useContext(ShowContext)
    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-   const { theme } = myContext;
+   const { theme , setTheme } = myContext;
    const [ isShow , setIsShow ] = useState<boolean>(false);
    const [ show , setShow] = useState<boolean>(false);
 
@@ -26,10 +26,12 @@ const Root = () => {
     />
         ));
     return(
-        <div className={`h-fit min-h-[90vh]   w-full ${theme}`}>
+        <div className={`h-fit min-h-[100vh] relative top-14 pt-3  w-full ${theme ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
             <Header
              setIsShow={setIsShow}
              setShow={setShow}
+             theme={theme}
+             setTheme={setTheme}
             />
             <Modal
              setShow={setShow}
@@ -41,9 +43,12 @@ const Root = () => {
              <SideNav
               show={isShow}
               setIsShow={setIsShow}
+              theme={theme}
              />
-             <div className=" relative w-[95%] mx-auto  md:w-[76%] top-15  md:left-[10%]">
-              <Outlet/>
+             <div className={`relative w-[95%] mx-auto   md:w-[76%]  md:left-[10%] ${theme ? 'bg-[#1a1a1a]' : 'bg-white'} `}>
+              <Outlet
+              
+              />
              </div> 
             
             </div>

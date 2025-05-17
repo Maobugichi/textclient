@@ -18,12 +18,13 @@ interface InputPorps {
     setIsShow:Dispatch<SetStateAction<boolean>>;
     setIsError:Dispatch<SetStateAction<any>>
     setErrorInfo:Dispatch<SetStateAction<any>>
+    theme:boolean
 }
 
 
 
 
-const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo }) => {
+const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -272,7 +273,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
     return(
         <Fieldset
          provider={`${provider} SMS`}
-         className="bg-[#EEF4FD] w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
+         className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]`}
          fclass="pl-5 text-sm"
         >
             <Fieldset
@@ -281,6 +282,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
             <Select
              id="providers"
              onChange={handleInputChange}
+             theme={theme}
              >
               <option value="Swift">Swift SMS</option>
               <option value="Dynamic">Dynamic SMS</option>
@@ -293,6 +295,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
               <Select 
                onChange={handleCountryChange} 
                id="country" 
+               theme={theme}
               >
                   { countryOption }
               </Select> 
@@ -310,6 +313,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
                 value={target.service}
                 id="services"
                 isDisabled={error}
+                theme={theme}
                 >
                   {option?.map((item:any) => (
                       <option key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * 50).toLocaleString('en-NG', {

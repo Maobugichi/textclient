@@ -15,10 +15,11 @@ import { useState, useEffect } from "react";
 
 
 interface DashProps {
-    info: any
+    info: any;
+    theme:boolean;
 }
 
-const DashInfo:React.FC<DashProps> = ({info}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       useEffect(() => {
         console.log(info)
@@ -104,13 +105,16 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         <ForwardBlocks
          text={item.text}
          forward={item.forward}
+         theme={theme}
         />
     ))
     return(
-        <div className=" h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12">
+        <div className={`h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
-                 <BlockCont>
+                 <BlockCont
+                  theme={theme}
+                 >
                     {blocks}
                    
                     <div className=" flex flex-col h-fit min-h-[23vh] md:min-h-[15vh] justify-between gap-2 w-[90%] md:w-[48%] lg::w-[45%]">

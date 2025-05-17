@@ -7,7 +7,7 @@ const DashBoard = () => {
     const [ userDetails , setUserDetails ] = useState<any>(0)
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { userData } = myContext;
+    const { userData , theme } = myContext;
     useEffect(() => {
         if (userData.token) {
             const expiry = Date.now() + 60 * 60 * 1000;
@@ -44,6 +44,7 @@ const DashBoard = () => {
     return(
         <DashInfo
          info={userDetails}
+         theme={theme}
         />
     )
 }
