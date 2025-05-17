@@ -107,7 +107,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         />
     ))
     return(
-        <div className="h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12">
+        <div className=" h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12">
             <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
                  <BlockCont>

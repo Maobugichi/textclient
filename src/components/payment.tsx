@@ -61,6 +61,7 @@ const Payment = () => {
       const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url
       const ref = response.data.data.data.transaction_ref
+      console.log(response.data)
       if (response.data) {
          setShowLoader(false)
       }

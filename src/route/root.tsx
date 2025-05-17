@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState , useContext } from "react";
 import SideNav from "../components/nav/sideNav"
 import Header from "../ui/header";
 import Modal from "../components/modal";
 import ModalItem from "../components/modalItems";
 import { modalOptions } from "../action";
 import { Outlet } from "react-router-dom";
-
+import { ShowContext } from "../components/context-provider";
 
 const Root = () => {
+    const myContext = useContext(ShowContext)
+   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
+   const { theme } = myContext;
    const [ isShow , setIsShow ] = useState<boolean>(false);
    const [ show , setShow] = useState<boolean>(false);
+
    const modalDetails = modalOptions.map((option, i) => (
     <ModalItem
      icon={option.icon}
@@ -20,9 +24,9 @@ const Root = () => {
      delay={ i * .2 + .2}
 
     />
-));
+        ));
     return(
-        <div className="h-fit min-h-[90vh]   w-full">
+        <div className={`h-fit min-h-[90vh]   w-full ${theme}`}>
             <Header
              setIsShow={setIsShow}
              setShow={setShow}
