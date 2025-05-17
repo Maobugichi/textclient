@@ -17,7 +17,7 @@ interface BlocksProps {
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon , className , isMerge }) => {
     return(
         <div className={`${className}`}>
-            <div className="flex w-[90%]   justify-between overflow-hidden relative z-10">
+            <div className="flex w-[90%]   justify-between  relative z-10">
                 <p className="flex  flex-col text-lg font-semibold">
                     <span className="text-sm">
                         {extra}

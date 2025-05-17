@@ -6,6 +6,8 @@ import Select from "../select";
 import { ShowContext } from "../context-provider";
 import {Dispatch , SetStateAction } from 'react';
 import spinner from "../../assets/dualring.svg";
+import { AnimatePresence , motion } from "motion/react";
+
 
 interface InputPorps {
     type?: string;
@@ -18,20 +20,16 @@ interface InputPorps {
     setErrorInfo:Dispatch<SetStateAction<any>>
 }
 
-type ServiceInfo = {
-  application: string;
-  cost: string;
-  application_id:any
-};
 
 
-const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo }) => {
+
+const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
     const [ provider , setProvider ] = useState('Swift');
     const [ countries , setCountries ] = useState<any>({})
-    const [ option , setOption ] = useState<any>(null)
+    const [ option , setOption ] = useState<any>([])
     const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
       provider:provider,
@@ -39,14 +37,16 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
       service:'',
       user_id: userData.userId
     });
-    const [fullList, setFullList] = useState<ServiceInfo[]>([]);
+    //const [fullList, setFullList] = useState<ServiceInfo[]>([]);
     const [page, setPage] = useState(1);
-    const PAGE_SIZE = 100;
+    //const PAGE_SIZE = 100;
     const [ status , setStatus ] = useState<any>({
       stat:'',
       req_id:''
     });
-    
+    const [ cost , setCost ] = useState<number>(0)
+    const  balance = tableValues[0]?.balance;
+    const [ error , setError ] = useState<boolean>(false)
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
@@ -57,31 +57,6 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
            })
            .finally(function () {
          })
-          axios.get('https://textflex-axd2.onrender.com/api/sms/service')
-          .then(function(response) {
-              const serviceArray = response.data.price
-              const parsed = typeof serviceArray === 'string' ? JSON.parse(serviceArray) : serviceArray;
-              const result: ServiceInfo[] = [];
-              Object.values(parsed).forEach((outer: any) => {
-                Object.values(outer).forEach((inner: any) => {
-                  if (inner?.application && inner?.cost) {
-                    result.push({
-                      application: inner.application,
-                      application_id:inner.application_id,
-                      cost: inner.cost
-                    });
-                  }
-                });
-              });
-              setFullList(result);
-              setOption(result.slice(0, page * PAGE_SIZE))
-             })
-          .catch(function (error) {
-            console.log(error)
-           })
-           .finally(function () {
-         })
-
     },[countryOption,page])
 
     useEffect(() => {
@@ -95,13 +70,15 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
       checkStatus()
     },[status]);
 
-
     useEffect(() => {
       const run = async () => {
-      async function postToBackEnd() {
+        async function postToBackEnd() {
         try {
-          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number', target);
-          console.log(response.data)
+          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number',  {
+            ...target,
+            balance: balance,
+            price:cost
+          })
            if (setNumberInfo && response.data.phone.number) {
              setNumberInfo((prev: any) => ({
                ...prev,
@@ -203,8 +180,9 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
         }
        countries()
        
-        if (target.service && target.country) {
+        if (target.service && target.country ) {
            const response = await postToBackEnd();
+           console.log(response)
            setTableValues(response?.phone)
            setTarget((prev:any) => ({
             ...prev,
@@ -216,10 +194,9 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
           }
         } 
       } 
-    run();
+      run();
     },[target]);
-
-    
+ 
     function handleInputChange(e:React.ChangeEvent<HTMLSelectElement>) {
       setProvider(e.target.value)
       setTarget((prev:any) => ({
@@ -258,14 +235,26 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
       }) 
     }
 
+    useEffect(() => {
+      if (error) {
+        setTimeout(() => {
+          setError(false)
+        }, 3000);
+      }
+    },[error])
+
     function extractCode(e:React.ChangeEvent<HTMLSelectElement>) {
       const val = e.target.value;
-      console.log(val)
       if (val === "__load_more__") {
         setPage(prev => prev + 1);
          console.log('hello')
          return;
       }  else {
+       const selectedId = e.target.value
+       const selectedItem = option.find((item: any) => item.application_id == selectedId);
+        if (selectedItem) {
+           setCost(selectedItem.cost)
+          }
         setTarget((prev:any) => {
           return({
             ...prev,
@@ -279,12 +268,11 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
     return(
         <Fieldset
          provider={`${provider} SMS`}
-         className="bg-[#EEF4FD] w-[95%] mx-auto md:w-[32%] h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
+         className="bg-[#EEF4FD] w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]"
          fclass="pl-5 text-sm"
         >
             <Fieldset
              provider="Service Provider"
-             
             >
             <Select
              id="providers"
@@ -317,11 +305,16 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
                 onChange={extractCode} 
                 value={target.service}
                 id="services"
+                isDisabled={error}
                 >
                   {option?.map((item:any) => (
-                      <option key={item.application_id} value={item.application_id}>{`${item.application} - ${item.cost}`}</option>
+                      <option key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * 50).toLocaleString('en-NG', {
+                        style: 'currency',
+                        currency: 'NGN',
+                        minimumFractionDigits: 2
+                      }).replace('NGN', '').trim()}`}</option>
                     ))}
-                  {option?.length < fullList?.length && (
+                  {option && (
                     <option value="__load_more__">⬇ Load more...</option>
                   )}
               </Select> 
@@ -329,7 +322,21 @@ const Input:React.FC<InputPorps> = ({ setTableValues , setNumberInfo, setIsShow 
              </div>
              
             </Fieldset> 
-
+            {
+              error && (
+                 <AnimatePresence>
+                  <motion.div 
+                  initial={{ opacity:0 }}
+                  animate={{ opacity:1 }}
+                  exit={{ opacity: 0}}
+                  className="border border-solid border-red-600 text-sm rounded-sm  h-20 w-[90%] grid place-content-center p-2 mx-auto mb-5">
+                    <p className="text-red-500">insufficient funds, fund your wallet and try again</p>
+                  </motion.div>
+                </AnimatePresence>
+              )
+             
+            }
+             
         </Fieldset>
     )
 }

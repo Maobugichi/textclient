@@ -27,7 +27,7 @@ const ReceiveSms = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
-            //console.log(purchaseArray)
+           
             setTableValues(purchaseArray);
         }
 

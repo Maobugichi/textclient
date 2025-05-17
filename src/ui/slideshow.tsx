@@ -31,11 +31,11 @@ const SlideShow = () => {
         <div
         ref={containerRef}
         style={{ scrollSnapType: "x mandatory" }}
-        className=" w-[85%] transition-all scroll-smooth gap-5 md:w-[84%] overflow-x-scroll h-[80px] hide-scrollbar  flex items-center">
+        className=" w-[85%] transition-all scroll-smooth gap-5 md:w-full  overflow-x-scroll h-[80px] hide-scrollbar  flex items-center">
            {slides.map((item:any) => (
             <motion.div
             style={{ scrollSnapAlign: "start" }}
-            key={item.id} className={`flex-shrink-0 ${item.bg} w-full h-full`}>
+            key={item.id} className={`flex-shrink-0 rounded-lg ${item.bg} w-full h-full`}>
                 {item.content}
             </motion.div>
            ))}

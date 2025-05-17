@@ -4,7 +4,7 @@ import { ShowContext } from "../components/context-provider";
 import axios from "axios";
 import checkAuth from "../components/checkauth";
 const DashBoard = () => {
-    const [ purchasedNumber , setPurchasedNumber ] = useState<any>(0)
+    const [ userDetails , setUserDetails ] = useState<any>(0)
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -35,17 +35,15 @@ const DashBoard = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
-            
-            setPurchasedNumber(purchaseArray.length);
+            setUserDetails(purchaseArray);
         }
-
         if (checkAuth()) {
             getUserData();
         } 
     },[])
     return(
         <DashInfo
-         info={purchasedNumber}
+         info={userDetails}
         />
     )
 }

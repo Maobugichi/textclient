@@ -19,27 +19,12 @@ interface DashProps {
 }
 
 const DashInfo:React.FC<DashProps> = ({info}) => {
-    /*function paystackPop() {
-        axios.post('http://localhost:3001/initialize-transaction', {
-            email: 'customer@email.com',
-            amount: '20000',
-          })
-          .then((response) => {
-            const access_code =response.data.data.access_code;
-            const popup = new PaystackPop()
-            popup.resumeTransaction(access_code)
-        
-        })
-          .catch((error) => console.error(error));
-
-    }*/
-   const [ width , setWidth ] = useState<any>(window.innerWidth)
-  
+      const [ width , setWidth ] = useState<any>(window.innerWidth)
       useEffect(() => {
+        console.log(info)
          const handleWidth = () => {
             setWidth(window.innerWidth);
          }
-   
          window.addEventListener('resize' , handleWidth);
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
@@ -48,15 +33,16 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
     const blockInfo = [
         {
             extra:'Balance',
-            amount:'0.00',
+            amount:info[0]?.balance,
             icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,
-            link:'/payment/1'
+            link:'/payment/1',
+            
         } ,
         {
             extra:'Purchase Number',
-            amount:info,
+            amount:info.length,
             icon:<Users size={17}/>,
             content:'Receive SMS',
             btnIcon:<ArrowUpRight size={17} />,
@@ -71,6 +57,8 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
             link:'/number/1'
         }
     ]
+
+   
     const forwardInfo = [
         {
             text:'Referral Link',
@@ -91,7 +79,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
           amount={info.amount}
           content={info.content}
           btnIcon={info.btnIcon}
-          className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-lg bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"
+          className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-sm bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={false}
         />
         </Link>
@@ -105,7 +93,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
           amount={info.amount}
           content={info.content}
           btnIcon={info.btnIcon}
-          className=" h-fit  md:h-[80px] lg:h-[100px] min-h-[100px] overflow-hidden rounded-lg bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
+          className=" h-fit  md:h-[80px] lg:h-[100px] min-h-[100px] overflow-hidden rounded-sm bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={true}
         />
         </Link>
@@ -119,7 +107,7 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
         />
     ))
     return(
-        <div className="h-fit  w-full flex flex-col gap-12">
+        <div className="h-fit lg:ml-10  w-[85%] flex flex-col  gap-12">
             <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
                  <BlockCont>
@@ -133,8 +121,8 @@ const DashInfo:React.FC<DashProps> = ({info}) => {
                 {width > 600 && <SlideShow/>}
             </div>
            
-            <div className="h-auto flex flex-col gap-4">
-                <div className="flex flex-col md:flex-row  w-full justify-between gap-3 md:gap-0">
+            <div className="h-auto flex flex-col gap-4 w-full">
+                <div className="flex flex-col md:flex-row  justify-between gap-3 md:gap-0">
                     {forward}
                 </div>
 
