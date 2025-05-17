@@ -274,7 +274,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
         <Fieldset
          provider={`${provider} SMS`}
          className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]`}
-         fclass="pl-5 text-sm"
+         fclass="pb-1 text-sm bg-transparent"
         >
             <Fieldset
              provider="Service Provider"

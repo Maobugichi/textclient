@@ -48,7 +48,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                        <X onClick={closeNav} className="md:hidden"/>
                    </div>
                    
-                   <div className=" h-[85%]">
+                   <div className={`h-[85%] ${theme ? 'text-gray-200' : 'text-black'} mt-8`}>
                         <NavItems
                         closeNav={closeNav}
                         />

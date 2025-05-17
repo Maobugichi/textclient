@@ -170,7 +170,7 @@ const RentInput:React.FC<RentProps> = ({ theme }) => {
     }
     return(
         <Form
-         className={`w-[95%] mx-auto md:w-[32%] h-fit min-h-[350px] p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
+         className={`w-[95%] mx-auto md:w-[32%] h-fit  p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
          onSubmit={getNumber}
         >
             <Fieldset
@@ -213,13 +213,13 @@ const RentInput:React.FC<RentProps> = ({ theme }) => {
             <Fieldset
              provider="Stock"
             >
-               <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
+               <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? 0}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-                 <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
+                 <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? 0}/>
             </Fieldset>
             {
                showBtn &&
@@ -246,7 +246,6 @@ const RentInput:React.FC<RentProps> = ({ theme }) => {
                           <p className="w-[90%]">No stock available for the selected duration</p>
                         </div>
                      )
-                
             }
            
         </Form>

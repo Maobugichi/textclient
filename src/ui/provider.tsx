@@ -69,15 +69,15 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme})
                 Dynamic SMS
             </p>
             <div>
-                <ArrowLeft color='#df5c0c' size={15}/>
-                <ArrowRight color='#df5c0c' size={15}/>
+                <ArrowLeft color='#0032a5' size={15}/>
+                <ArrowRight color='#0032a5' size={15}/>
             </div>
             <AnimatePresence>
                 {
                     showProviders && (
                         <motion.div 
                           initial={{height:0}}
-                          animate={{height:130}}
+                          animate={{height:[0 , 50 , 100]}}
                           exit={{height:0 , transition: { delay: .8}}}
                           className='absolute left-[-65px] bg-red-200 top-15 w-[145%] rounded-sm shadow-md  h-32 grid place-items-center '>
                              {provider}
