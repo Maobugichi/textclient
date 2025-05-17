@@ -1,7 +1,7 @@
 import { Sun } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import List from '../components/listItem';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 
 
 
