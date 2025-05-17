@@ -72,6 +72,10 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
 
     useEffect(() => {
       const run = async () => {
+        if (cost > balance) {
+          return
+          setError(true)
+        }
         async function postToBackEnd() {
         try {
           const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number',  {
