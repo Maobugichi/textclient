@@ -213,13 +213,13 @@ const RentInput:React.FC<RentProps> = ({ theme }) => {
             <Fieldset
              provider="Stock"
             >
-               <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? 0}/>
+               <input className={`p-3.5  rounded-sm border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? 0}/>
             </Fieldset>
 
             <Fieldset
              provider="Price"
             >
-                 <input className={`p-3.5  rounded-sm outline-1  ${theme ? 'bg-transparent outline-blue-200' : 'bg-white outline-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? 0}/>
+                 <input className={`p-3.5  rounded-sm border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? 0}/>
             </Fieldset>
             {
                showBtn &&

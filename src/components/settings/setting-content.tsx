@@ -105,9 +105,9 @@ const SettingsContent = () => {
                  className="flex flex-col h-[80%] justify-between"
                  onSubmit={updateDetails}
                 >
-                    <input onChange={changeDetails} type="text" name='username' value={username} className={`outline py-2 rounded-sm ${theme ? 'outline-blue-200' : 'outline-[#5252]'}  pl-4 `}/>
-                    <input onChange={changeDetails} type="text" name='phonenumber' value={userNumber} className={`outline py-2 rounded-sm  pl-4 ${theme ? 'outline-blue-200' : 'outline-[#5252]'}`}/>
-                    <input type="email" name='email' value={userEmail} disabled className={`outline py-2 rounded-sm  pl-4 cursor-not-allowed text-gray-400 ${theme ? 'outline-blue-200' : 'outline-[#5252]'}`}/>
+                    <input onChange={changeDetails} type="text" name='username' value={username} className={`border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none py-2 rounded-sm ${theme ? 'border-blue-200' : 'border-[#5252]'}  pl-4 `}/>
+                    <input onChange={changeDetails} type="text" name='phonenumber' value={userNumber} className={`border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none py-2 rounded-sm  pl-4 ${theme ? 'border-blue-200' : 'border-[#5252]'}`}/>
+                    <input type="email" name='email' value={userEmail} disabled className={`border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none py-2 rounded-sm  pl-4 cursor-not-allowed text-gray-400 ${theme ? 'border-blue-200' : 'border-[#5252]'}`}/>
                     <Button
                      className='w-[30%] md:w-[20%] h-[15%] bg-[#0032a5] md:h-[20%] text-white text-sm  rounded'
                      content='Update Profile'

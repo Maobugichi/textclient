@@ -96,7 +96,7 @@ const Payment = () => {
                   <label htmlFor="amount" className="font-semibold">Enter Amount</label>
                   <span className="text-gray-400">Min is 500</span>
                  </div>
-                <input onChange={handleChange} type="text" placeholder="enter amount" name='amount' value={data.amount} className="outline outline-gray-500 h-10 pl-3 rounded-md"/>
+                <input onChange={handleChange} type="text" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
                 <button className="h-10 bg-[#0032a5] rounded-md grid place-items-center text-white" type="submit">
                   {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'submit' }  
                 </button>
