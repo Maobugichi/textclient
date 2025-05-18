@@ -8,7 +8,7 @@ import { CheckCircle } from 'lucide-react';
 const Payment = () => {
    const myContext = useContext(ShowContext)
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-  const { userData } = myContext;
+  const { userData , theme } = myContext;
   const [data , setData ] = useState<any>({
    email:userData.userEmail,
    amount:'',
@@ -80,7 +80,7 @@ const Payment = () => {
       target.classList.add('border-green-400')
   }
     return(
-      <div className="h-[50vh] md:h-[80vh] md:w-[40%] flex flex-col justify-center gap-4">
+      <div className={`h-[50vh] md:h-[80vh] md:w-[40%] flex flex-col justify-center gap-4 ${theme ? 'text-white' : 'text-black'}`}>
         <div className="w-[90%] mx-auto flex flex-col gap-4">
             <h3 className="font-semibold text-2xl">Fund Wallet</h3>
         <span>Choose a payment method to fund wallet</span>

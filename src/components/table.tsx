@@ -44,6 +44,9 @@ const Table:React.FC<TableProps> = ({tableValue , theme}) => {
       const provider = safeTableValue.map((item:any) => (
         <p className="h-8  w-full p-2 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.provider}</p>
       ))      
+       const amount = safeTableValue.map((item:any) => (
+        <p className="h-8  w-full p-2 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.amount}</p>
+      ))      
       setTableContent({
         ref:myTable,
         number:number,
@@ -51,7 +54,8 @@ const Table:React.FC<TableProps> = ({tableValue , theme}) => {
         country:country,
         service:service,
         provider:provider,
-        status:status
+        status:status,
+        amount:amount
       })
     }
   },[tableValue])
@@ -85,7 +89,7 @@ const Table:React.FC<TableProps> = ({tableValue , theme}) => {
             </div>
             <div className="w-fit min-w-[80px]">
               <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Amount</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}></div>
+              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.amount}</div>
             </div>
             <div className="w-fit min-w-[80px]">
               <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Status</div>
