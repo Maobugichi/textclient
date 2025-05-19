@@ -16,11 +16,12 @@ const Payment = () => {
   });
   const [ showCheck , setShowCheck ] = useState<boolean>(false)
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
+  const [ transactionHistory , setTransactionHistory ] = useState<any>([])
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
      setData((prev:any) => ({
       ...prev ,
-      [name]:name == 'amount' ? parseInt(value)  : value
+      [name]: parseInt(value)
      }))
   }
 
@@ -29,14 +30,15 @@ const Payment = () => {
     const storedRef = localStorage.getItem('transactionRef');
     const mxTrials = 15;
     let countCall = 0;
+    console.log(storedRef)
     if (storedRef) {
      const myInterval = setInterval(async () => {
         const response = await axios.get('https://textflex-axd2.onrender.com/api/squad-callback', {
-           params: { transactionRef:storedRef , userData }
+           params: { transactionRef:storedRef , id:userData.userId }
         })
         console.log(response.data)
        countCall++
-        if (response.data?.status === 'Success') {
+        if (response.data?.message === 'success') {
           clearInterval(myInterval);
           localStorage.removeItem('transactionRef');
         }
@@ -51,7 +53,6 @@ const Payment = () => {
       return () => clearInterval(myInterval);
     }
   },[])
-
   
   async function payment(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,7 +62,7 @@ const Payment = () => {
       const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url
       const ref = response.data.data.data.transaction_ref
-      console.log(response.data)
+    
       if (response.data) {
          setShowLoader(false)
       }
@@ -79,9 +80,22 @@ const Payment = () => {
       target.classList.remove('border-gray-300')
       target.classList.add('border-green-400')
   }
+
+
+  useEffect(() => {
+    async function getTransaction() {
+      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction');
+       console.log(response.data)
+      const newData = response.data.data.filter((item:any) => (
+        item.customer_email == userData.userEmail
+      ))
+      setTransactionHistory(newData)
+    }
+      getTransaction()
+  },[])
     return(
-      <div className={`h-[50vh] md:h-[80vh] md:w-[40%] flex flex-col justify-center gap-4 ${theme ? 'text-white' : 'text-black'}`}>
-        <div className="w-[90%] mx-auto flex flex-col gap-4">
+      <div className={`h-[50vh] md:h-[80vh] w-full flex flex-col  gap-4 ${theme ? 'text-white' : 'text-black'}`}>
+        <div className="md:w-[40%]  flex flex-col gap-4">
             <h3 className="font-semibold text-2xl">Fund Wallet</h3>
         <span>Choose a payment method to fund wallet</span>
         <div>
@@ -104,12 +118,33 @@ const Payment = () => {
           
           
         </Form>
-        <div className="grid h-fit gap-2">
+       
+        </div>
+         <div className="grid h-fit gap-2">
           <h2 className="text-xl">Recent Transactions</h2>
           <p className="text-sm">No transactions available</p>
+          <div className="overflow-x-auto rounded-xl shadow-md">
+          <table className="min-w-full table-auto text-sm text-left text-gray-700">
+            <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+              <tr>
+                <th className="px-6 py-4">Amount</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Reference</th>
+              </tr>
+            </thead>
+          <tbody className="divide-y divide-gray-200">
+            {transactionHistory.map((item: any) => (
+              <tr key={item.id} className="hover:bg-gray-50 transition">
+                <td className="px-6 py-4">{item.transaction_amount}</td>
+                <td className="px-6 py-4">{item.transaction_status}</td>
+                <td className="px-6 py-4">{item.transaction_ref}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
         </div>
-        </div>
-       
       </div>
        
     )
