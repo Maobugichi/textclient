@@ -23,7 +23,7 @@ const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon
                 <span className="text-sm">
                     {extra ? extra : <Skeleton count={1}/>}
                 </span>
-                {extra == 'Balance' ? `₦ ${amount}`: amount }
+                {amount ? amount : <Skeleton count={1}/>}
             </p>
             <span>{icon ? icon : <Skeleton count={1}/>}</span>
         

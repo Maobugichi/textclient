@@ -4,9 +4,11 @@ import Form from "./form"
 import axios from "axios";
 import interwind from "../assets/Interwind.svg"
 import { CheckCircle } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
    const myContext = useContext(ShowContext)
+   const navigate = useNavigate()
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { userData , theme } = myContext;
   const [data , setData ] = useState<any>({
@@ -41,6 +43,7 @@ const Payment = () => {
         if (response.data?.message === 'success') {
           clearInterval(myInterval);
           localStorage.removeItem('transactionRef');
+          navigate('/payment/1')
         }
 
         if (countCall >= mxTrials) {
@@ -58,6 +61,7 @@ const Payment = () => {
     e.preventDefault();
     const { email , amount , currency } = data;
     if (email !== '' && amount !== '' && currency !== '') {
+      
       setShowLoader(true)
       const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url

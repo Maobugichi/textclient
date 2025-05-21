@@ -30,11 +30,12 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
 
+    
       
     const blockInfo = [
         {
             extra:'Balance',
-            amount:info[0]?.balance,
+            amount:info[0]?.balance || 0,
             icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,
@@ -77,7 +78,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
          <Blocks
           extra={info.extra}
           icon={info.icon}
-          amount={info.amount}
+          amount={`₦${info.amount}`}
           content={info.content}
           btnIcon={info.btnIcon}
           className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-sm bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"

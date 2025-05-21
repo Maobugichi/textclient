@@ -35,6 +35,7 @@ const DashBoard = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
+            console.log(response.data)
             setUserDetails(purchaseArray);
         }
         if (checkAuth()) {
