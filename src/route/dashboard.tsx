@@ -6,6 +6,7 @@ import checkAuth from "../components/checkauth";
 const DashBoard = () => {
     const [ userDetails , setUserDetails ] = useState<any>(0)
     const myContext = useContext(ShowContext)
+    const [ redo ,setRedo ] = useState<any>(false)
      const [ref, setRef] = useState<any>(null);
       const count = useRef(0);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
@@ -42,7 +43,7 @@ const DashBoard = () => {
         if (checkAuth()) {
             getUserData();
         } 
-    },[])
+    },[redo])
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -53,20 +54,27 @@ const DashBoard = () => {
     },[])
 
     useEffect(() => {
-        console.log(ref)
         const mxTrials = 15;
-       
         async function callback() {
             try {
                  const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
+                 
+                  if (response.data?.data?.transaction_status === 'success') {
+                    setRedo(true)
+                    const newUrl = window.location.origin + window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, '', newUrl);
+                    clearInterval(myInterval)
+                  }
                  console.log(response.data)
+                 
             } catch(err) {
                  console.error('Callback error:', err);
             }
             count.current++;
         }
+        let myInterval: ReturnType<typeof setInterval>;
         if (ref) {
-          const myInterval =  setInterval(() => {
+          myInterval =  setInterval(() => {
             if (count.current == mxTrials) {
                 clearInterval(myInterval)
             } else {
