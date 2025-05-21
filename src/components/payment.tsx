@@ -4,11 +4,11 @@ import Form from "./form"
 import axios from "axios";
 import interwind from "../assets/Interwind.svg"
 import { CheckCircle } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
+
 
 const Payment = () => {
    const myContext = useContext(ShowContext)
-   const navigate = useNavigate()
+ 
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { userData , theme } = myContext;
   const [data , setData ] = useState<any>({
