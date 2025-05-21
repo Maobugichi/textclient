@@ -6,6 +6,7 @@ import checkAuth from "../components/checkauth";
 const DashBoard = () => {
     const [ userDetails , setUserDetails ] = useState<any>(0)
     const myContext = useContext(ShowContext)
+     const [ref, setRef] = useState<any>(null);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
     useEffect(() => {
@@ -42,6 +43,34 @@ const DashBoard = () => {
             getUserData();
         } 
     },[])
+
+    useEffect(() => {
+        const hash = window.location.hash; 
+        const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+        const params = new URLSearchParams(queryString);
+        setRef(params.get('ref'));
+    },[])
+
+    useEffect(() => {
+        const mxTrials = 15;
+        let count = 0;
+        async function callback() {
+            const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',ref);
+            count++
+            console.log(response.data)
+        }
+        if (ref) {
+          const myInterval =  setInterval(() => {
+            if (count == mxTrials) {
+                clearInterval(myInterval)
+            }
+            callback()
+           }, 10000);
+
+
+           return () => clearInterval(myInterval)
+        }
+    })
     return(
         <DashInfo
          info={userDetails}
