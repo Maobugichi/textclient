@@ -59,7 +59,7 @@ const DashBoard = () => {
             try {
                  const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
                  
-                  if (response.data?.data?.transaction_status === 'success') {
+                  if (response.data?.data === 'success') {
                     setRedo(true)
                     const newUrl = window.location.origin + window.location.pathname + window.location.hash;
                     window.history.replaceState({}, '', newUrl);
