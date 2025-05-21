@@ -110,7 +110,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
         />
     ))
     return(
-        <div className={`h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`h-fit bg-red-300 lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
                  <BlockCont

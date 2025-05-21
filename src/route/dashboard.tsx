@@ -1,5 +1,5 @@
 import DashInfo from "../components/dashboard/dashInfo"
-import { useEffect , useContext, useState } from "react"
+import { useEffect , useContext, useState, useRef } from "react"
 import { ShowContext } from "../components/context-provider";
 import axios from "axios";
 import checkAuth from "../components/checkauth";
@@ -49,28 +49,35 @@ const DashBoard = () => {
         const queryString = hash.includes('?') ? hash.split('?')[1] : '';
         const params = new URLSearchParams(queryString);
         setRef(params.get('ref'));
+        console.log('hello')
+        console.log(params)
     },[])
 
     useEffect(() => {
+        console.log(ref)
         const mxTrials = 15;
-        let count = 0;
+        const count = useRef(0);
         async function callback() {
-            const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',ref);
-            count++
-            console.log(response.data)
+            try {
+                 const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
+                 console.log(response.data)
+            } catch(err) {
+                 console.error('Callback error:', err);
+            }
+            count.current++;
         }
         if (ref) {
           const myInterval =  setInterval(() => {
-            if (count == mxTrials) {
+            if (count.current == mxTrials) {
                 clearInterval(myInterval)
+            } else {
+                 callback()
             }
-            callback()
+           
            }, 10000);
-
-
            return () => clearInterval(myInterval)
         }
-    })
+    },[ref])
     return(
         <DashInfo
          info={userDetails}
