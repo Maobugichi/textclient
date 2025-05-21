@@ -68,7 +68,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
             forward:'Click to copy your referral link'
         }, 
         {
-            text:'Textplug',
+            text:'Textflex',
             forward:'Join our telegram channel for more info and updates'
         }
     ]
