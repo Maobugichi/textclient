@@ -22,7 +22,7 @@ const DashBoard = () => {
             if (token && expiry && Date.now() > parseInt(expiry, 10)) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("token_expiry");
-                // Optionally: redirect to login
+                
             }
         }
        
@@ -58,7 +58,6 @@ const DashBoard = () => {
         async function callback() {
             try {
                  const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
-                 
                   if (response.data?.data === 'success') {
                     setRedo(true)
                     const newUrl = window.location.origin + window.location.pathname + window.location.hash;

@@ -12,6 +12,7 @@ import {
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
 
 
 interface DashProps {
@@ -35,7 +36,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
     const blockInfo = [
         {
             extra:'Balance',
-            amount:info[0]?.balance || 0,
+            amount:info[0]?.balance ,
             icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,

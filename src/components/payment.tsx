@@ -20,11 +20,13 @@ const Payment = () => {
   const [ showCheck , setShowCheck ] = useState<boolean>(false)
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ transactionHistory , setTransactionHistory ] = useState<any>([])
+  const [ err ,setErr] = useState<boolean>(false)
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
+      setErr(false)
      setData((prev:any) => ({
       ...prev ,
-      [name]: parseInt(value)
+      [name]: value == '' ? value : parseInt(value)
      }))
   }
 
@@ -35,6 +37,10 @@ const Payment = () => {
     e.preventDefault();
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
+      if (amount < 1000) {
+        setErr(true)
+        return
+      }
       
       setShowLoader(true)
       const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
@@ -52,7 +58,6 @@ const Payment = () => {
   }
 
   function active(e: React.MouseEvent<HTMLDivElement>) {
-    console.log('hello')
       const target = e.currentTarget as HTMLElement;
       setShowCheck(true)
       target.classList.remove('border-gray-300')
@@ -61,9 +66,19 @@ const Payment = () => {
 
 
   useEffect(() => {
+    if (err) {
+      const myTimeOut = setTimeout(() => {
+          setErr(false)
+      }, 3000);
+      return () => clearTimeout(myTimeOut)
+    }
+  },[err])
+
+
+  useEffect(() => {
     async function getTransaction() {
       const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction');
-       console.log(response.data)
+       
       const newData = response.data.data.filter((item:any) => (
         item.customer_email == userData.userEmail
       ))
@@ -88,15 +103,13 @@ const Payment = () => {
                   <label htmlFor="amount" className="font-semibold">Enter Amount</label>
                   <span className="text-gray-400">Min is 500</span>
                  </div>
+                 <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is 1000</label>
                 <input onChange={handleChange} type="text" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
                 <button className="h-10 bg-[#0032a5] rounded-md grid place-items-center text-white" type="submit">
                   {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'submit' }  
                 </button>
             </div>
-          
-          
         </Form>
-       
         </div>
          <div className="grid h-fit gap-2">
           <h2 className="text-xl">Recent Transactions</h2>
@@ -113,7 +126,7 @@ const Payment = () => {
           <tbody className="divide-y divide-gray-200">
             {transactionHistory.map((item: any) => (
               <tr key={item.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4">{item.transaction_amount}</td>
+                <td className="px-6 py-4">{item.transaction_amount / 100}</td>
                 <td className="px-6 py-4">{item.transaction_status}</td>
                 <td className="px-6 py-4">{item.transaction_ref}</td>
               </tr>

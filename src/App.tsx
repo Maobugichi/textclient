@@ -15,6 +15,7 @@ import Login from "./route/login";
 import LandingPage from "./route/landing-page";
 import Payment from "./components/payment";
 import AdminImg from "./route/adminn/adminImg";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 
 function App() {

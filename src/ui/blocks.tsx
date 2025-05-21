@@ -16,6 +16,7 @@ interface BlocksProps {
 }
 
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon , className , isMerge }) => {
+    console.log( amount == undefined)
     return(
         <div className={`${className}`}>
             <div className="flex w-[90%]   justify-between  relative z-10">
@@ -23,7 +24,16 @@ const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon
                 <span className="text-sm">
                     {extra ? extra : <Skeleton count={1}/>}
                 </span>
-                {amount ? amount : <Skeleton count={1}/>}
+                {
+                    !amount || amount === '₦undefined' || amount === '0' ? (
+                        <Skeleton count={1} baseColor="#e0e0e0" highlightColor="#f5f5f5" />
+                    ) : (
+                       extra == 'Balance' ? `₦${Number(String(amount).replace(/[^0-9.-]+/g, '')).toLocaleString('en-NG', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                        })}` : amount
+                    )
+                }
             </p>
             <span>{icon ? icon : <Skeleton count={1}/>}</span>
         
