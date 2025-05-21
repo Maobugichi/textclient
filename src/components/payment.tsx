@@ -12,6 +12,7 @@ const Payment = () => {
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { userData , theme } = myContext;
   const [data , setData ] = useState<any>({
+    id:userData.userId,
    email:userData.userEmail,
    amount:'',
    currency:'NGN',
@@ -28,37 +29,12 @@ const Payment = () => {
   }
 
 
-  useEffect(() => {
-    const storedRef = localStorage.getItem('transactionRef');
-    const mxTrials = 15;
-    let countCall = 0;
-    console.log(storedRef)
-    if (storedRef) {
-     const myInterval = setInterval(async () => {
-        const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback', { transactionRef:storedRef , id:userData.userId })
-        console.log(response.data)
-       countCall++
-        if (response.data?.message === 'success') {
-          clearInterval(myInterval);
-          localStorage.removeItem('transactionRef');
-          navigate('/dashboard/1')
-        }
-
-        if (countCall >= mxTrials) {
-          console.log('hello')
-          clearInterval(myInterval)
-          localStorage.removeItem('transactionRef');
-        }
-      }, 10000);
-     
-      return () => clearInterval(myInterval);
-    }
-  },[])
+  
   
   async function payment(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const { email , amount , currency } = data;
-    if (email !== '' && amount !== '' && currency !== '') {
+    const { id ,email , amount , currency } = data;
+    if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       
       setShowLoader(true)
       const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
