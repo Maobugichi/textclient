@@ -45,10 +45,10 @@ const DashBoard = () => {
     },[])
 
     useEffect(() => {
-        const hash = window.location.hash; 
-        const queryString = hash.includes('?') ? hash.split('?')[1] : '';
-        const params = new URLSearchParams(queryString);
-        setRef(params.get('ref'));
+       
+        const params = new URLSearchParams(window.location.search);
+        const refParam = params.get('reference');
+        setRef(refParam);
         console.log('hello')
         console.log(params)
     },[])
