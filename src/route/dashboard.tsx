@@ -36,7 +36,6 @@ const DashBoard = () => {
             const purchaseArray = response.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
-            console.log(response.data)
             setUserDetails(purchaseArray);
         }
         if (checkAuth()) {
@@ -45,11 +44,10 @@ const DashBoard = () => {
     },[])
 
     useEffect(() => {
-       
         const params = new URLSearchParams(window.location.search);
         const refParam = params.get('reference');
         setRef(refParam);
-        console.log('hello')
+        console.log('helllllll')
         console.log(params)
     },[])
 
