@@ -43,7 +43,7 @@ const Payment = () => {
         if (response.data?.message === 'success') {
           clearInterval(myInterval);
           localStorage.removeItem('transactionRef');
-          navigate('/payment/1')
+          navigate('/dashboard/1')
         }
 
         if (countCall >= mxTrials) {
