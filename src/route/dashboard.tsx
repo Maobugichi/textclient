@@ -7,6 +7,7 @@ const DashBoard = () => {
     const [ userDetails , setUserDetails ] = useState<any>(0)
     const myContext = useContext(ShowContext)
      const [ref, setRef] = useState<any>(null);
+      const count = useRef(0);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
     useEffect(() => {
@@ -48,13 +49,13 @@ const DashBoard = () => {
         const refParam = params.get('reference');
         setRef(refParam);
         console.log('helllllll')
-        console.log(params)
+        console.log([...params.entries()]);
     },[])
 
     useEffect(() => {
         console.log(ref)
         const mxTrials = 15;
-        const count = useRef(0);
+       
         async function callback() {
             try {
                  const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
