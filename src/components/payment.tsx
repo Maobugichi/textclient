@@ -35,9 +35,7 @@ const Payment = () => {
     console.log(storedRef)
     if (storedRef) {
      const myInterval = setInterval(async () => {
-        const response = await axios.get('https://textflex-axd2.onrender.com/api/squad-callback', {
-           params: { transactionRef:storedRef , id:userData.userId }
-        })
+        const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback', { transactionRef:storedRef , id:userData.userId })
         console.log(response.data)
        countCall++
         if (response.data?.message === 'success') {
