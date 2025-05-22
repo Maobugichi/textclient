@@ -74,15 +74,20 @@ const Payment = () => {
     }
   },[err])
 
-
+console.log(userData)
   useEffect(() => {
     async function getTransaction() {
-      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction');
-       console.log(response.data)
-      const newData = response.data.data.filter((item:any) => (
-        item.customer_email == userData.userEmail
+      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
+        params:{
+          user_id:userData.userId
+        }
+      });
+       //console.log(response.data)
+      const newData = response.data.filter((item:any) => (
+        item.user_id == userData.userId
       ))
       setTransactionHistory(newData)
+      console.log(newData)
     }
       getTransaction()
   },[])
@@ -121,14 +126,18 @@ const Payment = () => {
                 <th className="px-6 py-4">Amount</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4">Reference</th>
+                <th className="px-6 py-4">Type</th>
+                <th className="px-6 py-4">Source</th>
               </tr>
             </thead>
           <tbody className="divide-y divide-gray-200">
             {transactionHistory.map((item: any) => (
               <tr key={item.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4">{item.transaction_amount / 100}</td>
-                <td className="px-6 py-4">{item.transaction_status}</td>
+                <td className="px-6 py-4">{item.amount }</td>
+                <td className="px-6 py-4">{item.status}</td>
                 <td className="px-6 py-4">{item.transaction_ref}</td>
+                <td className="px-6 py-4">{item.type}</td>
+                <td className="px-6 py-4">{item.source}</td>
               </tr>
             ))}
           </tbody>
