@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useState , useEffect , useRef } from "react";
-import axios from "axios";
+
 const slides = [
     { id: 1, content: 'Slide 1', bg: 'bg-red-300' },
     { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
