@@ -8,7 +8,7 @@ const slides = [
   ];
   
 const SlideShow = () => {
-    const [ slide , setSlides ] = useState<any>([])
+    //const [ slide , setSlides ] = useState<any>([])
     const containerRef = useRef<HTMLDivElement>(null);
     const [ index , setIndex ] = useState(0);
    
