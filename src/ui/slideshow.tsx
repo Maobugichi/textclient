@@ -1,14 +1,12 @@
 import { motion } from "motion/react";
 import { useState , useEffect , useRef } from "react";
+import axios from "axios";
 
-const slides = [
-    { id: 1, content: 'Slide 1', bg: 'bg-red-300' },
-    { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
-    { id: 3, content: 'Slide 3', bg: 'bg-blue-300' }
-  ];
   
 const SlideShow = () => {
-    //const [ slide , setSlides ] = useState<any>([])
+    const [ slides , setSlides ] = useState<any>([{ id: 1, content: 'Slide 1', bg: 'bg-red-300' },
+    { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
+    { id: 3, content: 'Slide 3', bg: 'bg-blue-300' }])
     const containerRef = useRef<HTMLDivElement>(null);
     const [ index , setIndex ] = useState(0);
    
@@ -32,8 +30,8 @@ const SlideShow = () => {
     useEffect(() => {
       async function getAdData() {
             try {
-               //const response = await axios.get('https://textflex-axd2.onrender.com/api/ads')
-               //setSlides(response.data.data)
+               const response = await axios.get('https://textflex-axd2.onrender.com/api/ads')
+               setSlides(response.data.data)
             }
             catch(err) {
               console.log(err)
