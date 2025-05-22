@@ -38,8 +38,8 @@ const Payment = () => {
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       if (amount < 1000) {
-        setErr(true)
-        return
+        //setErr(true)
+        //return
       }
       
       setShowLoader(true)
@@ -78,7 +78,7 @@ const Payment = () => {
   useEffect(() => {
     async function getTransaction() {
       const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction');
-       
+       console.log(response.data)
       const newData = response.data.data.filter((item:any) => (
         item.customer_email == userData.userEmail
       ))

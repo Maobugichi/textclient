@@ -35,13 +35,16 @@ const DashBoard = () => {
             const response = await axios.get('https://textflex-axd2.onrender.com/api/orders', { 
                 params: { userId: userData.userId  }
             });
-            const purchaseArray = response.data.filter((item:any) => (
+            console.log(response.data)
+            const purchaseArray = response.data.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
             setUserDetails(purchaseArray);
+           
         }
         if (checkAuth()) {
             getUserData();
+            console.log('hello')
         } 
     },[redo])
 
@@ -49,8 +52,7 @@ const DashBoard = () => {
         const params = new URLSearchParams(window.location.search);
         const refParam = params.get('reference');
         setRef(refParam);
-        console.log('helllllll')
-        console.log([...params.entries()]);
+        //console.log([...params.entries()]);        
     },[])
 
     useEffect(() => {

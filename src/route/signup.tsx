@@ -36,7 +36,7 @@ const Signup = () => {
             navigate('/dashboard/1')
         })
         .catch((err) => {
-            setErrorMessage(err.response.data.message)
+            setErrorMessage(err.response.data.message || err.response.data)
             setShow(true);
             setShowLoader(false);
         });

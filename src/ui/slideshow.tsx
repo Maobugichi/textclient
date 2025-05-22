@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { useState , useEffect , useRef } from "react";
+import axios from "axios";
 const slides = [
     { id: 1, content: 'Slide 1', bg: 'bg-red-300' },
     { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
@@ -7,6 +8,7 @@ const slides = [
   ];
   
 const SlideShow = () => {
+    const [ slide , setSlides ] = useState<any>([])
     const containerRef = useRef<HTMLDivElement>(null);
     const [ index , setIndex ] = useState(0);
    
@@ -26,6 +28,26 @@ const SlideShow = () => {
   
       return () => clearInterval(slideInterval);
     },[index])
+
+    useEffect(() => {
+      async function getAdData() {
+            try {
+               const response = await axios.get('https://textflex-axd2.onrender.com/api/ads')
+               setSlides(response.data.data)
+            }
+            catch(err) {
+              console.log(err)
+            }
+           
+            
+        }
+
+        const myInterval = setInterval(() => {
+          getAdData()
+        }, 10000);
+
+        return () => clearInterval(myInterval)
+    },[])
       
     return(
         <div
