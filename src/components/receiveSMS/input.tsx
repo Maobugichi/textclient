@@ -37,7 +37,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       service:'',
       user_id: userData.userId
     });
-    const [ ref , setRef ] = useState<any>('')
     const [page, setPage] = useState(1);
     const [ status , setStatus ] = useState<any>({
       stat:'',
