@@ -88,7 +88,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
 
           if (response.data.debitRef){
             ref = response.data.debitRef
-             setRef(response.data.debitRef)
+             
           }
           
            if (setNumberInfo && response.data.phone.number) {
