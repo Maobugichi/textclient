@@ -88,7 +88,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
 
           if (response.data.debitRef){
             ref = response.data.debitRef
-             
           }
           
            if (setNumberInfo && response.data.phone.number) {
@@ -121,7 +120,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         const pollSMS = async (request_id: string) => {
           let attempts = 0;
           const maxAttempts = 15;
-         
           const interval = setInterval(async () => {
             attempts++;
             try {
@@ -224,7 +222,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
          const countriesArray = Array.from(Object.values(countries));
          setTarget((prev:any) => ({
           ...prev,
-          country: (countriesArray as { id: string , title: string , code: string}[])[0].id
+          country: (countriesArray as { id: string , title: string , code: string}[])[0]?.id
          }))
          const country = countriesArray.map((item:any) => {
            return(
