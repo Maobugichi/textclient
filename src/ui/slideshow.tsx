@@ -4,9 +4,7 @@ import axios from "axios";
 
   
 const SlideShow = () => {
-    const [ slides , setSlides ] = useState<any>([{ id: 1, content: 'Slide 1', bg: 'bg-red-300' },
-    { id: 2, content: 'Slide 2', bg: 'bg-green-300' },
-    { id: 3, content: 'Slide 3', bg: 'bg-blue-300' }])
+    const [ slides , setSlides ] = useState<any>([])
     const containerRef = useRef<HTMLDivElement>(null);
     const [ index , setIndex ] = useState(0);
    
@@ -31,22 +29,24 @@ const SlideShow = () => {
       async function getAdData() {
             try {
                const response = await axios.get('https://textflex-axd2.onrender.com/api/ads')
+               //console.log(response.data.data)
                setSlides(response.data.data)
             }
             catch(err) {
               console.log(err)
             }
-           
-            
         }
 
         const myInterval = setInterval(() => {
           getAdData()
-        }, 10000);
+        }, 1000);
 
         return () => clearInterval(myInterval)
     },[])
       
+    useEffect(() => {
+      console.log(slides)
+    },[])
     return(
         <div
         ref={containerRef}
@@ -56,6 +56,7 @@ const SlideShow = () => {
             <motion.div
             style={{ scrollSnapAlign: "start" }}
             key={item.id} className={`flex-shrink-0 rounded-lg ${item.bg} w-full h-full`}>
+               <img src={item.url} alt="ad" />
                 {item.content}
             </motion.div>
            ))}

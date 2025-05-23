@@ -13,7 +13,6 @@ interface InputPorps {
     type?: string;
     label?:string;
     tableValues:any;
-    setTableValues:Dispatch<SetStateAction<any>> ;
     setNumberInfo?:Dispatch<SetStateAction<any>> ;
     setIsShow:Dispatch<SetStateAction<boolean>>;
     setIsError:Dispatch<SetStateAction<any>>
@@ -24,7 +23,7 @@ interface InputPorps {
 
 
 
-const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme }) => {
+const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -38,15 +37,15 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
       service:'',
       user_id: userData.userId
     });
-    //const [fullList, setFullList] = useState<ServiceInfo[]>([]);
+    const [ ref , setRef ] = useState<any>('')
     const [page, setPage] = useState(1);
-    //const PAGE_SIZE = 100;
     const [ status , setStatus ] = useState<any>({
       stat:'',
       req_id:''
     });
     const [ cost , setCost ] = useState<number>(0)
     const  balance = tableValues[0]?.balance;
+    
     const [ error , setError ] = useState<boolean>(false)
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -71,8 +70,11 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
       checkStatus()
     },[status]);
 
+
+
     useEffect(() => {
       const run = async () => {
+        let ref : any;
         if (cost > balance) {
            setError(true)
           return
@@ -84,7 +86,14 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
             balance: balance,
             price:cost
           })
+
+          if (response.data.debitRef){
+            ref = response.data.debitRef
+             setRef(response.data.debitRef)
+          }
+          
            if (setNumberInfo && response.data.phone.number) {
+             
              setNumberInfo((prev: any) => ({
                ...prev,
                number: response.data.phone.number,
@@ -113,9 +122,14 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
         const pollSMS = async (request_id: string) => {
           let attempts = 0;
           const maxAttempts = 15;
+         
           const interval = setInterval(async () => {
+            attempts++;
             try {
-              const res = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${request_id}`);
+              const res = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${request_id}`, {
+                params: {cost , user_id:userData.userId , attempts , debitref:ref }
+              });
+               
               console.log(res.data)
               const sms = res.data?.sms_code;
               if (sms || attempts >= maxAttempts) {
@@ -154,6 +168,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
                 }
               }
             } catch (err) {
+              clearInterval(interval);
               if (setNumberInfo) {
                 setNumberInfo((prev:any) => ({
                   ...prev,
@@ -167,13 +182,13 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
                 req_id:request_id
               }))
               console.error("❌ Error polling SMS:", err);
-              clearInterval(interval); // optional: stop polling on error
+              clearInterval(interval); 
             }
         
-            attempts++;
+           
           }, 10000);
         };
-
+      
         const countries = async () => {
           setOption(null)
           const res = await axios.get('https://textflex-axd2.onrender.com/api/sms/price', {
@@ -183,17 +198,15 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
           });
           setOption(Object.values(res.data))
         }
-       countries()
+        countries()
        
         if (target.service && target.country ) {
            const response = await postToBackEnd();
-           console.log(response)
-           setTableValues(response?.phone)
            setTarget((prev:any) => ({
             ...prev,
             service:''
            }))
-           const id = response.phone.request_id
+           const id = response?.phone.request_id
           if (response.phone.request_id) {
             pollSMS(id)
           }
@@ -258,7 +271,7 @@ const Input:React.FC<InputPorps> = ({ tableValues ,setTableValues , setNumberInf
        const selectedId = e.target.value
        const selectedItem = option.find((item: any) => item.application_id == selectedId);
         if (selectedItem) {
-           setCost(selectedItem.cost)
+           setCost(selectedItem.cost * 50)
           }
         setTarget((prev:any) => {
           return({

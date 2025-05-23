@@ -74,7 +74,7 @@ const Payment = () => {
     }
   },[err])
 
-console.log(userData)
+
   useEffect(() => {
     async function getTransaction() {
       const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
@@ -82,12 +82,11 @@ console.log(userData)
           user_id:userData.userId
         }
       });
-       //console.log(response.data)
       const newData = response.data.filter((item:any) => (
         item.user_id == userData.userId
       ))
+      console.log(response.data)
       setTransactionHistory(newData)
-      console.log(newData)
     }
       getTransaction()
   },[])

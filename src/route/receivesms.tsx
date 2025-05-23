@@ -24,7 +24,7 @@ const ReceiveSms = () => {
             const response = await axios.get('https://textflex-axd2.onrender.com/api/orders', { 
                 params: { userId: userData.userId  }
             });
-            const purchaseArray = response.data.filter((item:any) => (
+            const purchaseArray = response.data.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
             setTableValues(purchaseArray);
@@ -51,7 +51,6 @@ const ReceiveSms = () => {
             <div className=" w-full h-fit  min-h-[65vh]  md:min-h-[80vh] flex flex-col md:flex-row gap-4">
                 <Input
                  tableValues={tableValues}
-                 setTableValues={setTableValues}
                  setNumberInfo={setNumberInfo}
                  setIsShow={setIsShow}
                  setErrorInfo={setErrorInfo}
