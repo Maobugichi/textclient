@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import HeroImg from "./hero-img";
 const Hero = () => {
     return(
-        <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit relative z-10 top-24">
-            <div className=" h-fit min-h-[100vh] w-[90%] md:w-full mx-auto flex md:flex-row flex-col items-center">
+        <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit md:min-h-[100vh] min-h-[120vh] grid place-items-center relative z-10 top-24">
+            <div className=" h-fit min-h-[100vh] w-[90%] md:w-full mx-auto flex md:flex-row flex-col items-center md:gap-0 gap-5">
                 <div className=" h-fit min-h-[60vh] relative md:left-20  w-full md:w-[50%]  grid gap-4 place-items-center">
                     <div className="w-[95%] ">
-                        <button className="w-[25%] md:w-[17%] rounded-full h-8 text-sm bg-yellow-50 ">
+                        <button className="border-2 border-[#a3bcd1] border-solid w-[25%] md:w-[17%] rounded-full h-8 text-[12px] md:text-sm bg-gradient-to-r from-[#eef4fd] to-[#dceafb] ">
                             Top notch
                         </button>
                     </div>
