@@ -47,7 +47,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     });
     const [ cost , setCost ] = useState<number>(0)
     const  balance = tableValues[0]?.balance;
-    
     const [ error , setError ] = useState<boolean>(false)
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
@@ -72,8 +71,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       checkStatus()
     },[status]);
 
-
-
     useEffect(() => {
       const run = async () => {
         let ref : any;
@@ -88,13 +85,12 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             balance: balance,
             price:cost
           })
-
+          console.log(response.data)
           if (response.data.debitRef){
             ref = response.data.debitRef
           }
           
            if (setNumberInfo && response.data.phone.number) {
-             
              setNumberInfo((prev: any) => ({
                ...prev,
                number: response.data.phone.number,
@@ -105,6 +101,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                stat:'ready',
                req_id:response.data.phone.request_id
              }))
+             console.log(response.data)
+             console.log('hello')
              setIsShow(true)
              
            }
@@ -201,25 +199,31 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         countries()
         if (target.service && target.country) {
            const response = await postToBackEnd();
-           setTarget((prev:any) => ({
-            ...prev,
-            service:''
-           }))
            const id = response?.phone.request_id
           if (response.phone.request_id && !cancel) {
-             pollSMS(id)
+              pollSMS(id)
+              setTarget((prev:any) => ({
+                ...prev,
+                service:''
+              }))
            }
         } 
       } 
       run();
-    },[target]);
+    },[target,cancel]);
 
     useEffect(() => {
+      console.log(cancel)
       if (cancel && setNumberInfo) {
+        setReqId('')
         setNumberInfo({
            number:'',
            sms:''
         })
+       setTarget((prev:any) => ({
+            ...prev,
+            service:''
+        }))
       }
     }, [cancel])
 

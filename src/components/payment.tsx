@@ -85,7 +85,7 @@ const Payment = () => {
       const newData = response.data.filter((item:any) => (
         item.user_id == userData.userId
       ))
-      console.log(response.data)
+     
       setTransactionHistory(newData)
     }
       getTransaction()

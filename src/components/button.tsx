@@ -20,7 +20,6 @@ const Button:React.FC<ButtonProps> = ({content , width , className , onClick , c
             
             if (message !== '') {
                 setShowLoader(false)
-
             } 
         },[message]);
  

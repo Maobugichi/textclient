@@ -3,7 +3,7 @@ import { Clipboard, ClipboardCheck ,X } from "lucide-react";
 import { useEffect, useState } from "react";
 import {Dispatch , SetStateAction } from 'react';
 import axios from "axios";
-
+import interwind from "../assets/Interwind.svg"
 
 interface PopProps {
     numberInfo:any;
@@ -22,26 +22,25 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
         number:false,
         sms:false
     })
+    const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
+         setShowLoader(true)
           const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
           request_id: req_id,
           user_id: userId
-         });
-         setIsCancel(true)
-         setIsShow(false)
+          });
+          setShowLoader(false)
+          setIsCancel(true)
+          
          alert('sms polling cancelled, your funds would be refunded')
          console.log(res)
         }
 
     useEffect(() => {
-      const myTimeOut = setTimeout(() => {
-            if (cancel) {
-                setIsCancel(false)
-            }
-        }, 1000);
-
-        return () => clearTimeout(myTimeOut)
+        if (cancel) {
+            setIsCancel(false)
+        }
     },[cancel])
     const handleCopyNumber = () => {
         navigator.clipboard.writeText(numberInfo.number).then(() => {
@@ -101,7 +100,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
                         { copied.sms ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
                     
-                        <button className="w-[90%]  h-[40%] bg-[#0032a5] md:h-[60%] text-white text-sm  rounded"  onClick={cancelRequest}>cancel</button>
+                    <button className="w-[90%]  h-[40%] bg-[#0032a5] md:h-[60%] text-white text-sm grid place-items-center  rounded"  onClick={cancelRequest}>{showLoader ? <img className="h-10" src={interwind}/> :'cancel'}</button>
                 </motion.div>
             </motion.div> 
             )
