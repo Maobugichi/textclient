@@ -1,5 +1,5 @@
 import Fieldset from "../fieldset";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import { useEffect , useContext } from "react";
 import Select from "../select";
@@ -39,11 +39,10 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       service:'',
       user_id: userData.userId
     });
+    const shouldPoll = useRef(true);
     const [page, setPage] = useState(1);
-    const [ status , setStatus ] = useState<any>({
-      stat:'',
-      req_id:''
-    });
+    const statusRef = useRef({ stat: "", req_id: "" });
+    const lastDebitRef = useRef("");
     const [ cost , setCost ] = useState<number>(0)
     const  balance = tableValues[0]?.balance;
     const [ error , setError ] = useState<boolean>(false)
@@ -57,160 +56,121 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
            })
            .finally(function () {
          })
-    },[countryOption,page])
+    },[page])
+
 
     useEffect(() => {
-      const checkStatus = async () => {
-        if (status.stat !== '' && status.req_id !== '') {
-            const response = await axios.get(`https://textflex-axd2.onrender.com/api/cancel-sms?request_id=${status.req_id}&status=${status.stat}`);
-            console.log(response.data)
-           return response.data
-        }
+    const getCountries = async () => {
+      try {
+         console.log(target)
+         const { country } = target
+         setOption([])
+          const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/price`,{
+            params:{id: Number(country)}
+          });
+          console.log(country)
+         setOption(Object.values(response.data));
+      } catch (err) {
+        console.error("Error fetching countries");
       }
-      checkStatus()
-    },[status]);
+    };
+    getCountries();
+  }, [target.provider,target.country]);
 
     useEffect(() => {
-      const run = async () => {
-        let ref : any;
-        if (cost > balance) {
-           setError(true)
-          return
-        }
-        async function postToBackEnd() {
-        try {
-          const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number',  {
-            ...target,
-            price:cost
-          })
-          console.log(response.data)
-          if (response.data.debitRef){
-            ref = response.data.debitRef
-          }
-          
-           if (setNumberInfo && response.data.phone.number) {
-             setNumberInfo((prev: any) => ({
-               ...prev,
-               number: response.data.phone.number,
-             }));
-             setReqId(response.data.phone.request_id)
-             setStatus((prev:any) => ({
-               ...prev,
-               stat:'ready',
-               req_id:response.data.phone.request_id
-             }))
-             setIsShow(true)
-           }
-          return response.data
-         } catch(err:any) {
-          if (err.response) {
-            console.error('Status:', err.response.status);
-            console.error('Message:', err.response.data?.error || err.response.data?.message);
-            setErrorInfo( err.response.data?.error || err.response.data?.message);
-            setIsError(true)
-          }
-        
-        }
-       
-        }
-
-        const pollSMS = async (request_id: string) => {
-          let attempts = 0;
-          const maxAttempts = 15;
-          const interval = setInterval(async () => {
+        if (!statusRef.current.req_id || cancel) return;
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            if (cancel || attempts >= 15) {
+                clearInterval(interval);
+                return;
+            }
             attempts++;
             try {
-              const res = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${request_id}`, {
-                params: {cost , user_id:userData.userId , attempts , debitref:ref }
-              });
-               
-              const sms = res.data?.sms_code;
-              if (sms || attempts >= maxAttempts) {
-                clearInterval(interval);
-                if (sms) {
-                  if (setNumberInfo) {
-                    setNumberInfo((prev:any) => ({
-                        ...prev,
-                         sms: res.data.sms_code
-                      }))
-                      setStatus((prev:any) => ({
-                        ...prev,
-                        stat:'used',
-                        req_id:request_id
-                      }))
-                  }
-                 
-                  
-                } else {
-                  if (setNumberInfo) {
-                    setNumberInfo((prev:any) => ({
-                      ...prev,
-                       sms: "⏱️ SMS polling timed out,code not sent."
-                    }))
-                  }
-                  
-                  setTimeout(() => {
-                    setIsShow(false)
+              console.log(attempts)
+                const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${statusRef.current.req_id}`, {
+                    params: {
+                        cost,
+                        user_id: userData.userId,
+                        attempts,
+                        debitref: lastDebitRef.current
+                    }
+                });
+
+                const code = response.data.sms_code;
+                if (code) {
+                    clearInterval(interval);
+                    setNumberInfo((prev: any) => ({ ...prev, sms: code }));
+                    statusRef.current.stat = "used";
+                } else if (attempts >= 15) {
+                    clearInterval(interval);
                     setNumberInfo({
-                      number:'',
-                      sms:''
-                    })
-                    setStatus((prev:any) => ({
-                      ...prev,
-                      stat:'reject',
-                      req_id:request_id
-                    }))
-                  }, 8000);
-                  
+                        number: "",
+                        sms: "⏱️ SMS polling timed out, code not sent."
+                    });
+                    statusRef.current.stat = "reject";
+                    setTimeout(() => setIsShow(false), 8000);
                 }
-              }
             } catch (err) {
-              clearInterval(interval);
-              if (setNumberInfo) {
-                setNumberInfo((prev:any) => ({
-                  ...prev,
-                   sms: "❌ Error polling SMS:"
-                }))
-                
-              }
-              setStatus((prev:any) => ({
-                ...prev,
-                stat:'reject',
-                req_id:request_id
-              }))
-              console.error("❌ Error polling SMS:", err);
-              clearInterval(interval); 
-            }   
-          }, 10000);
-        };
-      
-        const countries = async () => {
-          setOption(null)
-          const res = await axios.get('https://textflex-axd2.onrender.com/api/sms/price', {
-            params: {
-              id:target.country ,
+                clearInterval(interval);
+                console.error("Polling error", err);
+                statusRef.current.stat = "reject";
+                setNumberInfo({
+                    number: "",
+                    sms: "❌ Error polling SMS"
+                });
+                setTimeout(() => setIsShow(false), 8000);
             }
-          });
-          setOption(Object.values(res.data))
-        }
-        countries()
-        if (target.service && target.country) {
-           const response = await postToBackEnd();
-           const id = response?.phone.request_id
-          if (response.phone.request_id && !cancel) {
-              pollSMS(id)
-              setTarget((prev:any) => ({
-                ...prev,
-                service:''
-              }))
-           }
-        } 
-      } 
-      run();
-    },[target,cancel]);
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [statusRef.current.req_id, cancel]);
+  
+ 
+  const fetchSMSNumber = async () => {
+    if (!target.service || !target.country) return;
+    if (cost > balance) {
+      setError(true);
+      return;
+    }
+
+  try {
+    const { data } = await axios.post(`https://textflex-axd2.onrender.com/api/sms/get-number`, {
+      ...target,
+      price: cost,
+    });
+
+    if (cancel) {
+      return
+    }
+
+    const requestId = data.phone.request_id;
+    const smsNumber = data.phone.number;
+    setReqId(requestId);
+    setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
+    setIsShow(true);
+    lastDebitRef.current = data.debitRef;
+    statusRef.current.req_id = requestId;
+    statusRef.current.stat = "ready";
+      setTarget((prev:any) => ({
+          ...prev,
+          service:''
+        }))
+  } catch (err: any) {
+    const msg = err.response?.data?.error || "Error occurred";
+    setErrorInfo(msg);
+    setIsError(true);
+  }
+};
+
+    useEffect(() => {
+      fetchSMSNumber()
+    },[target.service,target.country]);
 
     useEffect(() => {
       if (cancel && setNumberInfo) {
+         statusRef.current.stat = "reject";
+         statusRef.current.req_id = "";
         setReqId('')
         setNumberInfo({
            number:'',
@@ -220,10 +180,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             ...prev,
             service:''
         }))
-        setStatus((prev:any) => ({
-          ...prev,
-          stat:'reject',
-          }))
+       
       }
     }, [cancel])
 
@@ -266,7 +223,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         })
       }) 
     }
-
     useEffect(() => {
       if (error) {
         setTimeout(() => {
@@ -295,6 +251,12 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
          })
       }
     }
+
+    useEffect(() => {
+      return () => {
+        shouldPoll.current = false;
+      };
+    }, []);
 
    
     return(
@@ -349,11 +311,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                         minimumFractionDigits: 2
                       }).replace('NGN', '').trim()}`}</option>
                     ))}
-                  {option && (
-                    <option value="__load_more__">⬇ Load more...</option>
-                  )}
+                 
               </Select> 
-              {!option && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
+              {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
              </div>
              
             </Fieldset> 

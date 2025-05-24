@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {Dispatch , SetStateAction } from 'react';
 import axios from "axios";
 import interwind from "../assets/Interwind.svg"
+import spinner from "../assets/dualring.svg"
 
 interface PopProps {
     numberInfo:any;
@@ -25,21 +26,27 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
+        setIsCancel(true)
          setShowLoader(true)
           const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
           request_id: req_id,
           user_id: userId
           });
           setShowLoader(false)
-          setIsCancel(true)
+          
           setIsShow(false)
          alert('sms polling cancelled, your funds would be refunded')
          console.log(res)
         }
 
     useEffect(() => {
+        let myTimeOut:any
         if (cancel) {
-            setIsCancel(false)
+           myTimeOut = setTimeout(() => {
+                setIsCancel(false)
+            }, 2000);
+            
+            return () => clearTimeout(myTimeOut)
         }
     },[cancel])
     const handleCopyNumber = () => {
@@ -95,8 +102,9 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
                      <p className="font-light">Purchased Number:  <span className="font-semibold">{numberInfo.number}</span></p>
                      { copied.number ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
-                    <div className="flex items-center justify-between w-full h-[40%]" onClick={handleCopySms}>
+                    <div className="flex items-center relative justify-between w-full h-[40%]" onClick={handleCopySms}>
                         <p className="font-light">Verification SMS <span className="font-semibold">{numberInfo.sms}</span></p>
+                         {numberInfo.sms == '' && <img className="w-8 absolute left-[63%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                         { copied.sms ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
                     

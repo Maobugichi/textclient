@@ -48,12 +48,14 @@ const DashBoard = () => {
                 item.purchased_number !== null
             ))
             setUserDetails(purchaseArray);
+             await getUserBalance()  
         }
         if (checkAuth()) {
             getUserData();
         } 
     },[redo])
 
+   
     useEffect(() => {
       const params = new URLSearchParams(window.location.search);
       const refParam = params.get('reference');
