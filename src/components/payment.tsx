@@ -105,7 +105,7 @@ const Payment = () => {
             <div className="w-full flex flex-col gap-3">
                 <div className="text-[12px] flex justify-between w-full ">
                   <label htmlFor="amount" className="font-semibold">Enter Amount</label>
-                  <span className="text-gray-400">Min is 500</span>
+                  <span className="text-gray-400">₦Min is 1000</span>
                  </div>
                  <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is 1000</label>
                 <input onChange={handleChange} type="text" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
