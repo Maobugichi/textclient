@@ -32,7 +32,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
           });
           setShowLoader(false)
           setIsCancel(true)
-          
+          setIsShow(false)
          alert('sms polling cancelled, your funds would be refunded')
          console.log(res)
         }

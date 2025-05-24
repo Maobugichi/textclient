@@ -101,10 +101,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                stat:'ready',
                req_id:response.data.phone.request_id
              }))
-             console.log(response.data)
-             console.log('hello')
              setIsShow(true)
-             
            }
           return response.data
          } catch(err:any) {
@@ -213,7 +210,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     },[target,cancel]);
 
     useEffect(() => {
-      console.log(cancel)
       if (cancel && setNumberInfo) {
         setReqId('')
         setNumberInfo({
