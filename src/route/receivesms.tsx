@@ -60,6 +60,7 @@ const ReceiveSms = () => {
                  setNumberInfo={setNumberInfo}
                  setReqId={setReqId}
                  setIsShow={setIsShow}
+                 req_id={req_id}
                  setErrorInfo={setErrorInfo}
                  setIsError={setIsError}
                  theme={theme}

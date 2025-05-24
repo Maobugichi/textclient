@@ -1,7 +1,6 @@
 import Fieldset from "../fieldset";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState , useCallback ,useEffect , useContext , useMemo } from "react";
 import axios from "axios";
-import { useEffect , useContext } from "react";
 import Select from "../select";
 import { ShowContext } from "../context-provider";
 import {Dispatch , SetStateAction } from 'react';
@@ -19,20 +18,20 @@ interface InputPorps {
     setErrorInfo:Dispatch<SetStateAction<any>>
     setReqId:Dispatch<SetStateAction<any>>
     theme:boolean;
-    cancel:boolean
+    cancel:boolean;
+    req_id:string
 }
 
 
 
 
-const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme , numberInfo , setReqId ,cancel }) => {
+const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme , numberInfo , setReqId , cancel ,req_id }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
     const [ provider , setProvider ] = useState('Swift');
     const [ countries , setCountries ] = useState<any>({})
     const [ option , setOption ] = useState<any>([])
-    const [ countryOption , setCountryOption ] = useState<any>(<option value="5">USA</option>);
     const [ target, setTarget ] = useState<any>({
       provider:provider,
       country:'5',
@@ -40,7 +39,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       user_id: userData.userId
     });
     const shouldPoll = useRef(true);
-    const [page, setPage] = useState(1);
     const statusRef = useRef({ stat: "", req_id: "" });
     const lastDebitRef = useRef("");
     const [ cost , setCost ] = useState<number>(0)
@@ -56,116 +54,135 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
            })
            .finally(function () {
          })
-    },[page])
+    },[provider])
 
+      useEffect(() => {
+         localStorage.removeItem("numberInfo");
+        const savedInfo = localStorage.getItem("numberInfo");
+        if (savedInfo) {
+          setNumberInfo(JSON.parse(savedInfo));
+        }
+      }, []);
+
+     useEffect(() => {
+      if (numberInfo.number || numberInfo.sms) {
+         localStorage.setItem("numberInfo", JSON.stringify(numberInfo));
+      }
+     }, [numberInfo]);
 
     useEffect(() => {
-    const getCountries = async () => {
-      try {
-         console.log(target)
-         const { country } = target
-         setOption([])
-          const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/price`,{
-            params:{id: Number(country)}
-          });
-          console.log(country)
-         setOption(Object.values(response.data));
-      } catch (err) {
-        console.error("Error fetching countries");
-      }
-    };
-    getCountries();
-  }, [target.provider,target.country]);
+      const getCountries = async () => {
+        try {
+          console.log(target)
+          const { country } = target
+          setOption([])
+            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/price`,{
+              params:{id: Number(country)}
+            });
+            console.log(country)
+          setOption(Object.values(response.data));
+        } catch (err) {
+          console.error("Error fetching countries");
+        }
+      };
+     getCountries();
+    }, [target]);
+
 
     useEffect(() => {
         if (!statusRef.current.req_id || cancel) return;
         let attempts = 0;
         const interval = setInterval(async () => {
-            if (cancel || attempts >= 15) {
-                clearInterval(interval);
-                return;
-            }
-            attempts++;
-            try {
-              console.log(attempts)
-                const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${statusRef.current.req_id}`, {
-                    params: {
-                        cost,
-                        user_id: userData.userId,
-                        attempts,
-                        debitref: lastDebitRef.current
-                    }
-                });
-
-                const code = response.data.sms_code;
-                if (code) {
-                    clearInterval(interval);
-                    setNumberInfo((prev: any) => ({ ...prev, sms: code }));
-                    statusRef.current.stat = "used";
-                } else if (attempts >= 15) {
-                    clearInterval(interval);
-                    setNumberInfo({
-                        number: "",
-                        sms: "⏱️ SMS polling timed out, code not sent."
-                    });
-                    statusRef.current.stat = "reject";
-                    setTimeout(() => setIsShow(false), 8000);
+        if (cancel || attempts >= 15) {
+            clearInterval(interval);
+            return;
+        }
+        attempts++;
+        try {
+            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${statusRef.current.req_id}`, {
+                params: {
+                    cost,
+                    user_id: userData.userId,
+                    attempts,
+                    debitref: lastDebitRef.current
                 }
-            } catch (err) {
+            });
+            console.log(response.data)
+            const code = response.data.sms_code;
+            if (code) {
                 clearInterval(interval);
-                console.error("Polling error", err);
-                statusRef.current.stat = "reject";
+                setNumberInfo((prev: any) => ({ ...prev, sms: code }));
+                statusRef.current.stat = "used";
+
+            } else if (attempts >= 15) {
+                clearInterval(interval);
                 setNumberInfo({
                     number: "",
-                    sms: "❌ Error polling SMS"
+                    sms: "⏱️ SMS polling timed out, code not sent."
                 });
+                statusRef.current.stat = "reject";
                 setTimeout(() => setIsShow(false), 8000);
+                localStorage.removeItem("numberInfo");
             }
-        }, 10000);
-
+        } catch (err) {
+            clearInterval(interval);
+            console.error("Polling error", err);
+            statusRef.current.stat = "reject";
+            localStorage.removeItem("numberInfo");
+            setNumberInfo({
+                number: "",
+                sms: "❌ Error polling SMS"
+            });
+            setTimeout(() => {
+              setNumberInfo({
+                 number: "",
+                 sms: ""
+               })
+              setIsShow(false)
+            }, 8000);
+        }
+    }, 10000);
         return () => clearInterval(interval);
-    }, [statusRef.current.req_id, cancel]);
+    }, [req_id, cancel]);
   
  
-  const fetchSMSNumber = async () => {
-    if (!target.service || !target.country) return;
-    if (cost > balance) {
-      setError(true);
-      return;
-    }
+      const fetchSMSNumber = useCallback(async () => {
+        if (!target.service || !target.country) return;
+        if (cost > balance) {
+          setError(true);
+          return;
+        }
 
-  try {
-    const { data } = await axios.post(`https://textflex-axd2.onrender.com/api/sms/get-number`, {
-      ...target,
-      price: cost,
-    });
+      try {
+        const { data } = await axios.post(`https://textflex-axd2.onrender.com/api/sms/get-number`, {
+          ...target,
+          price: cost,
+        });
 
-    if (cancel) {
-      return
-    }
-
-    const requestId = data.phone.request_id;
-    const smsNumber = data.phone.number;
-    setReqId(requestId);
-    setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
-    setIsShow(true);
-    lastDebitRef.current = data.debitRef;
-    statusRef.current.req_id = requestId;
-    statusRef.current.stat = "ready";
-      setTarget((prev:any) => ({
-          ...prev,
-          service:''
-        }))
-  } catch (err: any) {
-    const msg = err.response?.data?.error || "Error occurred";
-    setErrorInfo(msg);
-    setIsError(true);
-  }
-};
+        const requestId = data.phone.request_id;
+        const smsNumber = data.phone.number;
+        
+        setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
+        setIsShow(true);
+        lastDebitRef.current = data.debitRef;
+        statusRef.current.req_id = requestId;
+        statusRef.current.stat = "ready";
+          setTarget((prev:any) => ({
+              ...prev,
+              service:''
+            }))
+      } catch (err: any) {
+        const msg = err.response?.data?.error || "Error occurred";
+        setErrorInfo(msg);
+        setIsError(true);
+      }
+      },[target , cost , balance])
 
     useEffect(() => {
-      fetchSMSNumber()
-    },[target.service,target.country]);
+      if (target.service && target.country && !cancel) {
+        fetchSMSNumber();
+      }
+    },[fetchSMSNumber]);
 
     useEffect(() => {
       if (cancel && setNumberInfo) {
@@ -185,44 +202,36 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     }, [cancel])
 
   
- 
-    function handleInputChange(e:React.ChangeEvent<HTMLSelectElement>) {
-      setProvider(e.target.value)
-      setTarget((prev:any) => ({
-        ...prev,
-        provider:e.target.value
-      }))
+     const handleInputChange = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {
+        setProvider(e.target.value)
+        setTarget((prev:any) => ({
+          ...prev,
+          provider:e.target.value
+        }))
       if (e.target.value == 'Dynamic') {
          const countriesArray = Array.from(Object.values(countries));
          setTarget((prev:any) => ({
           ...prev,
           country: (countriesArray as { id: string , title: string , code: string}[])[0]?.id
          }))
-         const country = countriesArray.map((item:any) => {
-           return(
-            <option value={item.id}>
-              {item.title}
-            </option>
-           )
-         });
-        setCountryOption(country);
       } else {
         setTarget((prev:any) => ({
           ...prev,
           country: '5'
          }))
-        setCountryOption(<option value="5">USA</option>)
+        
       }  
-    }
+      },[countries])
 
-    async function handleCountryChange(e:React.ChangeEvent<HTMLSelectElement>) {
+    const handleCountryChange = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {
       setTarget((prev:any) => {
         return({
           ...prev,
           country: e.target.value
         })
       }) 
-    }
+    },[])
+
     useEffect(() => {
       if (error) {
         setTimeout(() => {
@@ -231,26 +240,22 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       }
     },[error])
 
-    function extractCode(e:React.ChangeEvent<HTMLSelectElement>) {
-      const val = e.target.value;
-      if (val === "__load_more__") {
-        setPage(prev => prev + 1);
-         
-         return;
-      }  else {
+     const extractCode = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {  
        const selectedId = e.target.value
        const selectedItem = option.find((item: any) => item.application_id == selectedId);
         if (selectedItem) {
-           setCost(selectedItem.cost * 50)
-          }
+          setCost(prev => {
+            const newCost = selectedItem.cost * 50;
+            return prev !== newCost ? newCost : prev;
+          })
+        }
         setTarget((prev:any) => {
           return({
             ...prev,
             service:e.target.value
           })
          })
-      }
-    }
+    },[option])
 
     useEffect(() => {
       return () => {
@@ -258,7 +263,15 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       };
     }, []);
 
-   
+    const countryOption = useMemo(() => {
+      if (provider === 'Dynamic') {
+        return Object.values(countries).map((item: any) => (
+          <option key={item.id} value={item.id}>{item.title}</option>
+        ));
+      } else {
+        return <option value="5">USA</option>;
+      }
+    }, [countries, provider]);
     return(
         <Fieldset
          provider={`${provider} SMS`}
@@ -286,7 +299,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                id="country" 
                theme={theme}
               >
-                  { countryOption }
+                  {countryOption}
               </Select> 
              {!countryOption && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
             </div> 
@@ -343,4 +356,4 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     )
 }
 
-export default Input
+export default React.memo(Input);

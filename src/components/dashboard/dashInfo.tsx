@@ -134,7 +134,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                     {forward}
                 </div>
 
-             <div className="overflow-scroll w-full ">
+             <div className="overflow-scroll w-full hide-scrollbar">
                      {transaction?.length > 0 ? (         
                  <table className=" text-sm text-left text-gray-700">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-500">

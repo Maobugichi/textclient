@@ -26,8 +26,9 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
-        setIsCancel(true)
-         setShowLoader(true)
+          setIsCancel(true)
+          setShowLoader(true)
+          localStorage.removeItem("numberInfo");
           const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
           request_id: req_id,
           user_id: userId

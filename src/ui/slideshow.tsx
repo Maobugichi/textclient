@@ -75,7 +75,7 @@ const SlideShow = () => {
           <div className="w-[35%] md:w-[50%]">
              <img src={cleanUrl} className="rounded-l-md object-cover h-full w-full" alt="" />
           </div>
-          <div className=" w-[65%] md:w-[50%] bg-gray-200 border border-solid border-gray-500 rounded-r-md grid h-full ">
+          <div className=" w-[65%] md:w-[50%] bg-blue-200 border border-solid border-gray-500 rounded-r-md grid place-items-center h-full ">
             <div className="flex flex-col items-end justify-center pl-2 h-full pr-2 md:pr-5 gap-2 w-full">
                <p className="w-[90%] text-[12px] md:text-xl"> {item.content}</p>
                <ArrowRight size={20} color="blue"/>
