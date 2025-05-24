@@ -39,7 +39,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       user_id: userData.userId
     });
     const shouldPoll = useRef(true);
-    const statusRef = useRef({ stat: "", req_id: "" });
+    const statusRef = useRef({ stat: "", req_id: ""});
     const lastDebitRef = useRef("");
     const [ cost , setCost ] = useState<number>(0)
     const  balance = tableValues[0]?.balance;
@@ -57,7 +57,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     },[provider])
 
       useEffect(() => {
-         localStorage.removeItem("numberInfo");
         const savedInfo = localStorage.getItem("numberInfo");
         if (savedInfo) {
           setNumberInfo(JSON.parse(savedInfo));
@@ -90,7 +89,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
 
 
     useEffect(() => {
-        if (!statusRef.current.req_id || cancel) return;
+        if (req_id == '' || cancel) return;
         let attempts = 0;
         const interval = setInterval(async () => {
         if (cancel || attempts >= 15) {
@@ -165,7 +164,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
         setIsShow(true);
         lastDebitRef.current = data.debitRef;
-        statusRef.current.req_id = requestId;
+        setReqId(requestId)
+      
         statusRef.current.stat = "ready";
           setTarget((prev:any) => ({
               ...prev,
