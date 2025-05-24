@@ -188,16 +188,15 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       if (cancel && setNumberInfo) {
          statusRef.current.stat = "reject";
          statusRef.current.req_id = "";
-        setReqId('')
-        setNumberInfo({
-           number:'',
-           sms:''
-        })
+         setReqId('')
+          setNumberInfo({
+            number:'',
+            sms:''
+          })
        setTarget((prev:any) => ({
             ...prev,
             service:''
         }))
-       
       }
     }, [cancel])
 
