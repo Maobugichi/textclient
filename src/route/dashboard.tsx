@@ -5,6 +5,7 @@ import axios from "axios";
 import checkAuth from "../components/checkauth";
 const DashBoard = () => {
     const [ userDetails , setUserDetails ] = useState<any>(0)
+     const [ transactionHistory , setTransactionHistory ] = useState<any>([])
     const myContext = useContext(ShowContext)
     const [ redo ,setRedo ] = useState<any>(false)
      const [ref, setRef] = useState<any>(null);
@@ -49,6 +50,22 @@ const DashBoard = () => {
         setRef(refParam);     
     },[])
 
+     useEffect(() => {
+    async function getTransaction() {
+      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
+        params:{
+          user_id:userData.userId
+        }
+      });
+      const newData = response.data.filter((item:any) => (
+        item.user_id == userData.userId
+      ))
+     
+      setTransactionHistory(newData)
+    }
+      getTransaction()
+  },[])
+
     useEffect(() => {
         const mxTrials = 15;
         async function callback() {
@@ -84,6 +101,7 @@ const DashBoard = () => {
         <DashInfo
          info={userDetails}
          theme={theme}
+         transaction={transactionHistory}
         />
     )
 }

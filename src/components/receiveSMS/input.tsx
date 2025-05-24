@@ -8,13 +8,12 @@ import {Dispatch , SetStateAction } from 'react';
 import spinner from "../../assets/dualring.svg";
 import { AnimatePresence , motion } from "motion/react";
 
-
 interface InputPorps {
     type?: string;
     label?:string;
     tableValues:any;
     numberInfo:any
-    setNumberInfo?:Dispatch<SetStateAction<any>> ;
+    setNumberInfo:Dispatch<SetStateAction<any>> ;
     setIsShow:Dispatch<SetStateAction<boolean>>;
     setIsError:Dispatch<SetStateAction<any>>
     setErrorInfo:Dispatch<SetStateAction<any>>
@@ -82,7 +81,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         try {
           const response = await axios.post('https://textflex-axd2.onrender.com/api/sms/get-number',  {
             ...target,
-            balance: balance,
             price:cost
           })
           console.log(response.data)
@@ -142,7 +140,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                       }))
                   }
                  
-                  console.log("✅ SMS received:", res.data.sms_code);
+                  
                 } else {
                   if (setNumberInfo) {
                     setNumberInfo((prev:any) => ({
@@ -153,6 +151,10 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                   
                   setTimeout(() => {
                     setIsShow(false)
+                    setNumberInfo({
+                      number:'',
+                      sms:''
+                    })
                     setStatus((prev:any) => ({
                       ...prev,
                       stat:'reject',
@@ -178,9 +180,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
               }))
               console.error("❌ Error polling SMS:", err);
               clearInterval(interval); 
-            }
-        
-           
+            }   
           }, 10000);
         };
       

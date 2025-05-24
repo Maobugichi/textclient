@@ -18,9 +18,10 @@ import { useState, useEffect } from "react";
 interface DashProps {
     info: any;
     theme:boolean;
+    transaction:any;
 }
 
-const DashInfo:React.FC<DashProps> = ({info , theme}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme , transaction}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       useEffect(() => {
         console.log(info)
@@ -132,13 +133,40 @@ const DashInfo:React.FC<DashProps> = ({info , theme}) => {
                     {forward}
                 </div>
 
+             <div className="overflow-scroll w-[80%] mx-auto">
+                     {transaction?.length > 0 ? (         
+                 <table className=" text-sm text-left text-gray-700">
+                <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+                <tr>
+                    <th className="px-6 py-4">Amount</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">Reference</th>
+                    <th className="px-6 py-4">Type</th>
+                    <th className="px-6 py-4">Source</th>
+                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                    {transaction.map((item: any) => (
+                    <tr key={item.id} className="hover:bg-gray-50 transition">
+                        <td className="px-6 py-4">{item.amount }</td>
+                        <td className="px-6 py-4">{item.status}</td>
+                        <td className="px-6 py-4">{item.transaction_ref}</td>
+                        <td className="px-6 py-4">{item.type}</td>
+                        <td className="px-6 py-4">{item.source}</td>
+                    </tr>
+                    ))}
+                </tbody>
+               </table>) :
+               
                 <div className="h-fit flex flex-col gap-3">
                     <h2 className="text-xl font-semibold">Recent Transactions</h2>
                     <p>No transactions available</p>
-                    <div>
+                    <div>   
 
                     </div>
-                </div>
+                </div> }
+             </div>
+              
             </div>
         </div>
     )

@@ -140,7 +140,7 @@ const Payment = () => {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
       </div>
 
         </div>
