@@ -1,11 +1,12 @@
 import Button from "../components/button"
 import { ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
+import HeroImg from "./hero-img";
 const Hero = () => {
     return(
         <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit relative z-10 top-24">
-            <div className=" h-fit min-h-[100vh] w-[90%] md:w-[80%] mx-auto flex items-center">
-                <div className=" h-fit min-h-[60vh]  w-full md:w-[60%]  grid gap-4 place-items-center">
+            <div className=" h-fit min-h-[100vh] w-[90%] md:w-full mx-auto flex md:flex-row flex-col items-center">
+                <div className=" h-fit min-h-[60vh] relative md:left-20  w-full md:w-[50%]  grid gap-4 place-items-center">
                     <div className="w-[95%] ">
                         <button className="w-[25%] md:w-[17%] rounded-full h-8 text-sm bg-yellow-50 ">
                             Top notch
@@ -29,11 +30,8 @@ const Hero = () => {
                         
                     </div>
                 </div>
-                <div>
-                    <img src="
-                    " alt="" />
-                </div>
-        </div>
+                <HeroImg/>
+            </div>
         </div>
         
     )

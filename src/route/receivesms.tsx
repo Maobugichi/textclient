@@ -12,9 +12,11 @@ const ReceiveSms = () => {
         number:'',
         sms:''
     });
+    const [ req_id , setReqId ] = useState<any>('')
     const [ isShow , setIsShow ] = useState<boolean>(false);
     const [ error , setIsError ] = useState<boolean>(false);
-    const [ errorInfo , setErrorInfo ] = useState<any>('')
+    const [ errorInfo , setErrorInfo ] = useState<any>('');
+    const [ isCancel , setIsCancel ] = useState<boolean>(false)
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
@@ -45,17 +47,23 @@ const ReceiveSms = () => {
              error={error}
              errorInfo={errorInfo}
              setIsError={setIsError}
-            
+             req_id={req_id}
+             userId={userData.userId}
+             setIsCancel={setIsCancel}
+             cancel={isCancel}
             />
              <h2 className="font-semibold text-2xl">Receive SMS</h2>
             <div className=" w-full h-fit  min-h-[65vh]  md:min-h-[80vh] flex flex-col md:flex-row gap-4">
                 <Input
                  tableValues={tableValues}
+                 numberInfo={numberInfo}
                  setNumberInfo={setNumberInfo}
+                 setReqId={setReqId}
                  setIsShow={setIsShow}
                  setErrorInfo={setErrorInfo}
                  setIsError={setIsError}
                  theme={theme}
+                 cancel={isCancel}
                 />
                 <TableCont
                  tableValues={tableValues}

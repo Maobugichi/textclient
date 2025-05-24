@@ -13,17 +13,20 @@ interface InputPorps {
     type?: string;
     label?:string;
     tableValues:any;
+    numberInfo:any
     setNumberInfo?:Dispatch<SetStateAction<any>> ;
     setIsShow:Dispatch<SetStateAction<boolean>>;
     setIsError:Dispatch<SetStateAction<any>>
     setErrorInfo:Dispatch<SetStateAction<any>>
-    theme:boolean
+    setReqId:Dispatch<SetStateAction<any>>
+    theme:boolean;
+    cancel:boolean
 }
 
 
 
 
-const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme }) => {
+const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme , numberInfo , setReqId ,cancel }) => {
   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -96,6 +99,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                ...prev,
                number: response.data.phone.number,
              }));
+             setReqId(response.data.phone.request_id)
              setStatus((prev:any) => ({
                ...prev,
                stat:'ready',
@@ -127,7 +131,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 params: {cost , user_id:userData.userId , attempts , debitref:ref }
               });
                
-              console.log(res.data)
               const sms = res.data?.sms_code;
               if (sms || attempts >= maxAttempts) {
                 clearInterval(interval);
@@ -196,21 +199,31 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
           setOption(Object.values(res.data))
         }
         countries()
-       
-        if (target.service && target.country ) {
+        if (target.service && target.country) {
            const response = await postToBackEnd();
            setTarget((prev:any) => ({
             ...prev,
             service:''
            }))
            const id = response?.phone.request_id
-          if (response.phone.request_id) {
-            pollSMS(id)
-          }
+          if (response.phone.request_id && !cancel) {
+             pollSMS(id)
+           }
         } 
       } 
       run();
     },[target]);
+
+    useEffect(() => {
+      if (cancel && setNumberInfo) {
+        setNumberInfo({
+           number:'',
+           sms:''
+        })
+      }
+    }, [cancel])
+
+  
  
     function handleInputChange(e:React.ChangeEvent<HTMLSelectElement>) {
       setProvider(e.target.value)
@@ -262,7 +275,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       const val = e.target.value;
       if (val === "__load_more__") {
         setPage(prev => prev + 1);
-         console.log('hello')
+         
          return;
       }  else {
        const selectedId = e.target.value
@@ -284,7 +297,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         <Fieldset
          provider={`${provider} SMS`}
          className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]`}
-         fclass="pb-1 text-sm bg-transparent"
+         fclass="pb-3 text-sm bg-transparent"
         >
             <Fieldset
              provider="Service Provider"
@@ -352,10 +365,17 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                   </motion.div>
                 </AnimatePresence>
               )
-             
+            }
+            {
+              numberInfo.number !== '' && (
+              <div className="h-20 mb-2 rounded-md mx-auto border border-solid grid place-items-center border-gray-300 bg-white w-[90%]">
+                <p className="w-[90%] text-sm">number: {numberInfo.number}</p>
+                 <p className="w-[90%] text-sm">code: {numberInfo.sms}</p>
+              </div>)
             }
              
         </Fieldset>
+
     )
 }
 

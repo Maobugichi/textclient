@@ -1,7 +1,9 @@
 import { motion , AnimatePresence } from "motion/react"
 import { Clipboard, ClipboardCheck ,X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {Dispatch , SetStateAction } from 'react';
+import axios from "axios";
+
 
 interface PopProps {
     numberInfo:any;
@@ -10,13 +12,37 @@ interface PopProps {
     setIsShow:Dispatch<SetStateAction<boolean>>;
     error:boolean;
     setIsError:Dispatch<SetStateAction<boolean>>;
+    userId:any;
+    req_id:any;
+    setIsCancel:Dispatch<SetStateAction<boolean>>;
+    cancel:boolean
 }
-const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo}) => {
+const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel}) => {
     const [ copied , setCopied ] = useState<any>({
         number:false,
         sms:false
     })
 
+     async  function cancelRequest() {
+          const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
+          request_id: req_id,
+          user_id: userId
+         });
+         setIsCancel(true)
+         setIsShow(false)
+         alert('sms polling cancelled, your funds would be refunded')
+         console.log(res)
+        }
+
+    useEffect(() => {
+      const myTimeOut = setTimeout(() => {
+            if (cancel) {
+                setIsCancel(false)
+            }
+        }, 1000);
+
+        return () => clearTimeout(myTimeOut)
+    },[cancel])
     const handleCopyNumber = () => {
         navigator.clipboard.writeText(numberInfo.number).then(() => {
             setCopied((prev:any) => ({
@@ -75,6 +101,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
                         { copied.sms ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
                     
+                        <button className="w-[90%]  h-[40%] bg-[#0032a5] md:h-[60%] text-white text-sm  rounded"  onClick={cancelRequest}>cancel</button>
                 </motion.div>
             </motion.div> 
             )

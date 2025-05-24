@@ -1,9 +1,8 @@
-import textPlug from "../../assets/textplug.png";
 import NavItems from "./navItems";
 import { motion , AnimatePresence } from "motion/react";
 import { X } from 'lucide-react';
 import { useEffect, useState } from "react";
-
+import textlogo from "../../assets/textflexLogo.png"
 import SignOut from "./logout";
 import checkAuth from "../checkauth";
 import { Link } from "react-router-dom";
@@ -43,7 +42,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                 className={`fixed z-20 w-[60%] md:w-[20%] md:fixed h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
                    <div className={`h-16 flex items-center justify-around  border-b border-solid border-[#5252] ${theme ? 'border-blue-100': 'border-[#5252]'}`}>
                    <Link to="/homepage/1">
-                          <img className="h-[60%]" src={textPlug} alt="logo" />
+                          <img className="w-[100px]" src={textlogo} alt="logo" />
                         </Link>
                        <X onClick={closeNav} className="md:hidden"/>
                    </div>
@@ -59,8 +58,8 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                 (<nav
                 className={`fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
                     <div className={`h-fit min-h-[64px] flex items-center justify-around  border-b border-solid ${theme ? 'border-blue-100': 'border-[#5252]'}`}>
-                        <Link to="/homepage/1">
-                          <img className="h-[60%]" src={textPlug} alt="logo" />
+                        <Link  to="/homepage/1">
+                          <img className="h-[58px] w-[180px] mx-auto" src={textlogo} alt="logo" />
                         </Link>
                     </div>
                     <div className={`h-[95%] ${theme ? 'text-gray-200' : 'text-black'}`}>

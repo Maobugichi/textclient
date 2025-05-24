@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import Button from "../components/button";
 import checkAuth from "../components/checkauth";
 import { ArrowRight } from 'lucide-react';
+import textlogo from "../assets/textflexLogo.png";
 
 const LandingHeader = () => {
     return(
         <header className="h-24 fixed top-0 w-full  z-20 backdrop-blur-2xl grid place-items-center">
-            <div className="flex w-[90%] h-[50%] mx-auto justify-between">
-                <img className="w-[200px]" src="" alt="" />
+            <div className="flex  w-[90%] h-[50%] mx-auto justify-between">
+                <div>
+                     <img className="h-[58px] w-[100px] md:w-[180px] mx-auto" src={textlogo} alt="logo" />
+                </div>
+                
                 <div className="flex w-1/2 justify-end text-sm tracking-wide">
                  <Link  className="h-14 hidden md:grid  w-[25%] place-content-center" to={checkAuth() ? `/dashboard/:1` : '/login/:1'}>
                     <Button

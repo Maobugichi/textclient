@@ -1,20 +1,26 @@
 import { Link } from "react-router-dom";
 import Button from "../components/button";
 import FeatureBlock from "../ui/feature_block";
+import price from "../assets/feature-price.png"
+import zaza from "../assets/feature-img.png"
+import last from "../assets/edu.png"
 
 const Features = () => {
     const features = [
         {
             text:'On-Demand Secondary Number',
-            content: 'Set up a second number in just a few clicks and receive verification codes instantly across all major platforms.'
+            content: 'Set up a second number in just a few clicks and receive verification codes instantly across all major platforms.',
+            src:price
         },
         {
             text:'Fully Virtual and User-Friendly',
-            content: 'Access a second number from an extensive list of countries—including the USA, UK, Russia, and more—to suit your global verification needs'
+            content: 'Access a second number from an extensive list of countries—including the USA, UK, Russia, and more—to suit your global verification needs',
+            src:zaza
         },
         {
             text:'Secure Account Verification',
-            content: 'Streamline account verification by receiving confirmation codes on leading apps and platforms'
+            content: 'Streamline account verification by receiving confirmation codes on leading apps and platforms',
+            src: last
         },
     ]
 
@@ -22,6 +28,7 @@ const Features = () => {
         <FeatureBlock
          text={feature.text}
          content={feature.content}
+         src={feature.src}
         />
     ))
     return(

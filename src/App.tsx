@@ -16,6 +16,7 @@ import LandingPage from "./route/landing-page";
 import Payment from "./components/payment";
 import AdminImg from "./route/adminn/adminImg";
 import 'react-loading-skeleton/dist/skeleton.css';
+import Esim from "./route/esim";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="dashboard/:id" element={<DashBoard/>}/>
           <Route path="sms/:id" element={<ReceiveSms/>}/>
           <Route path="number/:id" element={<RentNumber/>}/>
+          <Route path="esim/:id" element={<Esim/>}/>
           <Route path="settings/:1" element={<Settings/>}/>
         </Route>
         </Routes>

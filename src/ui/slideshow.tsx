@@ -1,67 +1,91 @@
 import { motion } from "motion/react";
-import { useState , useEffect , useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { ArrowRight } from 'lucide-react';
 
-  
 const SlideShow = () => {
-    const [ slides , setSlides ] = useState<any>([])
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [ index , setIndex ] = useState(0);
+  const [slides, setSlides] = useState<any[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+
+  
+  useEffect(() => {
+    if (slides.length === 0) return;
+
+    const container = containerRef.current;
+    if (!container) return;
    
-    useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
-  
-      const slideInterval = setInterval(() => {
-        const nextIndex = (index + 1) % slides.length;
-        const slideWidth = container.offsetWidth * 0.85; // match w-[85%]
-        container.scrollTo({
-          left: nextIndex * slideWidth,
-          behavior: "smooth"
-        });
-        setIndex(nextIndex);
-      }, 3000);
-  
-      return () => clearInterval(slideInterval);
-    },[index])
+    const slideWidth = container.children[0]?.clientWidth || 0; // safer calculation
 
-    useEffect(() => {
-      async function getAdData() {
-            try {
-               const response = await axios.get('https://textflex-axd2.onrender.com/api/ads')
-               //console.log(response.data.data)
-               setSlides(response.data.data)
-            }
-            catch(err) {
-              console.log(err)
-            }
+    const slideInterval = setInterval(() => {
+      setIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % slides.length;
+        if (container) {
+          container.scrollTo({
+            left: nextIndex * slideWidth,
+            behavior: "smooth",
+          });
         }
+        return nextIndex;
+      });
+    }, 3000);
 
-        const myInterval = setInterval(() => {
-          getAdData()
-        }, 1000);
+    return () => clearInterval(slideInterval);
+  }, [slides]); 
+ 
+  useEffect(() => {
+    async function getAdData() {
+      try {
+        const response = await axios.get('https://textflex-axd2.onrender.com/api/ads');
+        setSlides(response.data.data);
+      } catch (err) {
+        console.log(err);
+        console.log(index)
+      }
+    }
 
-        return () => clearInterval(myInterval)
-    },[])
-      
-    useEffect(() => {
-      console.log(slides)
-    },[])
-    return(
-        <div
-        ref={containerRef}
-        style={{ scrollSnapType: "x mandatory" }}
-        className=" w-[85%] transition-all scroll-smooth gap-5 md:w-full  overflow-x-scroll h-[80px] hide-scrollbar  flex items-center">
-           {slides.map((item:any) => (
-            <motion.div
-            style={{ scrollSnapAlign: "start" }}
-            key={item.id} className={`flex-shrink-0 rounded-lg ${item.bg} w-full h-full`}>
-               <img src={item.url} alt="ad" />
-                {item.content}
-            </motion.div>
-           ))}
-        </div>
-    )
-}
+    getAdData(); 
 
-export default SlideShow
+    const intervalId = setInterval(() => {
+      getAdData();
+    }, 10000); 
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ scrollSnapType: "x mandatory" }}
+      className="w-[95%] transition-all scroll-smooth gap-5 md:w-full overflow-x-scroll aspect-w-16 aspect-h-9 h-[80px] md:h-[120px] hide-scrollbar flex items-center"
+    >
+     {slides.map((item: any) => {
+       const cleanUrl = item.url.replace(/([^:]\/)\/+/g, "$1");
+      return (
+        <motion.div
+          key={item.id}
+          style={{
+            scrollSnapAlign: "start",
+           
+          }}
+          className={`flex-shrink-0 rounded-lg ${item.bg} w-full h-full flex justify-between`}
+        >
+          <div className="w-[35%] md:w-[50%]">
+             <img src={cleanUrl} className="rounded-l-md object-cover h-full w-full" alt="" />
+          </div>
+          <div className=" w-[65%] md:w-[50%] bg-gray-200 border border-solid border-gray-500 rounded-r-md grid h-full ">
+            <div className="flex flex-col items-end justify-center pl-2 h-full pr-2 md:pr-5 gap-2 w-full">
+               <p className="w-[90%] text-[12px] md:text-xl"> {item.content}</p>
+               <ArrowRight size={20} color="blue"/>
+            </div>
+          </div>
+        </motion.div>
+      );
+     })}
+
+
+    </div>
+  );
+};
+
+export default SlideShow;
