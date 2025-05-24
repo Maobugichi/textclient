@@ -220,6 +220,10 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             ...prev,
             service:''
         }))
+        setStatus((prev:any) => ({
+          ...prev,
+          stat:'reject',
+          }))
       }
     }, [cancel])
 
