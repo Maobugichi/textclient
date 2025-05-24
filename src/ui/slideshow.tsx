@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { ArrowRight } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const SlideShow = () => {
   const [slides, setSlides] = useState<any[]>([]);
@@ -62,6 +63,7 @@ const SlideShow = () => {
      {slides.map((item: any) => {
        const cleanUrl = item.url.replace(/([^:]\/)\/+/g, "$1");
       return (
+      <Link className="w-full h-full" to={item.link}>
         <motion.div
           key={item.id}
           style={{
@@ -80,6 +82,7 @@ const SlideShow = () => {
             </div>
           </div>
         </motion.div>
+       </Link> 
       );
      })}
 

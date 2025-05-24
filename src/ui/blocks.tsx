@@ -25,7 +25,7 @@ const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon
                     {extra ? extra : <Skeleton count={1}/>}
                 </span>
                 {
-                    !amount || amount === '₦undefined' || amount === '0' ? (
+                    !amount   ? (
                         <Skeleton count={1} baseColor="#e0e0e0" highlightColor="#f5f5f5" />
                     ) : (
                        extra == 'Balance' ? `₦${Number(String(amount).replace(/[^0-9.-]+/g, '')).toLocaleString('en-NG', {

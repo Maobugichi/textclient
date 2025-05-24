@@ -19,9 +19,10 @@ interface DashProps {
     info: any;
     theme:boolean;
     transaction:any;
+    balance:any
 }
 
-const DashInfo:React.FC<DashProps> = ({info , theme , transaction}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       useEffect(() => {
         console.log(info)
@@ -37,7 +38,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction}) => {
     const blockInfo = [
         {
             extra:'Balance',
-            amount:info[0]?.balance ,
+            amount: balance ,
             icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,
@@ -74,7 +75,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction}) => {
         }
     ]
 
-   
+  
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
         <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks
@@ -133,7 +134,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction}) => {
                     {forward}
                 </div>
 
-             <div className="overflow-scroll w-[80%] mx-auto">
+             <div className="overflow-scroll w-full ">
                      {transaction?.length > 0 ? (         
                  <table className=" text-sm text-left text-gray-700">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-500">

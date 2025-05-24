@@ -12,6 +12,16 @@ const DashBoard = () => {
       const count = useRef(0);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
+    const [balance, setBalance] = useState(0);
+
+    const getUserBalance = async () => {
+        const res = await axios.get('https://textflex-axd2.onrender.com/api/user-balance', {
+            params: { user_id: userData.userId }
+        });
+        setBalance(res.data.balance);
+    };
+
+
     useEffect(() => {
         if (userData.token) {
             const expiry = Date.now() + 60 * 60 * 1000;
@@ -45,26 +55,30 @@ const DashBoard = () => {
     },[redo])
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const refParam = params.get('reference');
-        setRef(refParam);     
+      const params = new URLSearchParams(window.location.search);
+      const refParam = params.get('reference');
+      setRef(refParam);   
+      
     },[])
 
      useEffect(() => {
-    async function getTransaction() {
-      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
-        params:{
-          user_id:userData.userId
+        async function getTransaction() {
+        const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
+            params:{
+            user_id:userData.userId
+            }
+        });
+        const newData = response.data.filter((item:any) => (
+            item.user_id == userData.userId
+        ))
+        
+        setTransactionHistory(newData)
+        await getUserBalance()  
         }
-      });
-      const newData = response.data.filter((item:any) => (
-        item.user_id == userData.userId
-      ))
-     
-      setTransactionHistory(newData)
-    }
-      getTransaction()
-  },[])
+       getTransaction()
+     },[])
+
+   
 
     useEffect(() => {
         const mxTrials = 15;
@@ -72,13 +86,13 @@ const DashBoard = () => {
             try {
                  const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
                   if (response.data?.data === 'success') {
+                    await getUserBalance()
                     setRedo(true)
                     const newUrl = window.location.origin + window.location.pathname + window.location.hash;
                     window.history.replaceState({}, '', newUrl);
                     clearInterval(myInterval)
                   }
                  console.log(response.data)
-                 
             } catch(err) {
                  console.error('Callback error:', err);
             }
@@ -92,16 +106,17 @@ const DashBoard = () => {
             } else {
                  callback()
             }
-           
            }, 10000);
            return () => clearInterval(myInterval)
         }
-    },[ref])
+    },[ref]);
+
     return(
         <DashInfo
          info={userDetails}
          theme={theme}
          transaction={transactionHistory}
+         balance={balance}
         />
     )
 }
