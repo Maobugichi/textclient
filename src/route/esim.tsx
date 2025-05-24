@@ -1,7 +1,7 @@
 const Esim = () => {
     return(
         <div className="h-[90vh] grid place-items-center">
-           <p className="text-xl font-semibold">....Coming soon!</p> 
+           <h2 className="text-xl font-semibold">....Coming soon!</h2> 
         </div>
     )
 }
