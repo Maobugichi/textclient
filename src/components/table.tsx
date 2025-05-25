@@ -2,11 +2,12 @@ import { useEffect, useState } from "react"
 
 interface TableProps {
    tableValue?:any
-   theme:boolean
+   theme:boolean;
+   action?:string
 }
 
 
-const Table:React.FC<TableProps> = ({tableValue , theme}) => {
+const Table:React.FC<TableProps> = ({tableValue , theme, action}) => {
   const [ tableContent , setTableContent ] = useState<any>({
     ref:'',
     number:'',
@@ -23,7 +24,6 @@ const Table:React.FC<TableProps> = ({tableValue , theme}) => {
         <p className="h-8 text-center grid place-content-center overflow-x-auto">
           {item.reference_code}
         </p>
-       
       ))
 
       const number = safeTableValue?.map((item:any) => (
@@ -109,6 +109,7 @@ const Table:React.FC<TableProps> = ({tableValue , theme}) => {
                     <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Provider</th>
                     <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Amount</th>
                     <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Status</th>
+                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>{action}</th>
                   </tr>
               </thead>
               <tbody>

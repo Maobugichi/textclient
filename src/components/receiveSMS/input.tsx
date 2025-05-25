@@ -187,6 +187,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
           ...target,
           price: cost,
         });
+         console.log(data)
         setShowLoader(false)
        
         const requestId = data.phone.request_id;
@@ -301,7 +302,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     return(
         <Fieldset
          provider={`${provider} SMS`}
-         className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-auto min-h-[340px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid pb-5 border-[#5252]`}
+         className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-fit min-h-[340px] md:min-h-[300px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid pb-5 border-[#5252]`}
          fclass="pb-3 text-sm bg-transparent"
         >
             <Fieldset
@@ -363,9 +364,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
           
             {
               numberInfo.number !== '' && (
-              <div className="h-20 mb-2 rounded-md mx-auto border border-solid grid place-items-center border-gray-300 bg-white w-[90%]">
+              <div className=" h-20 mb-2 rounded-md mx-auto border border-solid grid place-items-center border-gray-300 bg-white w-[90%]">
                 <p className="w-[90%] text-sm">number: {numberInfo.number}</p>
-                 <p className="w-[90%] text-sm">code: {numberInfo.sms}</p>
+                 <p className="relative w-[90%] text-sm">code: {numberInfo.sms ? numberInfo.sms : <img className="w-8 absolute left-[33%] top-[-5px] " src={spinner} alt="Loading" />}</p>
               </div>)
             }
              

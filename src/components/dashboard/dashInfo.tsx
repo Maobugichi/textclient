@@ -25,7 +25,6 @@ interface DashProps {
 const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       useEffect(() => {
-        console.log(info)
          const handleWidth = () => {
             setWidth(window.innerWidth);
          }
@@ -141,9 +140,10 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                 <tr>
                     <th className="px-6 py-4">Amount</th>
                     <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4">Reference</th>
+                    <th className="px-6 py-4">Note</th>
                     <th className="px-6 py-4">Type</th>
                     <th className="px-6 py-4">Source</th>
+                    <th className="px-6 py-4">Reference</th>
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -151,9 +151,10 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                     <tr key={item.id} className="hover:bg-gray-50 transition">
                         <td className="px-6 py-4">{item.amount }</td>
                         <td className="px-6 py-4">{item.status}</td>
-                        <td className="px-6 py-4">{item.transaction_ref}</td>
+                        <td className="px-1 py-4">{item.note}</td>
                         <td className="px-6 py-4">{item.type}</td>
                         <td className="px-6 py-4">{item.source}</td>
+                        <td className="px-6 py-4">{item.transaction_ref}</td>
                     </tr>
                     ))}
                 </tbody>

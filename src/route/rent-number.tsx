@@ -14,7 +14,8 @@ const RentNumber = () => {
               theme={theme}
              />
              <TableCont
-             theme={theme}
+              theme={theme}
+              action="Action"
              />
             </div>
         </div>

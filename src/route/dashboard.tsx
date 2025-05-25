@@ -80,8 +80,6 @@ const DashBoard = () => {
        getTransaction()
      },[])
 
-   
-
     useEffect(() => {
         const mxTrials = 15;
         async function callback() {
