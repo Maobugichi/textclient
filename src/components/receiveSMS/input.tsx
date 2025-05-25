@@ -5,7 +5,6 @@ import Select from "../select";
 import { ShowContext } from "../context-provider";
 import {Dispatch , SetStateAction } from 'react';
 import spinner from "../../assets/dualring.svg";
-import { AnimatePresence , motion } from "motion/react";
 import interwind from "../../assets/Interwind.svg"
 
 interface InputPorps {
