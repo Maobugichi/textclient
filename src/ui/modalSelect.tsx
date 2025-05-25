@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 interface ModalSelectProps {
     icon:string;
     text:string;
-    setShow:Dispatch<SetStateAction<boolean>>;
+    setShow:Dispatch<SetStateAction<boolean>>
     theme:boolean
 }
 
