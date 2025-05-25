@@ -28,14 +28,17 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
      async  function cancelRequest() {
           setIsCancel(true)
           setShowLoader(true)
-          localStorage.removeItem("numberInfo");
+         
           const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
           request_id: req_id,
           user_id: userId
           });
-          setShowLoader(false)
-          
-          setIsShow(false)
+           localStorage.removeItem("req_id");
+           localStorage.removeItem("lastDebitRef");
+           localStorage.removeItem("numberInfo");
+           localStorage.removeItem("cost");
+           setShowLoader(false)
+           setIsShow(false)
          alert('sms polling cancelled, your funds would be refunded')
          console.log(res)
         }
@@ -109,7 +112,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
                         { copied.sms ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
                     
-                    <button className="w-[90%]  h-[40%] bg-[#0032a5] md:h-[60%] text-white text-sm grid place-items-center  rounded"  onClick={cancelRequest}>{showLoader ? <img className="h-10" src={interwind}/> :'cancel'}</button>
+                    <button  className="w-[90%]  h-[45%] bg-[#0032a5] md:h-[60%] text-white text-sm grid place-items-center  rounded"  onClick={cancelRequest}>{showLoader ? <img className="h-10" src={interwind}/> :'cancel'}</button>
                 </motion.div>
             </motion.div> 
             )

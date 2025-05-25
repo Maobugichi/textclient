@@ -6,6 +6,7 @@ import { ShowContext } from "../context-provider";
 import {Dispatch , SetStateAction } from 'react';
 import spinner from "../../assets/dualring.svg";
 import { AnimatePresence , motion } from "motion/react";
+import interwind from "../../assets/Interwind.svg"
 
 interface InputPorps {
     type?: string;
@@ -43,7 +44,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     const lastDebitRef = useRef("");
     const [ cost , setCost ] = useState<number>(0)
     const  balance = tableValues[0]?.balance;
-    const [ error , setError ] = useState<boolean>(false)
+    const [ error , setError ] = useState<boolean>(false);
+    const [ showLoader , setShowLoader ] = useState<boolean>(false)
+    const stock = useRef('')
     useEffect(() => {
        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
          .then(function(response) {
@@ -54,13 +57,22 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
            })
            .finally(function () {
          })
-    },[provider])
+    },[provider]);
+
 
       useEffect(() => {
-        const savedInfo = localStorage.getItem("numberInfo");
-        if (savedInfo) {
-          setNumberInfo(JSON.parse(savedInfo));
-        }
+         const savedInfo = localStorage.getItem("numberInfo");
+         const savedReqId = localStorage.getItem("req_id");
+         const savedDebitRef = localStorage.getItem("lastDebitRef");
+         const storedCost = localStorage.getItem("cost");
+
+         console.log(storedCost)
+          if (savedReqId && savedDebitRef && savedInfo && storedCost) {
+                setReqId(savedReqId);
+                lastDebitRef.current = savedDebitRef;
+                setNumberInfo(JSON.parse(savedInfo));
+                setCost(parseFloat(storedCost))
+          }
       }, []);
 
      useEffect(() => {
@@ -72,13 +84,12 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     useEffect(() => {
       const getCountries = async () => {
         try {
-          console.log(target)
           const { country } = target
           setOption([])
             const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/price`,{
               params:{id: Number(country)}
             });
-            console.log(country)
+            //console.log(response.data)
           setOption(Object.values(response.data));
         } catch (err) {
           console.error("Error fetching countries");
@@ -87,6 +98,12 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
      getCountries();
     }, [target]);
 
+    async function refund(user_id:any , cost:any , debitRef:string , request_id:string) {
+       const res = await axios.post('https://textflex-axd2.onrender.com/api/refund-user', {
+        user_id , cost , debitRef , request_id
+       })
+       console.log(res.data)
+    }
 
     useEffect(() => {
         if (req_id == '' || cancel) return;
@@ -98,7 +115,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         }
         attempts++;
         try {
-            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${statusRef.current.req_id}`, {
+            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${req_id}`, {
                 params: {
                     cost,
                     user_id: userData.userId,
@@ -107,12 +124,17 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 }
             });
             console.log(response.data)
+           
             const code = response.data.sms_code;
             if (code) {
                 clearInterval(interval);
                 setNumberInfo((prev: any) => ({ ...prev, sms: code }));
                 statusRef.current.stat = "used";
+                localStorage.removeItem("req_id");
+                localStorage.removeItem("lastDebitRef");
+                localStorage.removeItem("cost");
 
+                localStorage.removeItem("numberInfo");
             } else if (attempts >= 15) {
                 clearInterval(interval);
                 setNumberInfo({
@@ -120,18 +142,27 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                     sms: "⏱️ SMS polling timed out, code not sent."
                 });
                 statusRef.current.stat = "reject";
-                setTimeout(() => setIsShow(false), 8000);
+                localStorage.removeItem("req_id");
+                localStorage.removeItem("lastDebitRef");
+                localStorage.removeItem("cost");
                 localStorage.removeItem("numberInfo");
+                setTimeout(() => setIsShow(false), 8000);
+               
             }
         } catch (err) {
             clearInterval(interval);
+            await refund(userData.userId, cost ,lastDebitRef.current ,req_id )
             console.error("Polling error", err);
             statusRef.current.stat = "reject";
+            localStorage.removeItem("req_id");
+            localStorage.removeItem("lastDebitRef");
+            localStorage.removeItem("cost");
             localStorage.removeItem("numberInfo");
             setNumberInfo({
                 number: "",
                 sms: "❌ Error polling SMS"
             });
+
             setTimeout(() => {
               setNumberInfo({
                  number: "",
@@ -145,27 +176,29 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     }, [req_id, cancel]);
   
  
-      const fetchSMSNumber = useCallback(async () => {
-        if (!target.service || !target.country) return;
-        if (cost > balance) {
-          setError(true);
-          return;
-        }
-
+    const fetchSMSNumber = useCallback(async () => {
+      if (!target.service || !target.country) return;
+      if (cost > balance) {
+        setError(true);
+        return;
+      }
+      setShowLoader(true)
       try {
         const { data } = await axios.post(`https://textflex-axd2.onrender.com/api/sms/get-number`, {
           ...target,
           price: cost,
         });
-
+        setShowLoader(false)
+       
         const requestId = data.phone.request_id;
         const smsNumber = data.phone.number;
-        
         setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
         setIsShow(true);
         lastDebitRef.current = data.debitRef;
         setReqId(requestId)
-      
+        localStorage.setItem("req_id", requestId);
+        localStorage.setItem("lastDebitRef", data.debitRef);
+        localStorage.setItem("cost", cost.toString());
         statusRef.current.stat = "ready";
           setTarget((prev:any) => ({
               ...prev,
@@ -176,13 +209,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         setErrorInfo(msg);
         setIsError(true);
       }
-      },[target , cost , balance])
+    },[target , cost , balance])
 
-    useEffect(() => {
-      if (target.service && target.country && !cancel) {
-        fetchSMSNumber();
-      }
-    },[fetchSMSNumber]);
+   
 
     useEffect(() => {
       if (cancel && setNumberInfo) {
@@ -220,7 +249,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
          }))
         
       }  
-      },[countries])
+     },[countries])
 
     const handleCountryChange = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {
       setTarget((prev:any) => {
@@ -229,15 +258,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
           country: e.target.value
         })
       }) 
+      
     },[])
 
-    useEffect(() => {
-      if (error) {
-        setTimeout(() => {
-          setError(false)
-        }, 3000);
-      }
-    },[error])
 
      const extractCode = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {  
        const selectedId = e.target.value
@@ -271,10 +294,15 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         return <option value="5">USA</option>;
       }
     }, [countries, provider]);
+
+    useEffect(() => {
+      const newArray = option.filter((item:any) =>  item.country_id == target.country && item.application_id == target.service)
+      stock.current = newArray[0]?.count
+    },[target,option])
     return(
         <Fieldset
          provider={`${provider} SMS`}
-         className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-fit min-h-[330px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid border-[#5252]`}
+         className={`${theme ? 'bg-transparent border border-solid border-blue-200 text-white' :'bg-[#EEF4FD]'} w-[95%] mx-auto md:w-[32%] h-auto min-h-[340px] rounded-lg flex flex-col  gap-4 justify-center  border border-solid pb-5 border-[#5252]`}
          fclass="pb-3 text-sm bg-transparent"
         >
             <Fieldset
@@ -327,21 +355,12 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
               </Select> 
               {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
              </div>
-             
             </Fieldset> 
-            {
-              error && (
-                 <AnimatePresence>
-                  <motion.div 
-                  initial={{ opacity:0 }}
-                  animate={{ opacity:1 }}
-                  exit={{ opacity: 0}}
-                  className="border border-solid border-red-600 text-sm rounded-sm  h-20 w-[90%] grid place-content-center p-2 mx-auto mb-5">
-                    <p className="text-red-500">insufficient funds, fund your wallet and try again</p>
-                  </motion.div>
-                </AnimatePresence>
-              )
-            }
+            { target.country !== '' && target.service !== '' &&  <Fieldset provider="Stock">
+                <input className="bg-white text-gray-400 border-blue-200 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-solid cursor-not-allowed" value={stock.current ?? ''} disabled /> 
+              </Fieldset> }
+             { target.country !== '' && target.service !== '' && <button onClick={fetchSMSNumber} className={`w-[90%]  h-[40px]  md:h-10 mx-auto text-white text-sm grid place-items-center  rounded ${cost > balance ? 'bg-[#0032a5]/20' : 'bg-[#0032a5]'}`}>{ showLoader ?  <img className="h-10" src={interwind}/> :'Get Number'}</button> }
+          
             {
               numberInfo.number !== '' && (
               <div className="h-20 mb-2 rounded-md mx-auto border border-solid grid place-items-center border-gray-300 bg-white w-[90%]">
