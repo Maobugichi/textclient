@@ -70,13 +70,12 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
 
     useEffect(() => {
        if ( info.countryId !== '' && info.duration !== '' && info.period !== '') {
-           setShowBtn(true)
              setTimeout(async () => {
                 await axios.post('https://textflex-axd2.onrender.com/api/rent/countries', info)
                 .then(function(res) {
                     const { data } = res.data;
                     const { limits } = data;
-                    console.log(limits)
+                   
                     if (limits.length >= 1) {
                     const { country_id , count , cost } = limits[0];
                     setShowBtn(true)    
@@ -86,8 +85,27 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                         count:count,
                         cost:cost
                     }))
-                   
-                    setShowErr(false)
+                    
+                    } else {
+                        setLimits({
+                         countryId:"",
+                         count:0,
+                         cost:0
+                      })
+                     setShowErr(true)
+                      setInfo({
+                            countryId:'',
+                            duration:'',
+                            period:''
+                      })
+                     setTimeout(() => {
+                        setLimits({
+                          countryId:"",
+                          count:'',
+                          cost:''
+                      })
+                      
+                     }, 3000);
                     }
                 })
             }, 1000);
@@ -140,7 +158,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     async function getNumber(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const { countryId , duration, period , price } = info;
-        if (countryId !== '' && duration !== '' && period !== '' && price !== '') {
+        if (countryId !== '' && duration !== '' && period !== '' && price !== '' || price !== 0) {
             setShowLoader(true)
             const response = await axios.post(`https://textflex-axd2.onrender.com/api/rent-number`, info);
             console.log(response.data)
@@ -171,6 +189,16 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         }
        
     }
+
+    useEffect(() => {
+        let myTimeout:any
+        if (showErr) {
+            myTimeout = setTimeout(() => {
+                setShowErr(false)
+            }, 2000);
+        }
+        return () => clearTimeout(myTimeout)
+    }, [limits])
     return(
         <Form
          className={`w-[95%] mx-auto md:w-[32%] h-fit  p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
@@ -220,7 +248,6 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                    <input className={`p-3.5  rounded-sm border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
                    {limits.count == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
-              
             </Fieldset>
 
             <Fieldset
