@@ -17,8 +17,8 @@ const ModalSelect:React.FC<ModalSelectProps> = ({ icon , text , setShow , theme}
     }
     return(
         <div onClick={handleShow} className={`${theme ? 'bg-[#27272a]' : 'bg-zinc-100'} h-5 cursor-pointer w-20 rounded-full flex  items-center justify-center gap-2`}>
-           <span>{icon}</span>
-           <p className='text-xs'>{text}</p>
+           <span className='text-[11px] md:text-sm'>{icon}</span>
+           <p className='text-[10px] md:text-xs'>{text}</p>
         </div>
     )
 }

@@ -79,7 +79,7 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme})
                           initial={{height:0}}
                           animate={{height:[0 , 50 , 100]}}
                           exit={{height:0 , transition: { delay: .8}}}
-                          className='absolute left-[-65px] shadow-sm bg-white top-15 w-[145%] rounded-sm shadow-md  h-fit min-h-40 grid place-items-center '>
+                          className='absolute left-[-65px]  bg-white top-15 w-[145%] rounded-sm shadow-md  h-fit min-h-40 grid place-items-center '>
                              {provider}
                        </motion.div>
                     )

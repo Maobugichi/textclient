@@ -26,7 +26,7 @@ interface InputPorps {
 
 
 const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme , numberInfo , setReqId , cancel ,req_id }) => {
-  const myContext = useContext(ShowContext);
+   const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
     const [ provider , setProvider ] = useState('Swift');
@@ -356,8 +356,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
              </div>
             </Fieldset> 
             { target.country !== '' && target.service !== '' &&  <Fieldset provider="Stock">
-                <input className={`${theme ? 'bg-transparent' : "bg-white"} text-gray-500 border-blue-200 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-solid cursor-not-allowed`} value={stock.current ?? ''} disabled /> 
-                 {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
+                <input className={`${theme ?  'bg-transparent' : "bg-white"} relative text-gray-500 border-blue-200 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-solid cursor-not-allowed`} value={stock.current ?? ''} disabled /> 
+                 {stock.current == '' && <img className="w-8 absolute left-[43%] top-[47%] md:top-[77%] md:left-32" src={spinner} alt="Loading" width="20" />}
               </Fieldset> }
              { target.country !== '' && target.service !== '' && <button onClick={fetchSMSNumber} className={`w-[90%]  h-[40px]  md:h-10 mx-auto text-white text-sm grid place-items-center  rounded ${cost > balance ? 'bg-[#0032a5]/20' : 'bg-[#0032a5]'}`}>{ showLoader ?  <img className="h-10" src={interwind}/> :'Get Number'}</button> }
           
