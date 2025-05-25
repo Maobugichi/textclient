@@ -61,7 +61,7 @@ const Service = () => {
       
       return(
         <div className="w-full  relative top-50 h-fit min-h-[120vh] grid place-items-center bg-[#eef4fd] pb-10">
-            <div className="w-full  flex flex-col gap-5 h-fit min-h-[100vh] items-center">
+            <div className="w-full   flex flex-col gap-5 h-fit min-h-[100vh] items-center">
                 <div className="w-full text-center h-fit min-h-[50vh] flex flex-col justify-center gap-5 items-center">
                   <h2 className="text-2xl md:text-4xl font-semibold">Supported Services and Countries</h2>
                 <p className="w-[80%] md:w-[45%] text-lg text-gray-400 mx-auto text-center">Easily access temporary, disposable numbers for secure SMS verification, account sign-ups, and service-specific registrations across multiple countries</p>
@@ -81,7 +81,7 @@ const Service = () => {
                             initial={{ opacity : 0}}
                             animate={{ opacity: 1}}
                             exit={{ opacity: 0}}
-                            className="w-[80%] rounded-xs bg-white h-fit min-h-[75vh] mx-auto  flex flex-wrap justify-center bg-green">
+                            className="w-[80%] rounded-xs bg-white h-fit min-h-[75vh]   flex flex-wrap justify-center bg-green">
                             {
                                 brand?.map((brand:any, index:any) => (
                                     <ServiceBlock
@@ -117,7 +117,7 @@ const Service = () => {
                         }
                 </AnimatePresence>    
                 <Button
-                 content="See all services "
+                  content="See all services "
                   className="bg-[#0032a5] rounded-sm h-10 text-white w-[40%] md:w-[15%]"
                 /> 
             </div>

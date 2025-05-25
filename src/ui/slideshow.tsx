@@ -59,7 +59,7 @@ const SlideShow = () => {
     <>
     { 
      slides.length == 0 ? 
-     <Skeleton className="w-[80%] h-20 bg-red-300 md:h-32 rounded-md" baseColor="#e0e0e0" highlightColor="#f5f5f5" /> 
+      <Skeleton className="w-[80%] h-20  md:h-32 rounded-md" baseColor="#333333" highlightColor="#f5f5f5" /> 
     :
       <div
         ref={containerRef}

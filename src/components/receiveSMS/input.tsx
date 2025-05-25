@@ -22,11 +22,8 @@ interface InputPorps {
     req_id:string
 }
 
-
-
-
 const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , setIsError , setErrorInfo , theme , numberInfo , setReqId , cancel ,req_id }) => {
-   const myContext = useContext(ShowContext);
+    const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
     const [ provider , setProvider ] = useState('Swift');
@@ -64,8 +61,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
          const savedReqId = localStorage.getItem("req_id");
          const savedDebitRef = localStorage.getItem("lastDebitRef");
          const storedCost = localStorage.getItem("cost");
-
-         console.log(storedCost)
           if (savedReqId && savedDebitRef && savedInfo && storedCost) {
                 setReqId(savedReqId);
                 lastDebitRef.current = savedDebitRef;

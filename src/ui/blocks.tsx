@@ -16,8 +16,6 @@ interface BlocksProps {
 }
 
 const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon , className , isMerge }) => {
-    console.log(amount)
-
     return(
         <div className={`${className}`}>
             <div className="flex w-[90%]   justify-between  relative z-10">

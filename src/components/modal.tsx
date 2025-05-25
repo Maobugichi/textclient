@@ -31,7 +31,7 @@ const Modal:React.FC<ModalProps> = ({children , isShow , setShow }) => {
                     animate={{ scale:isShow ? 1 : 0  , opacity:isShow ? 1 : 0  }}
                     exit={{scale: 0 , transition: { delay:.3 }}}
                     transition={{ type:"spring" , delay:.5 , duration:.3}}
-                    className=" w-[90%] md:w-[35%] p-5 rounded-lg bg-white h-[95%] mx-auto grid gap-3">
+                    className=" w-[90%] md:w-[35%] p-5 rounded-lg bg-white h-[95%] md:mt-0 mt-5 md:h-full mx-auto grid gap-3">
                        <div className="flex h-12 items-center justify-between">
                            <p className="flex flex-col">
                                Discount Tiers

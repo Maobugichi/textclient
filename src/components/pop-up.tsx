@@ -7,16 +7,16 @@ import interwind from "../assets/Interwind.svg"
 import spinner from "../assets/dualring.svg"
 
 interface PopProps {
-    numberInfo:any;
-    errorInfo:any;
-    show:boolean;
+    numberInfo?:any;
+    errorInfo?:any;
+    show?:boolean;
     setIsShow:Dispatch<SetStateAction<boolean>>;
-    error:boolean;
-    setIsError:Dispatch<SetStateAction<boolean>>;
-    userId:any;
-    req_id:any;
-    setIsCancel:Dispatch<SetStateAction<boolean>>;
-    cancel:boolean
+    error?:boolean;
+    setIsError?:Dispatch<SetStateAction<boolean>>;
+    userId?:any;
+    req_id?:any;
+    setIsCancel?:Dispatch<SetStateAction<boolean>>;
+    cancel?:boolean
 }
 const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel}) => {
     const [ copied , setCopied ] = useState<any>({
@@ -26,9 +26,10 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
-          setIsCancel(true)
+          if (setIsCancel) {
+              setIsCancel(true)
+          }
           setShowLoader(true)
-         
           const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
           request_id: req_id,
           user_id: userId
@@ -47,7 +48,9 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
         let myTimeOut:any
         if (cancel) {
            myTimeOut = setTimeout(() => {
-                setIsCancel(false)
+                if (setIsCancel) {
+                    setIsCancel(true)
+                }
             }, 2000);
             
             return () => clearTimeout(myTimeOut)
@@ -87,7 +90,9 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
 
     const hidePopUp = () => {
         setIsShow(false)
-        setIsError(false)
+        if (setIsError) {
+            setIsError(false)
+        }
     }
 
 
