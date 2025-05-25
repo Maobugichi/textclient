@@ -287,10 +287,10 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     const countryOption = useMemo(() => {
       if (provider === 'Dynamic') {
         return Object.values(countries).map((item: any) => (
-          <option key={item.id} value={item.id}>{item.title}</option>
+          <option className={`${theme ? "bg-black" : "bg-white"}`} key={item.id} value={item.id}>{item.title}</option>
         ));
       } else {
-        return <option value="5">USA</option>;
+        return <option className={`${theme ? "bg-black" : "bg-white"}`} value="5">USA</option>;
       }
     }, [countries, provider]);
 
@@ -312,8 +312,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
              onChange={handleInputChange}
              theme={theme}
              >
-              <option value="Swift">Swift SMS</option>
-              <option value="Dynamic">Dynamic SMS</option>
+              <option className={`${theme ? "bg-black" : "bg-white"}`} value="Swift">Swift SMS</option>
+              <option className={`${theme ? "bg-black" : "bg-white"}`} value="Dynamic">Dynamic SMS</option>
              </Select> 
             </Fieldset> 
             <Fieldset
@@ -344,7 +344,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 theme={theme}
                 >
                   {option?.map((item:any) => (
-                      <option key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * 50).toLocaleString('en-NG', {
+                      <option className={`${theme ? "bg-black" : "bg-white"}`} key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * 50).toLocaleString('en-NG', {
                         style: 'currency',
                         currency: 'NGN',
                         minimumFractionDigits: 2
@@ -356,7 +356,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
              </div>
             </Fieldset> 
             { target.country !== '' && target.service !== '' &&  <Fieldset provider="Stock">
-                <input className="bg-white text-gray-400 border-blue-200 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-solid cursor-not-allowed" value={stock.current ?? ''} disabled /> 
+                <input className={`${theme ? 'bg-transparent' : "bg-white"} text-gray-500 border-blue-200 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-solid cursor-not-allowed`} value={stock.current ?? ''} disabled /> 
+                 {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
               </Fieldset> }
              { target.country !== '' && target.service !== '' && <button onClick={fetchSMSNumber} className={`w-[90%]  h-[40px]  md:h-10 mx-auto text-white text-sm grid place-items-center  rounded ${cost > balance ? 'bg-[#0032a5]/20' : 'bg-[#0032a5]'}`}>{ showLoader ?  <img className="h-10" src={interwind}/> :'Get Number'}</button> }
           

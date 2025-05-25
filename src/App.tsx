@@ -17,6 +17,7 @@ import Payment from "./components/payment";
 import AdminImg from "./route/adminn/adminImg";
 import 'react-loading-skeleton/dist/skeleton.css';
 import Esim from "./route/esim";
+import ScrollToTop from "./components/scrollToTheTop";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   return (
     <HashRouter>
       <ContextProvider>
+        <ScrollToTop />
         <Routes>
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
