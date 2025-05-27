@@ -82,7 +82,7 @@ const DashBoard = () => {
         const mxTrials = 15;
         async function callback() {
             try {
-                 const response = await axios.post('https://api.textflex.net/squad-callback',{transaction_ref: ref});
+                 const response = await axios.post('https://api.textflex.net/api/squad-callback',{transaction_ref: ref});
                   if (response.data?.data === 'success') {
                     await getUserBalance()
                     setRedo(true)
@@ -104,7 +104,7 @@ const DashBoard = () => {
             } else {
                  callback()
             }
-           }, 10000);
+           }, 3000);
            return () => clearInterval(myInterval)
         }
     },[ref]);
