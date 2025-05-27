@@ -150,10 +150,10 @@ const Payment = () => {
                   default:
                       colorClass = "text-gray-600";
                   }
-              return  <tr key={item.id} className="hover:bg-gray-50 transition">
+              return  <tr key={item.id} className="hover:bg-gray-50 text-[11px] transition">
                   <td className="px-6 py-4">{item.amount }</td>
                   <td className="px-6 py-4"><span className={`py-1 text-[12px] px-5 rounded-3xl text-center ${colorClass}`}>{item.status}</span></td>
-                  <td className="px-6 py-4 text-[11px]">{item.created_at}</td>
+                  <td className="px-6 py-4  whitespace-nowrap">{item.created_at.slice(0,10)} {item.created_at.slice(11,19)}</td>
                   <td className="px-1 py-4">{item.note}</td>
                   <td className="px-6 py-4">{item.transaction_ref}</td>
                   <td className="px-6 py-4">{item.type}</td>
