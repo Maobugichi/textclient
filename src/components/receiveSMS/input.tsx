@@ -339,13 +339,15 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 isDisabled={error}
                 theme={theme}
                 >
-                  {option?.map((item:any) => (
-                      <option className={`${theme ? "bg-black" : "bg-white"}`} key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * 50).toLocaleString('en-NG', {
+                  {option?.map((item:any) => {
+                    
+                    const multiplier = item.cost > 200 ? 15 : 50
+                    return  <option className={`${theme ? "bg-black" : "bg-white"}`} key={item.application_id} value={item.application_id}>{`${item.application} - ${(item.cost * multiplier).toLocaleString('en-NG', {
                         style: 'currency',
                         currency: 'NGN',
                         minimumFractionDigits: 2
                       }).replace('NGN', '').trim()}`}</option>
-                    ))}
+})}
                  
               </Select> 
               {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
