@@ -124,22 +124,43 @@ const Payment = () => {
               <tr>
                 <th className="px-6 py-4">Amount</th>
                 <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Date</th>
+                <th className="px-6 py-4">Note</th>
                 <th className="px-6 py-4">Reference</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Source</th>
               </tr>
             </thead>
-          <tbody className="divide-y divide-gray-200">
-            {transactionHistory.map((item: any) => (
-              <tr key={item.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4">{item.amount }</td>
-                <td className="px-6 py-4">{item.status}</td>
-                <td className="px-6 py-4">{item.transaction_ref}</td>
-                <td className="px-6 py-4">{item.type}</td>
-                <td className="px-6 py-4">{item.source}</td>
-              </tr>
-            ))}
-          </tbody>
+            <tbody className="divide-y divide-gray-200">
+              {transactionHistory.map((item: any) => {
+                 let colorClass = "";
+                  switch(item.status) {
+                  case "successful":
+                      colorClass = "bg-green-200 text-green-600";
+                      break;
+                  case "refunded":
+                      colorClass = "bg-orange-200 text-orange-600";
+                      break;
+                  case "pending":
+                      colorClass = "bg-yellow-200 text-yellow-500";
+                      break;
+                  case "failed":
+                      colorClass = "text-red-600";
+                      break;
+                  default:
+                      colorClass = "text-gray-600";
+                  }
+              return  <tr key={item.id} className="hover:bg-gray-50 transition">
+                  <td className="px-6 py-4">{item.amount }</td>
+                  <td className="px-6 py-4"><span className={`py-1 text-[12px] px-5 rounded-3xl text-center ${colorClass}`}>{item.status}</span></td>
+                  <td className="px-6 py-4 text-[11px]">{item.created_at}</td>
+                  <td className="px-1 py-4">{item.note}</td>
+                  <td className="px-6 py-4">{item.transaction_ref}</td>
+                  <td className="px-6 py-4">{item.type}</td>
+                  <td className="px-6 py-4">{item.source}</td>
+                </tr>
+                })}
+            </tbody>
           </table>
       </div>
 

@@ -134,28 +134,47 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
              <div className="overflow-scroll w-full hide-scrollbar">
                      {transaction?.length > 0 ? (         
                  <table className=" text-sm text-left text-gray-700">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-500">
-                <tr>
-                    <th className="px-6 py-4">Amount</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4">Note</th>
-                    <th className="px-6 py-4">Type</th>
-                    <th className="px-6 py-4">Source</th>
-                    <th className="px-6 py-4">Reference</th>
-                </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                    {transaction.map((item: any) => (
-                    <tr key={item.id} className="hover:bg-gray-50 transition">
-                        <td className="px-6 py-4">{item.amount }</td>
-                        <td className="px-6 py-4">{item.status}</td>
-                        <td className="px-1 py-4">{item.note}</td>
-                        <td className="px-6 py-4">{item.type}</td>
-                        <td className="px-6 py-4">{item.source}</td>
-                        <td className="px-6 py-4">{item.transaction_ref}</td>
+                    <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+                    <tr>
+                        <th className="px-6 py-4">Amount</th>
+                        <th className="px-6 py-4">Status</th>
+                        <th className="px-6 py-4">Date</th>
+                        <th className="px-6 py-4">Note</th>
+                        <th className="px-6 py-4">Type</th>
+                        <th className="px-6 py-4">Source</th>
+                        <th className="px-6 py-4">Reference</th>
                     </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {transaction.map((item: any) => {
+                        let colorClass = "";
+                            switch(item.status) {
+                            case "successful":
+                                colorClass = "bg-green-200 text-green-600";
+                                break;
+                            case "refunded":
+                                colorClass = "bg-orange-200 text-orange-600";
+                                break;
+                            case "pending":
+                                colorClass = "bg-yellow-200 text-yellow-500";
+                                break;
+                            case "failed":
+                                colorClass = "text-red-600";
+                                break;
+                            default:
+                                colorClass = "text-gray-600";
+                            }
+                        return <tr key={item.id} className="hover:bg-gray-50 transition">
+                            <td className="px-6 py-4">{item.amount }</td>
+                            <td className={`px-6 `}> <span className={`py-1 text-[12px] px-5 rounded-3xl text-center ${colorClass}`}>{item.status}</span></td>
+                            <td className="px-6 py-4">{item.created_at}</td>
+                            <td className="px-1 py-4">{item.note}</td>
+                            <td className="px-6 py-4">{item.type}</td>
+                            <td className="px-6 py-4">{item.source}</td>
+                            <td className="px-6 py-4">{item.transaction_ref}</td>
+                        </tr>
+                        })}
+                    </tbody>
                </table>) :
                
                 <div className="h-fit flex flex-col gap-3">

@@ -60,7 +60,7 @@ const Service = () => {
       }
       
       return(
-        <div className="w-full  relative top-50 h-fit min-h-[120vh] grid place-items-center bg-[#eef4fd] pb-10">
+        <div className="w-full  relative mt-20 h-fit min-h-[120vh] grid place-items-center bg-[#eef4fd] pb-10">
             <div className="w-full   flex flex-col gap-5 h-fit min-h-[100vh] items-center">
                 <div className="w-full text-center h-fit min-h-[50vh] flex flex-col justify-center gap-5 items-center">
                   <h2 className="text-2xl md:text-4xl font-semibold">Supported Services and Countries</h2>

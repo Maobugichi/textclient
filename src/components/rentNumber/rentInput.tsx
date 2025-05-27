@@ -233,7 +233,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                 onChange={changePeriod}
                 value={info.period}
                 theme={theme}
-                className={`${info.duration !== '' ? 'block' : 'hidden'} ml-3`}
+                className={`${info.duration !== '' ? 'block ml-3' : 'hidden'} `}
                 >
                     <option value='' disabled selected hidden>Select a period</option>
                     <Period
