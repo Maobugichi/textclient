@@ -11,13 +11,5 @@ export default defineConfig({
   },
   base:'/',
   plugins: [react(),tailwindcss()],
-  build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // <- this removes console.*
-        drop_debugger: true
-      }
-    } 
-  }
+ 
 })
