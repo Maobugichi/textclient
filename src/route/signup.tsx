@@ -83,7 +83,7 @@ const Signup = () => {
        }
     },[show])
     return(
-     <div className="w-[90%] mx-auto md:w-[40%] h-fit mt-20  min-h-[45vh] grid md:min-h-[80vh]">
+     <div className="w-[90%] mx-auto md:w-[40%] h-fit mt-15  min-h-[45vh] relative grid md:min-h-[80vh]">
         <Toast
           show={show}
           errorMssg={errorMssg}
@@ -103,6 +103,7 @@ const Signup = () => {
            <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm h-12">{ showLoader ? <img className="h-8" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
         <span className="text-center">have an account?   <Link className="text-blue-400 underline" to="/login/:1">sign in</Link></span>
+        <p className="text-sm mt-2">By clicking sign up, you agree to our <span className="underline">Terms of Service</span> and <span className="underline">Privacy Policy</span>.</p>
       </div>  
     )
 }

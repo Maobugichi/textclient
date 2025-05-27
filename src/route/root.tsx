@@ -6,6 +6,7 @@ import ModalItem from "../components/modalItems";
 import { modalOptions } from "../action";
 import { Outlet } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
+import TelIcon from "../ui/telicon";
 
 const Root = () => {
     const myContext = useContext(ShowContext)
@@ -52,7 +53,7 @@ const Root = () => {
              </div> 
             
             </div>
-            
+            <TelIcon/>
         </div>
     )
 }

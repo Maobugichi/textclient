@@ -44,7 +44,6 @@ const Login = () => {
         await axios.post('https://api.textflex.net/api/login', credentials , { withCredentials: true })
           .then(function (response) {
             if (response.data) {
-                console.log(response.data)
                 setCredentials({
                     email:'',
                     password:''
@@ -70,14 +69,14 @@ const Login = () => {
             if (show) {
                 setShow(false)
             } 
-        }, 3000);
+        }, 8000);
         
     },[show])
   return(
-      <div className="w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
+      <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
         <Toast
-        show={show}
-        errorMssg={errorMssg}
+         show={show}
+         errorMssg={errorMssg}
          />
         <div className="text-center h-25 grid">
             <h2 className="text-2xl font-semibold">Log In</h2>
