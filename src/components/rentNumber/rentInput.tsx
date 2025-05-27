@@ -45,7 +45,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     const [ showLoader , setShowLoader ] = useState<any>(false);
 
     useEffect(() => {
-        axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
+        axios.get('https://api.textflex.net/api/sms/countries')
          .then(function(response) {
             setApiResponse(response.data)
          })
@@ -71,7 +71,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     useEffect(() => {
        if ( info.countryId !== '' && info.duration !== '' && info.period !== '') {
              setTimeout(async () => {
-                await axios.post('https://textflex-axd2.onrender.com/api/rent/countries', info)
+                await axios.post('https://api.textflex.net/api/rent/countries', info)
                 .then(function(res) {
                     const { data } = res.data;
                     const { limits } = data;
@@ -160,7 +160,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         const { countryId , duration, period , price } = info;
         if (countryId !== '' && duration !== '' && period !== '' && price !== '' || price !== 0) {
             setShowLoader(true)
-            const response = await axios.post(`https://textflex-axd2.onrender.com/api/rent-number`, info);
+            const response = await axios.post(`https://api.textflex.net/api/rent-number`, info);
             console.log(response.data)
             if (response.data?.number) {
                 setNumberInfo({

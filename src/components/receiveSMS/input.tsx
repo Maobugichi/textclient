@@ -44,7 +44,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
     const stock = useRef('')
     useEffect(() => {
-       axios.get('https://textflex-axd2.onrender.com/api/sms/countries')
+       axios.get('https://api.textflex.net/api/sms/countries')
          .then(function(response) {
              setCountries(response.data);
          })
@@ -80,7 +80,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         try {
           const { country } = target
           setOption([])
-            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/price`,{
+            const response = await axios.get(`https://api.textflex.net/api/sms/price`,{
               params:{id: Number(country)}
             });
             //console.log(response.data)
@@ -93,7 +93,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     }, [target]);
 
     async function refund(user_id:any , cost:any , debitRef:string , request_id:string) {
-       const res = await axios.post('https://textflex-axd2.onrender.com/api/refund-user', {
+       const res = await axios.post('https://api.textflex.net/api/refund-user', {
         user_id , cost , debitRef , request_id
        })
        console.log(res.data)
@@ -109,7 +109,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         }
         attempts++;
         try {
-            const response = await axios.get(`https://textflex-axd2.onrender.com/api/sms/status/${req_id}`, {
+            const response = await axios.get(`https://api.textflex.net/api/sms/status/${req_id}`, {
                 params: {
                     cost,
                     user_id: userData.userId,
@@ -178,7 +178,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       }
       setShowLoader(true)
       try {
-        const { data } = await axios.post(`https://textflex-axd2.onrender.com/api/sms/get-number`, {
+        const { data } = await axios.post(`https://api.textflex.net/api/sms/get-number`, {
           ...target,
           price: cost,
         });

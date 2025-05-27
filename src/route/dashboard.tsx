@@ -15,7 +15,7 @@ const DashBoard = () => {
     const [balance, setBalance] = useState(0);
 
     const getUserBalance = async () => {
-        const res = await axios.get('https://textflex-axd2.onrender.com/api/user-balance', {
+        const res = await axios.get('https://api.textflex.net/api/user-balance', {
             params: { user_id: userData.userId }
         });
         setBalance(res.data.balance);
@@ -33,15 +33,13 @@ const DashBoard = () => {
             if (token && expiry && Date.now() > parseInt(expiry, 10)) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("token_expiry");
-                
             }
         }
-       
     },[userData]);
 
     useEffect(() => {
         const getUserData = async () => {
-            const response = await axios.get('https://textflex-axd2.onrender.com/api/orders', { 
+            const response = await axios.get('https://api.textflex.net/api/orders', { 
                 params: { userId: userData.userId  }
             });
             const purchaseArray = response.data.data.filter((item:any) => (
@@ -65,7 +63,7 @@ const DashBoard = () => {
 
      useEffect(() => {
         async function getTransaction() {
-        const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
+        const response = await axios.get('https://api.textflex.net/api/get-transaction', {
             params:{
             user_id:userData.userId
             }
@@ -84,7 +82,7 @@ const DashBoard = () => {
         const mxTrials = 15;
         async function callback() {
             try {
-                 const response = await axios.post('https://textflex-axd2.onrender.com/api/squad-callback',{transaction_ref: ref});
+                 const response = await axios.post('https://api.textflex.net/squad-callback',{transaction_ref: ref});
                   if (response.data?.data === 'success') {
                     await getUserBalance()
                     setRedo(true)

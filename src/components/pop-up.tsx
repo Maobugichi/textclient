@@ -30,7 +30,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
               setIsCancel(true)
           }
           setShowLoader(true)
-          const res =await axios.post('https://textflex-axd2.onrender.com/api/sms/cancel', {
+          const res =await axios.post('https://api.textflex.net/api/sms/cancel', {
           request_id: req_id,
           user_id: userId
           });

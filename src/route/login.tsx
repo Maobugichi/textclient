@@ -41,7 +41,7 @@ const Login = () => {
             setShowLoader(false)
             return
         }
-        await axios.post('https://textflex-axd2.onrender.com/api/login', credentials , { withCredentials: true })
+        await axios.post('https://api.textflex.net/api/login', credentials , { withCredentials: true })
           .then(function (response) {
             if (response.data) {
                 console.log(response.data)
@@ -55,7 +55,6 @@ const Login = () => {
             navigate('/dashboard/1')
           })
           .catch((err) => {
-            console.log(err.response.data.error);
             setErrorMessage(err.response.data.error)
             setShow(true)
             setCredentials({

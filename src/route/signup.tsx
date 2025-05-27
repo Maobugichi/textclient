@@ -28,7 +28,7 @@ const Signup = () => {
             setShowLoader(false)
             return
         }
-        await axios.post('https://textflex-axd2.onrender.com/api/register/', credentials , { withCredentials: true })
+        await axios.post('https://api.textflex.net/api/register/', credentials , { withCredentials: true })
         .then(function (response) {
             console.log('Success:', response.data);
             setShowLoader(false)

@@ -27,7 +27,7 @@ const SettingsContent = () => {
         async function updateDetails(e:React.FormEvent<HTMLFormElement>) {
           e.preventDefault();
           if (userInput) {
-            const response = await axios.patch(`https://textflex-axd2.onrender.com/api/update/${userId}`, { username , userNumber});
+            const response = await axios.patch(`https://api.textflex.net/api/update/${userId}`, { username , userNumber});
             setMessage(response.data);
           }
           
@@ -40,7 +40,7 @@ const SettingsContent = () => {
             }
             if ( password.oldPassword !== '' && password.newPassword !== '' ) {
                 try {
-                    const response = await axios.patch(`https://textflex-axd2.onrender.com/api/password/${userId}`,password);
+                    const response = await axios.patch(`https://api.textflex.net/api/password/${userId}`,password);
                     const { data } = response.data;
                     setMessage(data)
                     if (data) {

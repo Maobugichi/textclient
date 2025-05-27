@@ -13,8 +13,6 @@ import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
 
-
-
 interface DashProps {
     info: any;
     theme:boolean;

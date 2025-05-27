@@ -23,7 +23,7 @@ const ReceiveSms = () => {
 
     useEffect(() => {
         const getUserData = async () => {
-            const response = await axios.get('https://textflex-axd2.onrender.com/api/orders', { 
+            const response = await axios.get('https://api.textflex.net/api/orders', { 
                 params: { userId: userData.userId  }
             });
             const purchaseArray = response.data.data.filter((item:any) => (

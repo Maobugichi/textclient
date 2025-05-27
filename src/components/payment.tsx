@@ -43,7 +43,7 @@ const Payment = () => {
       }
       
       setShowLoader(true)
-      const response = await axios.post('https://textflex-axd2.onrender.com/api/initialize-transaction', data)
+      const response = await axios.post('https://api.textflex.net/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url
       const ref = response.data.data.data.transaction_ref
     
@@ -77,7 +77,7 @@ const Payment = () => {
 
   useEffect(() => {
     async function getTransaction() {
-      const response = await axios.get('https://textflex-axd2.onrender.com/api/get-transaction', {
+      const response = await axios.get('https://api.textflex.net/api/get-transaction', {
         params:{
           user_id:userData.userId
         }

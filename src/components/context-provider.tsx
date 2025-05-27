@@ -22,7 +22,6 @@ const  ContextProvider:React.FC<ContextProps> = ({ children }) => {
     
       useEffect(() => {
         localStorage.setItem("userData", JSON.stringify(userData));
-        
       }, [userData]);
     const contextValue = useMemo(() => (
         { userData, setUserData , theme , setTheme }
