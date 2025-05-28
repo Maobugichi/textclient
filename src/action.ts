@@ -1,3 +1,4 @@
+import {Dispatch , SetStateAction } from 'react';
 
 const modalOptions = [
     {
@@ -54,7 +55,24 @@ const providers = [
     }
 ]
 
+ const openFilter = (setOpen:Dispatch<SetStateAction<boolean>>) => {
+        setOpen((prev:any) => !prev)
+}
 
+  const filter = (e:React.MouseEvent<HTMLLIElement>, setTrans:Dispatch<SetStateAction<any>>, transaction:[],setOpen:Dispatch<SetStateAction<boolean>>) => {
+        const target = e.currentTarget.textContent;
+        if (target !== 'clear') {
+             const newTransaction = transaction.filter((item:any) => {
+            console.log(target)
+            return item.status == target
+            });
+         setTrans(newTransaction)
+        } else {
+            setTrans(transaction)
+        }
+       
+        setOpen(false)
+  }
 
 const listItem = ['Light' , 'Dark' , 'System']
-export { modalOptions , providers , listItem }
+export { modalOptions , providers , listItem , openFilter , filter }

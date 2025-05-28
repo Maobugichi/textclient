@@ -3,7 +3,10 @@ import { ShowContext } from "./context-provider";
 import Form from "./form"
 import axios from "axios";
 import interwind from "../assets/Interwind.svg"
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle ,Filter } from 'lucide-react';
+import Transactions from "./transactions";
+import { openFilter, filter } from "../action";
+import Filters from "./filter";
 
 
 const Payment = () => {
@@ -20,7 +23,9 @@ const Payment = () => {
   const [ showCheck , setShowCheck ] = useState<boolean>(false)
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ transactionHistory , setTransactionHistory ] = useState<any>([])
+  const [ transs , setTrans ] = useState<any>([])
   const [ err ,setErr] = useState<boolean>(false)
+  const [ open , setOpen ] = useState<boolean>(false)
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
       setErr(false)
@@ -31,6 +36,9 @@ const Payment = () => {
   }
 
 
+  useEffect(() => {
+      setTrans(transactionHistory)
+    },[transactionHistory])
   
   
   async function payment(e:React.FormEvent<HTMLFormElement>) {
@@ -38,8 +46,8 @@ const Payment = () => {
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       if (amount < 1000) {
-        //setErr(true)
-        
+        setErr(true)
+        return
       }
       
       setShowLoader(true)
@@ -91,7 +99,7 @@ const Payment = () => {
       getTransaction()
   },[])
     return(
-      <div className={`h-[50vh] md:h-[80vh] w-full flex flex-col  gap-4 ${theme ? 'text-white' : 'text-black'}`}>
+      <div className={`h-[50vh] md:h-[80vh] w-full flex flex-col  gap-10 ${theme ? 'text-white' : 'text-black'}`}>
         <div className="md:w-[40%]  flex flex-col gap-4">
             <h3 className="font-semibold text-2xl">Fund Wallet</h3>
         <span>Choose a payment method to fund wallet</span>
@@ -115,56 +123,59 @@ const Payment = () => {
             </div>
         </Form>
         </div>
-         <div className="grid h-fit gap-2">
-          <h2 className="text-xl">Recent Transactions</h2>
-          <p className="text-sm">No transactions available</p>
-          <div className="overflow-x-auto rounded-xl shadow-md">
-          <table className="min-w-full table-auto text-sm text-left text-gray-700">
-            <thead className="bg-gray-100 text-xs uppercase text-gray-500">
-              <tr>
-                <th className="px-6 py-4">Amount</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Note</th>
-                <th className="px-6 py-4">Reference</th>
-                <th className="px-6 py-4">Type</th>
-                <th className="px-6 py-4">Source</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {transactionHistory.map((item: any) => {
-                 let colorClass = "";
-                  switch(item.status) {
-                  case "successful":
-                      colorClass = "bg-green-200 text-green-600";
-                      break;
-                  case "refunded":
-                      colorClass = "bg-orange-200 text-orange-600";
-                      break;
-                  case "pending":
-                      colorClass = "bg-yellow-200 text-yellow-500";
-                      break;
-                  case "failed":
-                      colorClass = "text-red-600";
-                      break;
-                  default:
-                      colorClass = "text-gray-600";
-                  }
-              return  <tr key={item.id} className="hover:bg-gray-50 text-[11px] transition">
-                  <td className="px-6 py-4">{item.amount }</td>
-                  <td className="px-6 py-4"><span className={`py-1 text-[12px] px-5 rounded-3xl text-center ${colorClass}`}>{item.status}</span></td>
-                  <td className="px-6 py-4  whitespace-nowrap">{item.created_at.slice(0,10)} {item.created_at.slice(11,19)}</td>
-                  <td className="px-1 py-4">{item.note}</td>
-                  <td className="px-6 py-4">{item.transaction_ref}</td>
-                  <td className="px-6 py-4">{item.type}</td>
-                  <td className="px-6 py-4">{item.source}</td>
-                </tr>
-                })}
-            </tbody>
-          </table>
-      </div>
-
-        </div>
+        {
+          transs.length >= 1 ? ( 
+            <div className="grid gap-3 w-full">
+                <div className="flex md:w-[55%] w-[90%] mx-auto md:mx-0 justify-between">
+                      <p className="font-bold text-lg">Recent Activities</p>
+                      <div className="md:w-1/2 w-[20%] relative">
+                        <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid md:w-[30%] w-full h-8 grid place-items-center rounded-md"><Filter/></button>
+                        <Filters
+                          handleClick={(e) => filter(e, setTrans, transactionHistory, setOpen)}
+                          open={open}
+                          
+                        />
+                      </div>
+                </div>
+                
+                {transs?.slice().sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                .map((item: any) => {
+                let colorClass = "";
+                    switch(item.status) {
+                    case "successful":
+                        colorClass = "bg-green-200 text-green-600";
+                        break;
+                    case "refunded":
+                        colorClass = "bg-orange-200 text-orange-800";
+                        break;
+                    case "pending":
+                        colorClass = "bg-yellow-200 text-yellow-500";
+                        break;
+                    case "failed":
+                        colorClass = "text-red-600";
+                        break;
+                    default:
+                        colorClass = "text-gray-600";
+                    }
+                    return(
+                        <Transactions
+                        service={item.note}
+                        amount={item.amount}
+                        date={`${item.created_at.slice(0,10)} - ${item.created_at.slice(11,19)}`}
+                        status={item.status}
+                        color={colorClass}
+                        />
+                    ) 
+                })} 
+            </div> ) : (
+              <div className="grid h-fit gap-2">
+                <h2 className="text-xl">Recent Transactions</h2>
+                <p className="text-sm">No transactions available</p>
+                
+              </div>
+            )
+        }
+         
       </div>
        
     )

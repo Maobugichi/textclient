@@ -7,30 +7,40 @@ import {
     Users,   
     CreditCard,
     ArrowUpRight,
-    Plus
+    Plus,
+    Filter,
+   
   } from 'lucide-react';
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
+import Transactions from "../transactions";
+import {Dispatch , SetStateAction } from 'react';
+import Filters from "../filter";
+import { openFilter, filter } from "../../action";
 
 interface DashProps {
     info: any;
     theme:boolean;
     transaction:any;
-    balance:any
+    balance:any;
+    setTransaction:Dispatch<SetStateAction<any>>;
 }
 
 const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
+      const [ transs , setTrans ] = useState<any>([])
+      const [ open , setOpen ] = useState<boolean>(false)
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
          }
+        
          window.addEventListener('resize' , handleWidth);
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
 
-    
+   
       
     const blockInfo = [
         {
@@ -72,6 +82,9 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
         }
     ]
 
+    useEffect(() => {
+         setTrans(transaction)
+    },[transaction])
   
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
         <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>
@@ -109,6 +122,8 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
          theme={theme}
         />
     ))
+
+   
     return(
         <div className={`h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
@@ -131,29 +146,30 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                     {forward}
                 </div>
 
-             <div className="overflow-scroll w-full hide-scrollbar">
-                     {transaction?.length > 0 ? (         
-                 <table className=" text-sm text-left text-gray-700">
-                    <thead className="bg-gray-100 text-xs uppercase text-gray-500">
-                    <tr>
-                        <th className="px-6 py-4">Amount</th>
-                        <th className="px-6 py-4">Status</th>
-                        <th className="px-6 py-4">Date</th>
-                        <th className="px-6 py-4">Note</th>
-                        <th className="px-6 py-4">Type</th>
-                        <th className="px-6 py-4">Source</th>
-                        <th className="px-6 py-4">Reference</th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                        {transaction.map((item: any) => {
+                    
+                     {transs?.length > 0 ? 
+                      <div className="grid gap-3 w-full">
+                        <div className="flex md:w-[68%] w-[90%] mx-auto md:mx-0 justify-between">
+                             <p className="font-bold text-lg w-[70%]">Recent Activities</p>
+                             <div className="md:w-1/2 w-[20%]   relative">
+                                <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid md:w-[30%] w-full h-8 grid place-items-center rounded-md"><Filter/></button>
+                                <Filters
+                                 handleClick={(e) => filter(e, setTrans, transaction, setOpen)}
+                                 open={open}
+                                 
+                                />
+                             </div>
+                        </div>
+                       
+                        {transs?.slice().sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                        .map((item: any) => {
                         let colorClass = "";
                             switch(item.status) {
                             case "successful":
                                 colorClass = "bg-green-200 text-green-600";
                                 break;
                             case "refunded":
-                                colorClass = "bg-orange-200 text-orange-600";
+                                colorClass = "bg-orange-200 text-orange-800";
                                 break;
                             case "pending":
                                 colorClass = "bg-yellow-200 text-yellow-500";
@@ -164,27 +180,26 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                             default:
                                 colorClass = "text-gray-600";
                             }
-                        return <tr key={item.id} className="hover:bg-gray-50 text-[11px] transition">
-                            <td className="px-6 py-4">{item.amount }</td>
-                            <td className={`px-6 `}> <span className={`py-1  px-5 rounded-3xl text-center ${colorClass}`}>{item.status}</span></td>
-                            <td className="px-6 py-4 whitespace-nowrap">{item.created_at.slice(0,10)} {item.created_at.slice(11,19)}</td>
-                            <td className="px-1 py-4">{item.note}</td>
-                            <td className="px-6 py-4">{item.type}</td>
-                            <td className="px-6 py-4">{item.source}</td>
-                            <td className="px-6 py-4">{item.transaction_ref}</td>
-                        </tr>
+                            return(
+                                <Transactions
+                                service={item.note}
+                                amount={item.amount}
+                                date={`${item.created_at.slice(0,10)} - ${item.created_at.slice(11,19)}`}
+                                status={item.status}
+                                color={colorClass}
+                                />
+                            ) 
                         })}
-                    </tbody>
-               </table>) :
-               
-                <div className="h-fit flex flex-col gap-3">
-                    <h2 className="text-xl font-semibold">Recent Transactions</h2>
-                    <p>No transactions available</p>
-                    <div>   
+                      </div> 
+                         :
+                      <div className="h-fit flex flex-col gap-3">
+                        <h2 className="text-xl font-semibold">Recent Transactions</h2>
+                        <p>No transactions available</p>
+                        <div>   
 
-                    </div>
-                </div> }
-             </div>
+                        </div>
+                      </div> }
+           
               
             </div>
         </div>

@@ -347,7 +347,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                         currency: 'NGN',
                         minimumFractionDigits: 2
                       }).replace('NGN', '').trim()}`}</option>
-})}
+                    })}
                  
               </Select> 
               {option.length == 0 && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}

@@ -124,6 +124,7 @@ const DashBoard = () => {
          info={userDetails}
          theme={theme}
          transaction={transactionHistory}
+         setTransaction={setTransactionHistory}
          balance={balance}
         />
     )
