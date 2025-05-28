@@ -15,7 +15,7 @@ const Filters:React.FC<FilterProp> = ({handleClick , open ,right }) => {
            initial={{scale:0}}
            animate={{scale: 1}}
            exit={{scale:0}}
-           className={ `absolute bg-white border border-solid border-gray-500 md:${right} right-1 w-22 text-sm h-fit min-h-32 p-2 grid place-items-center cursor-pointer rounded-sm top-10`}>
+           className={ `absolute bg-white border border-solid border-gray-500 md:${right} right-1 w-22 text-sm h-fit max-h-32 p-2 grid place-items-center cursor-pointer rounded-sm top-10`}>
             {["successful", "refunded", "pending" , "clear"].map((status) => (
                 <li
                 key={status}
