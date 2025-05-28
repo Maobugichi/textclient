@@ -125,7 +125,7 @@ const Payment = () => {
         </div>
         {
           transs.length >= 1 ? ( 
-            <div className="grid gap-3 w-full">
+            <div className="grid gap-3 w-full overflow-hidden">
                 <div className="flex md:w-[55%] w-[90%] mx-auto md:mx-0 justify-between">
                       <p className="font-bold text-lg">Recent Activities</p>
                       <div className="md:w-1/2 w-[20%] relative">
@@ -133,7 +133,7 @@ const Payment = () => {
                         <Filters
                           handleClick={(e) => filter(e, setTrans, transactionHistory, setOpen)}
                           open={open}
-                          
+                          right='left-0'
                         />
                       </div>
                 </div>

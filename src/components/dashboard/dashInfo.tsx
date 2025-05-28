@@ -148,15 +148,15 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
 
                     
                      {transs?.length > 0 ? 
-                      <div className="grid gap-3 w-full">
-                        <div className="flex md:w-[68%] w-[90%] mx-auto md:mx-0 justify-between">
+                      <div className="grid gap-3 w-full overflow-hidden">
+                        <div className="flex md:w-[45%]  w-[90%] mx-auto md:mx-0 justify-between">
                              <p className="font-bold text-lg w-[70%]">Recent Activities</p>
-                             <div className="md:w-1/2 w-[20%]   relative">
-                                <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid md:w-[30%] w-full h-8 grid place-items-center rounded-md"><Filter/></button>
+                             <div className=" w-[20%]   relative">
+                                <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid  w-full h-8 grid place-items-center rounded-md"><Filter/></button>
                                 <Filters
                                  handleClick={(e) => filter(e, setTrans, transaction, setOpen)}
                                  open={open}
-                                 
+                                 right='left-0'
                                 />
                              </div>
                         </div>
