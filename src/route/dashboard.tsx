@@ -28,7 +28,7 @@ const DashBoard = () => {
             setRef(myRef)
         }
     },[])
-    
+
     useEffect(() => {
         if (userData.token) {
             const expiry = Date.now() + 60 * 60 * 1000;
@@ -68,8 +68,7 @@ const DashBoard = () => {
       localStorage.setItem('ref', refParam || '');
     },[])
 
-     useEffect(() => {
-        async function getTransaction() {
+     async function getTransaction() {
         const response = await axios.get('https://api.textflex.net/api/get-transaction', {
             params:{
             user_id:userData.userId
@@ -79,9 +78,11 @@ const DashBoard = () => {
             item.user_id == userData.userId
         ))
         
-        setTransactionHistory(newData)
-        await getUserBalance()  
+         setTransactionHistory(newData)
+         await getUserBalance()  
         }
+     useEffect(() => {
+       
        getTransaction()
      },[])
 
@@ -92,6 +93,7 @@ const DashBoard = () => {
                  const response = await axios.post('https://api.textflex.net/api/squad-callback',{transaction_ref: ref});
                   if (response.data?.data === 'success') {
                     await getUserBalance()
+                    await getTransaction()
                     setRedo(true)
                     localStorage.removeItem('ref')
                     const newUrl = window.location.origin + window.location.pathname + window.location.hash;
