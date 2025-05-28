@@ -74,5 +74,20 @@ const providers = [
         setOpen(false)
   }
 
+ const getTime = (item:any) => {
+     let time = ''
+    let months = [ 'Jan' , 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'July' , 'Aug' , 'Sep' ,'Oct' , 'Nov' , 'Dec']
+    if (item.created_at.slice(11,13) >= 12) {
+        time = 'PM'
+    } else {
+        time = 'AM'
+    }
+    let date = new Date(item.created_at.slice(0,10))
+    let month = date.getUTCMonth()
+    let day = item.created_at.slice(8,10)
+    let newDate = `${months[month]} ${day}, - ${item.created_at.slice(11,16)} ${time}`
+
+    return newDate
+ }
 const listItem = ['Light' , 'Dark' , 'System']
-export { modalOptions , providers , listItem , openFilter , filter }
+export { modalOptions , providers , listItem , openFilter , filter , getTime }

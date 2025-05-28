@@ -17,7 +17,7 @@ import { useState, useEffect } from "react";
 import Transactions from "../transactions";
 import {Dispatch , SetStateAction } from 'react';
 import Filters from "../filter";
-import { openFilter, filter } from "../../action";
+import { openFilter, filter , getTime } from "../../action";
 
 interface DashProps {
     info: any;
@@ -164,6 +164,8 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                         {transs?.slice().sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                         .map((item: any) => {
                         let colorClass = "";
+                        const newDate =  getTime(item)
+                        
                             switch(item.status) {
                             case "successful":
                                 colorClass = "bg-green-200 text-green-600";
@@ -184,7 +186,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
                                 <Transactions
                                 service={item.note}
                                 amount={item.amount}
-                                date={`${item.created_at.slice(0,10)} - ${item.created_at.slice(11,19)}`}
+                                date={newDate}
                                 status={item.status}
                                 color={colorClass}
                                 />

@@ -16,7 +16,7 @@ const Transactions:React.FC<TransactionProps> = ({ service , date , amount , sta
             </div>
             <div className='flex flex-col gap-1  w-[200px]'>
                 <p className='font-semibold'>{service}</p>
-                <span className='font-light'>{date}</span>
+                <span className='font-light text-[12px]'>{date}</span>
             </div>
             <div className='w-[100px]'>
                 <p className='font-semibold'>₦{amount}</p>
