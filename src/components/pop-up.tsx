@@ -23,17 +23,30 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
         number:false,
         sms:false
     })
+    const [ debitRef ,  setDebitRef] = useState<string>('')
+    
+    useEffect(() => {
+         const debitRef = localStorage.getItem("lastDebitRef");
+         if (debitRef) {
+            setDebitRef(debitRef)
+         }
+        
+    },[show])
+     
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
           if (setIsCancel) {
               setIsCancel(true)
+
           }
           setShowLoader(true)
-          const res =await axios.post('https://api.textflex.net/api/sms/cancel', {
-          request_id: req_id,
-          user_id: userId
+          const res = await axios.post('https://api.textflex.net/api/sms/cancel', {
+           request_id: req_id,
+           debitref: debitRef,
+           user_id: userId
           });
+          console.log(res.data)
            localStorage.removeItem("req_id");
            localStorage.removeItem("lastDebitRef");
            localStorage.removeItem("numberInfo");
@@ -89,6 +102,9 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
     }
 
     const hidePopUp = () => {
+        if (cancel) {
+            return
+        }
         setIsShow(false)
         if (setIsError) {
             setIsError(false)

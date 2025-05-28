@@ -23,6 +23,13 @@ const DashBoard = () => {
 
 
     useEffect(() => {
+        const myRef = localStorage.getItem('ref');
+        if (myRef) {
+            setRef(myRef)
+        }
+    },[])
+    
+    useEffect(() => {
         if (userData.token) {
             const expiry = Date.now() + 60 * 60 * 1000;
             localStorage.setItem("token", userData.token);
@@ -58,7 +65,7 @@ const DashBoard = () => {
       const params = new URLSearchParams(window.location.search);
       const refParam = params.get('reference');
       setRef(refParam);   
-      
+      localStorage.setItem('ref', refParam || '');
     },[])
 
      useEffect(() => {
@@ -86,6 +93,7 @@ const DashBoard = () => {
                   if (response.data?.data === 'success') {
                     await getUserBalance()
                     setRedo(true)
+                    localStorage.removeItem('ref')
                     const newUrl = window.location.origin + window.location.pathname + window.location.hash;
                     window.history.replaceState({}, '', newUrl);
                     clearInterval(myInterval)

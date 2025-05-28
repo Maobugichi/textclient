@@ -38,7 +38,7 @@ const SlideShow = () => {
   useEffect(() => {
     async function getAdData() {
       try {
-        const response = await axios.get('https://textflex-axd2.onrender.com/api/ads');
+        const response = await axios.get('https://api.textflex.net/api/ads');
         setSlides(response.data.data);
       } catch (err) {
         console.log(err);
