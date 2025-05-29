@@ -21,7 +21,7 @@ const Payment = () => {
     amount:'',
     currency:'NGN',
   } );
-  const [ showCheck , setShowCheck ] = useState<boolean>(false)
+
   const previousActiveRef = useRef<HTMLElement | null>(null);
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ transactionHistory , setTransactionHistory ] = useState<any>([])
@@ -81,7 +81,6 @@ const Payment = () => {
       target.classList.remove('border-gray-300')
       target.classList.add('border-green-400')
       previousActiveRef.current = target;
-      setShowCheck(true)
       if (target.id.trim() == 'squad') {
          setIsActive(true);
       } else {
