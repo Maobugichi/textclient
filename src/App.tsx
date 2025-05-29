@@ -20,7 +20,7 @@ import Esim from "./route/esim";
 import ScrollToTop from "./components/scrollToTheTop";
 import PrivacyPage from "./ui/privacy";
 import TermsPage from "./ui/tandc";
-import NowPay from "./components/dashboard/nowpayment";
+
 
 
 
