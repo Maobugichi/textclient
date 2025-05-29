@@ -103,7 +103,7 @@ const Signup = () => {
            <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm h-12">{ showLoader ? <img className="h-8" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
         <span className="text-center">have an account?   <Link className="text-blue-400 underline" to="/login/:1">sign in</Link></span>
-        <p className="text-sm mt-2">By clicking sign up, you agree to our <span className="underline">Terms of Service</span> and <span className="underline">Privacy Policy</span>.</p>
+        <p className="text-sm mt-2">By clicking sign up, you agree to our <Link to="/privacy/1"><span className="underline">Terms of Service</span></Link> and <Link to="/terms/1"><span className="underline">Privacy Policy</span></Link>.</p>
       </div>  
     )
 }

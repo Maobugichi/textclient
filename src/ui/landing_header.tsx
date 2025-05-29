@@ -8,9 +8,9 @@ const LandingHeader = () => {
     return(
         <header className="h-24 fixed top-0 w-full  z-20 backdrop-blur-2xl grid place-items-center">
             <div className="flex  w-[90%] h-[50%] mx-auto justify-between">
-                <div>
+                <Link to="/homepage/1">
                      <img className="h-[58px] w-[100px] md:w-[180px] mx-auto" src={textlogo} alt="logo" />
-                </div>
+                </Link>
                 
                 <div className="flex w-1/2 justify-end text-sm tracking-wide">
                  <Link  className="h-14 hidden md:grid  w-[25%] place-content-center" to={checkAuth() ? `/dashboard/:1` : '/login/:1'}>

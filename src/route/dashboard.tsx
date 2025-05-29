@@ -8,8 +8,8 @@ const DashBoard = () => {
      const [ transactionHistory , setTransactionHistory ] = useState<any>([])
     const myContext = useContext(ShowContext)
     const [ redo ,setRedo ] = useState<any>(false)
-     const [ref, setRef] = useState<any>(null);
-      const count = useRef(0);
+    const [ref, setRef] = useState<any>(null);
+    const count = useRef(0);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
     const [balance, setBalance] = useState(0);
