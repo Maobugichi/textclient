@@ -24,10 +24,10 @@ const Container:React.FC<DefinitionProp> = ({header , text}) => {
 const Contact = () => {
     return(
     
-        <div id='contact' className="bg-[#F9FAFB] p-6 md:p-10 h-[250px] flex flex-col justify-center md:gap-5 gap-8 w-[90%] mx-auto  rounded-md">
+        <div id='contact' className="bg-[#F9FAFB] p-6 md:p-10 h-[250px] flex flex-col justify-center md:gap-5 gap-10 w-[90%] mx-auto  rounded-md">
          <h3 className="text-xl font-semibold w-full">Contact Us</h3>
          <p className="text-[15px] md:text-lg h-15 md:leading-7 w-[80%] text-gray-600">If you have any questions or concerns regarding these Terms or how we manage your personal data, please feel free to reach out to us at: </p>
-         <span className="text-[15px] md:text-lg text-blue-400 underline flex items-center gap-1 ">📧 Email: textflex7@gmail.com <ArrowRight size={20}/></span>
+         <span className="text-[15px] h-12 md:text-lg text-blue-400 underline flex items-center gap-1 ">📧 Email: textflex7@gmail.com <ArrowRight size={20}/></span>
         </div>
    
     )
@@ -51,7 +51,7 @@ const Permission = () => {
             <h3 className="text-2xl h-32 flex items-center font-semibold">Permission to Use</h3>
 
            
-            <div className="border border-solid md:w-[90%] w-full mx-auto md:mx-0 grid  md:place-items-baseline place-items-center rounded-md h-[110vh] md:h-[800px] p-5 border-gray-50 shadow-sm">
+            <div className="border border-solid md:w-[90%] w-full mx-auto md:mx-0 grid  md:place-items-baseline place-items-center rounded-md h-[125vh] md:h-[800px] p-5 border-gray-50 shadow-sm">
                  <p className="leading-7  mx-auto text-lg text-gray-500 ">All materials on this Site are the intellectual property of TEXTFLEX ENTERPRISES and/or its licensors. These rights are fully protected under applicable intellectual property laws. Access to such materials is granted solely for your personal, non-commercial use, and is strictly subject to the limitations outlined in these Terms and Conditions.</p>
                 <h4 className="text-lg font-semibold h-10 ">By using this Site, you agree not to:</h4>
                 <ul className=" list-disc list-inside grid place-items-center text-gray-700 ">
