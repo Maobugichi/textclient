@@ -20,6 +20,7 @@ import Esim from "./route/esim";
 import ScrollToTop from "./components/scrollToTheTop";
 import PrivacyPage from "./ui/privacy";
 import TermsPage from "./ui/tandc";
+import NowPay from "./components/dashboard/nowpayment";
 
 
 
@@ -35,7 +36,7 @@ function App() {
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
           <Route path="homepage/:1" element={<LandingPage/>} />
-          
+
           <Route path="privacy/:1" element={<PrivacyPage/>} />
           <Route path="terms/:1" element={<TermsPage/>} />
           <Route path="/" element={<Root />}>
@@ -45,6 +46,7 @@ function App() {
           <Route path="sms/:id" element={<ReceiveSms/>}/>
           <Route path="number/:id" element={<RentNumber/>}/>
           <Route path="esim/:id" element={<Esim/>}/>
+    
           <Route path="settings/:1" element={<Settings/>}/>
         </Route>
         </Routes>

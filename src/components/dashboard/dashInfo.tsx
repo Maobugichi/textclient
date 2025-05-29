@@ -11,6 +11,7 @@ import {
     Filter,
    
   } from 'lucide-react';
+
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
@@ -87,6 +88,8 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
     useEffect(() => {
          setTrans(transaction)
     },[transaction])
+
+   
   
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
         <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>

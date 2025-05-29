@@ -1,0 +1,133 @@
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { ShowContext } from '../context-provider';
+
+interface Currency {
+  code: string;               
+  name: string;               
+  ticker: string;            
+  userId:number
+  available_for_payment: boolean;
+}
+
+interface InvoiceResponse {
+  id: string;
+  pay_address: string;
+  userId:number;
+  pay_currency: string;
+  invoice_url: string;
+  status: string;
+}
+
+function NowPay() {
+    const myContext = useContext(ShowContext)
+   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
+   const { userData  } = myContext;
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const [form, setForm] = useState({
+    price_amount: '',
+    price_currency: 'usd',
+    order_id:userData.userId,
+    pay_currency: '',
+    order_description: '',
+  });
+  const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
+
+  useEffect(() => {
+    axios.get('https://api.textflex.net/api/now-currencies')
+      .then(res => {
+        console.log(res.data.currencies)
+        setCurrencies(res.data.currencies);
+      })
+      .catch(console.error);
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const createInvoice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      console.log(form)            
+      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+      console.log(data)
+      setInvoice(data);
+    } catch (err) {
+      alert('Failed to create invoice');
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">NOWPayments Invoice</h1>
+      <form onSubmit={createInvoice} className="space-y-4 max-w-md">
+        <input
+          name="price_amount"
+          type="number"
+          placeholder="Amount"
+          value={form.price_amount}
+          onChange={handleChange}
+          required
+        />
+        <select
+          name="price_currency"
+          value={form.price_currency}
+          onChange={handleChange}
+        >
+          {currencies?.map(c => (
+            <option key={c.ticker} value={c.ticker}>
+              {c.code} - {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="pay_currency"
+          value={form.pay_currency}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select Payment Currency</option>
+          {currencies
+            ?.filter(c => c.available_for_payment)
+            .map(c => (
+              <option key={c.ticker} value={c.ticker}>
+                {c.code} - {c.name}
+              </option>
+            ))}
+        </select>
+        <input
+          name="order_description"
+          placeholder="Description"
+          value={form.order_description}
+          onChange={handleChange}
+          required
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Create Invoice
+        </button>
+      </form>
+
+      {invoice && (
+        <div className="mt-6 p-4 border rounded bg-gray-50">
+          <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
+          <p>Pay with: {invoice.pay_currency}</p>
+          <p>Address: {invoice.pay_address}</p>
+          <a
+            href={invoice.invoice_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500"
+          >
+            View Invoice
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default NowPay;

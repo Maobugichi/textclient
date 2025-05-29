@@ -7,6 +7,7 @@ import { CheckCircle ,Filter } from 'lucide-react';
 import Transactions from "./transactions";
 import { openFilter, filter, getTime } from "../action";
 import Filters from "./filter";
+import NowPay from "./dashboard/nowpayment";
 
 
 const Payment = () => {
@@ -176,7 +177,7 @@ const Payment = () => {
               </div>
             )
         }
-         
+        <NowPay/> 
       </div>
        
     )
