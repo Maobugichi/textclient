@@ -73,10 +73,12 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
    
     const forwardInfo = [
         {
+            link:'',
             text:'Referral Link',
             forward:'Click to copy your referral link'
         }, 
         {
+            link:'https://t.me/textflexupdates',
             text:'Textflex',
             forward:'Join our telegram channel for more info and updates'
         }
@@ -120,6 +122,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
          text={item.text}
          forward={item.forward}
          theme={theme}
+         link={item.link}
         />
     ))
 
