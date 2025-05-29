@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShowContext } from '../context-provider';
+import interwind from "../../assets/Interwind.svg"
 
 interface Currency {
   code: string;               
@@ -26,13 +27,13 @@ function NowPay() {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [form, setForm] = useState({
     price_amount: '',
-    price_currency: 'usd',
     order_id:userData.userId,
+    email:userData.userEmail,
     pay_currency: '',
-    order_description: '',
+    order_description: 'deposit',
   });
   const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
-
+  const [ showLoader, setShowLoader ] = useState<boolean>(false)
   useEffect(() => {
     axios.get('https://api.textflex.net/api/now-currencies')
       .then(res => {
@@ -49,9 +50,10 @@ function NowPay() {
   const createInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log(form)            
+       setShowLoader(true)          
       const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
       console.log(data)
+      setShowLoader(false)
       setInvoice(data);
     } catch (err) {
       alert('Failed to create invoice');
@@ -67,25 +69,17 @@ function NowPay() {
           type="number"
           placeholder="Amount"
           value={form.price_amount}
+          className='border w-full h-10 rounded-sm border-solid border-gray-500'
           onChange={handleChange}
           required
         />
-        <select
-          name="price_currency"
-          value={form.price_currency}
-          onChange={handleChange}
-        >
-          {currencies?.map(c => (
-            <option key={c.ticker} value={c.ticker}>
-              {c.code} - {c.name}
-            </option>
-          ))}
-        </select>
+       
         <select
           name="pay_currency"
           value={form.pay_currency}
           onChange={handleChange}
-          required
+           className='border w-full h-10 rounded-sm border-solid border-gray-500'
+           required
         >
           <option value="">Select Payment Currency</option>
           {currencies
@@ -96,18 +90,12 @@ function NowPay() {
               </option>
             ))}
         </select>
-        <input
-          name="order_description"
-          placeholder="Description"
-          value={form.order_description}
-          onChange={handleChange}
-          required
-        />
+       
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 w-full text-white px-4 py-2 rounded"
         >
-          Create Invoice
+            {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'Create Invoice' }  
         </button>
       </form>
 
