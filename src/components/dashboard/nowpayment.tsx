@@ -218,7 +218,7 @@ useEffect(() => {
   };
 
     const handleCopyAddress = () => {
-        navigator.clipboard.writeText(address).then(() => {
+        navigator.clipboard.writeText(address.pay_address).then(() => {
             setCopied((prev:any) => ({
                 ...prev,
                 address:true
