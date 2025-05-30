@@ -147,6 +147,8 @@ useEffect(() => {
               loading:false,
               success:true
              })
+            localStorage.removeItem('pending_payment_id');
+            clearInterval(interval)
           }
           setInvoice(res.data);
         } 
