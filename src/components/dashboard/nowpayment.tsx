@@ -24,7 +24,8 @@ interface InvoiceResponse {
   network:string;
   payment_id:any;
   payment_status:string;
-  outcome_amount:string
+  outcome_amount:string;
+  pay_amount:string
 }
 
 function NowPay() {
@@ -45,7 +46,10 @@ function NowPay() {
         address:false,
         outcome_amount:false
     })
-  const [ address , setAddress ] = useState<string>('') 
+  const [ address , setAddress ] = useState<any>({
+      pay_address:'',
+      pay_amount:''
+  }) 
   const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
   const [ newArray , setNewArray ] = useState<any>([])
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
@@ -69,21 +73,36 @@ function NowPay() {
       .catch(console.error);
   }, []);
 
-  useEffect(() => {
-    if (currencies.length >= 1) {
-       axios.get('https://api.textflex.net/api/now-merchant')
+ const priorityCodes = ['BTC', 'USDTTRC20', 'ETH', 'SOL'];
+
+useEffect(() => {
+  if (currencies.length > 0) {
+    axios.get('https://api.textflex.net/api/now-merchant')
       .then(res => {
-       const filteredCurrencies: any[] = [];
-        currencies.forEach((cur: any) => {
-          const matches = res.data.currencies.filter((item: any) => item.code === cur);
-          filteredCurrencies.push(...matches); // spread to flatten the arrays
+        const allCurrencies = res.data.currencies;
+        const filteredCurrencies = currencies
+          .map(code => allCurrencies.find((item: any) => item.code === code))
+          .filter(Boolean); 
+        const sortedCurrencies = filteredCurrencies.sort((a: any, b: any) => {
+          const aIndex = priorityCodes.indexOf(a.code);
+          const bIndex = priorityCodes.indexOf(b.code);
+
+          if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+          if (aIndex !== -1) return -1;
+          if (bIndex !== -1) return 1;
+
+          return currencies.indexOf(a.code) - currencies.indexOf(b.code); // fallback sort
         });
-        setNewArray(filteredCurrencies)
-        console.log(filteredCurrencies)
+
+        setNewArray(sortedCurrencies);
+       
       })
       .catch(console.error);
-    }
-  },[currencies])
+  }
+}, [currencies]);
+
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
@@ -95,17 +114,18 @@ function NowPay() {
 
 
   useEffect(() => {
+   localStorage.removeItem('pending_payment_id');
   const savedPaymentId = localStorage.getItem('pending_payment_id');
   if (savedPaymentId && !invoice) {
-    // Trigger status check if there's a pending payment saved
+    
     checkPaymentStatus(savedPaymentId).then((res) => {
       if (res?.data?.payment_status === 'waiting') {
         setInvoice(res.data);
       } else {
-        localStorage.removeItem('pending_payment_id'); // Clear if no longer pending
+        localStorage.removeItem('pending_payment_id'); 
       }
     }).catch(() => {
-      localStorage.removeItem('pending_payment_id'); // Clear on error too
+      localStorage.removeItem('pending_payment_id'); 
     });
   }
 }, []);
@@ -184,8 +204,10 @@ useEffect(() => {
        setPollCount(0);
      
       const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
-     
-      setAddress(data.pay_address)
+        setAddress({
+        pay_address:data.pay_address,
+        pay_amount:data.pay_amount
+      })
       setShowLoader(false)
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
@@ -212,7 +234,7 @@ useEffect(() => {
     }
 
     const handleCopySms = () => {
-        navigator.clipboard.writeText().then(() => {
+        navigator.clipboard.writeText(address.pay_amount).then(() => {
             setCopied((prev:any) => ({
                 ...prev,
                 outcome_amount:true
@@ -294,10 +316,9 @@ useEffect(() => {
       </form>
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
-          <p className="h-15 w-[90%] break-words whitespace-normal overflow-hidden text-ellipsis" onClick={handleCopyAddress}>
-           
-            <span className="font-semibold text-sm flex gap-3 break-all">
-              {invoice.outcome_amount}
+          <p className="h-15 w-full break-words whitespace-normal overflow-hidden text-ellipsis flex justify-end items-center " onClick={handleCopySms}>
+            <span className="font-semibold text-sm flex gap-3 break-all ">
+               {invoice.pay_amount}
               {copied.outcome_amount ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
             </span>
           </p>
