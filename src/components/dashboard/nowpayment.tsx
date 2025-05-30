@@ -24,6 +24,7 @@ interface InvoiceResponse {
   network:string;
   payment_id:any;
   payment_status:string;
+  outcome_amount:string
 }
 
 function NowPay() {
@@ -42,6 +43,7 @@ function NowPay() {
    });
    const [ copied , setCopied ] = useState<any>({
         address:false,
+        outcome_amount:false
     })
   const [ address , setAddress ] = useState<string>('') 
   const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
@@ -197,13 +199,29 @@ useEffect(() => {
         navigator.clipboard.writeText(address).then(() => {
             setCopied((prev:any) => ({
                 ...prev,
-                number:true
+                address:true
             }
             ));
             setTimeout(() => {
                 setCopied({
                   address:false,
-                 
+                  outcome_amount:false
+                })
+            }, 1000);
+        })
+    }
+
+    const handleCopySms = () => {
+        navigator.clipboard.writeText().then(() => {
+            setCopied((prev:any) => ({
+                ...prev,
+                outcome_amount:true
+            }
+            ));
+            setTimeout(() => {
+                setCopied({
+                  address:false,
+                  outcome_amount:false
                 })
             }, 1000);
         })
@@ -276,6 +294,13 @@ useEffect(() => {
       </form>
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
+          <p className="h-15 w-[90%] break-words whitespace-normal overflow-hidden text-ellipsis" onClick={handleCopyAddress}>
+           
+            <span className="font-semibold text-sm flex gap-3 break-all">
+              {invoice.outcome_amount}
+              {copied.outcome_amount ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
+            </span>
+          </p>
           <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
           <div className='grid gap-2 '>
           <p className='h-8 text-md'>Pay with: <span className='font-semibold text-md'>{invoice.pay_currency}</span></p>
@@ -284,9 +309,10 @@ useEffect(() => {
             Address: 
             <span className="font-semibold text-sm flex gap-3 break-all">
               {invoice.pay_address}
-              {copied.number ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
+              {copied.address ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
             </span>
           </p>
+           
 
           <a
             href={invoice.invoice_url}
