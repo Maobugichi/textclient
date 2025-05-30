@@ -71,21 +71,42 @@ function NowPay() {
     if (currencies.length >= 1) {
        axios.get('https://api.textflex.net/api/now-merchant')
       .then(res => {
-       
        const filteredCurrencies: any[] = [];
         currencies.forEach((cur: any) => {
           const matches = res.data.currencies.filter((item: any) => item.code === cur);
           filteredCurrencies.push(...matches); // spread to flatten the arrays
         });
         setNewArray(filteredCurrencies)
+        console.log(filteredCurrencies)
       })
       .catch(console.error);
     }
   },[currencies])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target;
+
+  if (name === 'pay_currency') {
+    const [ticker, network] = value.split('|');
+
+    const selectedCurrency = newArray.find(
+      (c: any) => c.ticker === ticker && c.network === network
+    );
+
+    if (selectedCurrency) {
+      setForm((prev) => ({
+        ...prev,
+        pay_currency: value, // keep full value like "USDT|Ethereum"
+      }));
+    }
+  } else {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+};
+
 
   useEffect(() => {
   const savedPaymentId = localStorage.getItem('pending_payment_id');
@@ -161,12 +182,22 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [invoice]);
+
+
   const createInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
        setShowLoader(true)          
        setPollCount(0);
-      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+       const { pay_currency, ...rest } = form;
+      const [ticker] = pay_currency.split('|');
+
+      const finalForm = {
+        ...rest,
+        pay_currency: ticker,
+      };
+      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', finalForm);
+      //const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
      
       setAddress(data.pay_address)
       setShowLoader(false)
@@ -245,7 +276,7 @@ useEffect(() => {
           {newArray
             ?.filter((c:any) => c.available_for_payment)
             .map((c:any) => (
-              <option key={c.ticker} value={c.ticker}>
+              <option key={c.ticker} value={`${c.ticker}|${c.network}`}>
                 {c.code} - {c.name}
               </option>
             ))}
