@@ -125,10 +125,7 @@ const checkPaymentStatus = async (paymentId: string) => {
   }
 };
 
-useEffect(() => {
-  
-      console.log(form)
-},[form])
+
 
 useEffect(() => {
   if (!invoice || invoice.payment_status !== 'waiting') return;
@@ -175,6 +172,11 @@ useEffect(() => {
 
   const createInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
+    const pay_id = localStorage.getItem('pending_payment_id')
+
+    if (pay_id) {
+      return
+    }
     try {
        setShowLoader(true)          
        setPollCount(0);
@@ -267,16 +269,16 @@ useEffect(() => {
        
         <button
           type="submit"
-          className="bg-blue-600 w-full text-white px-4 py-2 rounded"
+          className="bg-blue-600 w-full grid place-items-center text-white px-4 py-2 rounded"
         >
-            {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'Create Invoice' }  
+            {showLoader ?  <img className="h-8" src={interwind} alt="loader" /> : 'Create Invoice' }  
         </button>
       </form>
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
           <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
-          <div className='grid gap-2'>
-          <p className='h-8'>Pay with: {invoice.pay_currency}</p>
+          <div className='grid gap-2 '>
+          <p className='h-8 text-md'>Pay with: <span className='font-semibold text-md'>{invoice.pay_currency}</span></p>
           <p className='h-8'>Network: {invoice.network}</p>
           <p className="h-15 w-[90%] break-words whitespace-normal overflow-hidden text-ellipsis" onClick={handleCopyAddress}>
             Address: 
