@@ -122,6 +122,7 @@ useEffect(() => {
         clearInterval(interval);
         console.log('Polling stopped after 25 tries');
          localStorage.removeItem('pending_payment_id');
+         console.log(pollCount)
         return prev;
       }
 
