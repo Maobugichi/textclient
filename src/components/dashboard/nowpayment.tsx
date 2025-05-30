@@ -131,6 +131,9 @@ useEffect(() => {
           clearInterval(interval);
           localStorage.removeItem('pending_payment_id');
           setInvoice(res.data);
+        } 
+        if (res?.data?.payment_status !== 'finished') {
+          alert('funds has been credited to your account')
         }
       });
 
