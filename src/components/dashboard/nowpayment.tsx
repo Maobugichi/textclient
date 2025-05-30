@@ -152,7 +152,7 @@ useEffect(() => {
 
   const interval = setInterval(() => {
     setPollCount((prev) => {
-      //console.log(pollCount)
+      console.log(pollCount)
       checkPaymentStatus(invoice.payment_id).then((res) => {
          console.log(res)
         if (res?.payment_status !== 'waiting') {
