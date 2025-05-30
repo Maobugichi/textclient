@@ -2,7 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShowContext } from '../context-provider';
 import interwind from "../../assets/Interwind.svg"
+import spinner from "../../assets/dualring.svg"
 import { Clipboard, ClipboardCheck  } from "lucide-react";
+import { AnimatePresence , motion } from 'motion/react';
 
 interface Currency {
   code: string;               
@@ -45,6 +47,11 @@ function NowPay() {
   const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
   const [ newArray , setNewArray ] = useState<any>([])
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
+  const [ showPop , setShowPop ] = useState<any>({
+    loading:false,
+    success:false
+  })
+  
   useEffect(() => {
     axios.get('https://api.textflex.net/api/now-currencies')
       .then(res => {
@@ -128,13 +135,22 @@ useEffect(() => {
 
       checkPaymentStatus(invoice.payment_id).then((res) => {
         if (res?.data?.payment_status !== 'waiting') {
-          clearInterval(interval);
-          localStorage.removeItem('pending_payment_id');
+          if (res?.data?.payment_status == 'confirming') {
+            setShowPop((prev:any) => (
+              {
+                ...prev,
+                loading:true
+              }
+            ))
+          } else if (res?.data?.payment_status == 'finished') {
+            setShowPop({
+              loading:false,
+              success:true
+             })
+          }
           setInvoice(res.data);
         } 
-        if (res?.data?.payment_status === 'finished') {
-          alert('funds has been credited to your account')
-        }
+        
       });
 
       return prev + 1;
@@ -177,6 +193,29 @@ useEffect(() => {
    
   return (
     <div className="w-[95%] mx-auto">
+      {
+        showPop.loading  && (
+      <AnimatePresence>
+        <motion.div 
+        initial={{ scale: 0}}
+        animate={{scale:1}}
+        exit={{scale:0}}
+        className='h-screen w-full fixed top-0 left-0 bg-black/20'>
+            <motion.div 
+              initial={{ scale: 0}}
+              animate={{scale:1}}
+              exit={{scale:0 , transition:{ type:'spring' , delay:0.2}}}
+              className=' rounded-md text-sm shadow-md h-24 bg-white p-2 relative md:left-[600px] left-18 top-[200px]  w-[250px]'>
+              <h4 className='font-semibold'>{ showPop.success ? 'Balance Updated' : 'Transaction being processed...'}</h4>
+               {showPop.success ? <div className='w-full grid place-items-center h-10'><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 48 48"><g fill="none" strokeLinejoin="round" strokeWidth={4}><path fill="#0032a5" stroke="#000" d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z"></path><path stroke="#fff" strokeLinecap="round" d="M16 24L22 30L34 18"></path></g></svg></div> : <img className="w-8 absolute left-[43%] top-[50%] " src={spinner} alt="Loading" width="20" />  }
+            </motion.div>
+        </motion.div>
+      </AnimatePresence>
+      )
+      }
+
+
+
       <form onSubmit={createInvoice} className="space-y-4  max-w-md">
         <div className='w-full  flex justify-between'>
             <span className="text-gray-400 text-sm">Min is $10</span>
@@ -217,7 +256,6 @@ useEffect(() => {
             {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'Create Invoice' }  
         </button>
       </form>
-
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
           <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
