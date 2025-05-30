@@ -35,6 +35,7 @@ function NowPay() {
     const [currencies, setCurrencies] = useState<Currency[]>([]);
     const [ rate ,setRate ] = useState<any>(null)
     const [pollCount, setPollCount] = useState(0);
+    const [ success , setSuccess ] = useState<boolean>(false)
     const [form, setForm] = useState({
     price_amount: '',
     order_id:userData.userId,
@@ -55,7 +56,6 @@ function NowPay() {
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ showPop , setShowPop ] = useState<any>({
     loading:false,
-    success:false
   })
   
   useEffect(() => {
@@ -137,9 +137,7 @@ const checkPaymentStatus = async (paymentId: string) => {
     const res = await axios.get(`https://api.textflex.net/api/now-status`, {
       params: { payment_id: paymentId },
     });
-
     console.log('Payment status:', res.data);
-    
     return res.data;
   } catch (error) {
     console.error('Error fetching payment status:', error);
@@ -150,36 +148,46 @@ const checkPaymentStatus = async (paymentId: string) => {
 
 
 useEffect(() => {
-  if (!invoice || invoice.payment_status !== 'waiting') return;
+  if (!invoice) return;
 
   const interval = setInterval(() => {
     setPollCount((prev) => {
-      if (prev >= 20) {
-        clearInterval(interval);
-        console.log('Polling stopped after 25 tries');
-         localStorage.removeItem('pending_payment_id');
-         console.log(pollCount)
-        return prev;
-      }
-
+      console.log(pollCount)
       checkPaymentStatus(invoice.payment_id).then((res) => {
-        if (res?.data?.payment_status !== 'waiting') {
-          if (res?.data?.payment_status == 'confirming') {
+         console.log(res)
+        if (res?.payment_status !== 'waiting') {
+          if (res?.payment_status == 'confirming') {
             setShowPop((prev:any) => (
               {
                 ...prev,
                 loading:true
               }
             ))
-          } else if (res?.data?.payment_status == 'finished') {
-            setShowPop({
-              loading:false,
-              success:true
-             })
-            localStorage.removeItem('pending_payment_id');
-            clearInterval(interval)
+          } else if (res?.credited) {
+              setSuccess(true)
+              clearInterval(interval)
+              localStorage.removeItem('pending_payment_id');
+              setTimeout(() => {
+                setShowPop({
+                 loading:false,
+              })
+               
+                setForm({
+                price_amount: '',
+                order_id:userData.userId,
+                email:userData.userEmail,
+                pay_currency: '',
+                order_description: 'deposit',
+              });
+               setAddress({
+                pay_address:'',
+                pay_amount:''})
+                setInvoice(null)
+              setSuccess(false)
+              }, 5000);
+           
           }
-          setInvoice(res.data);
+          
         } 
         
       });
@@ -217,37 +225,37 @@ useEffect(() => {
     }
   };
 
-    const handleCopyAddress = () => {
-        navigator.clipboard.writeText(address.pay_address).then(() => {
-            setCopied((prev:any) => ({
-                ...prev,
-                address:true
-            }
-            ));
-            setTimeout(() => {
-                setCopied({
-                  address:false,
-                  outcome_amount:false
-                })
-            }, 1000);
-        })
-    }
+  const handleCopyAddress = () => {
+      navigator.clipboard.writeText(address.pay_address).then(() => {
+          setCopied((prev:any) => ({
+              ...prev,
+              address:true
+          }
+          ));
+          setTimeout(() => {
+              setCopied({
+                address:false,
+                outcome_amount:false
+              })
+          }, 1000);
+      })
+  }
 
-    const handleCopySms = () => {
-        navigator.clipboard.writeText(address.pay_amount).then(() => {
-            setCopied((prev:any) => ({
-                ...prev,
-                outcome_amount:true
-            }
-            ));
-            setTimeout(() => {
-                setCopied({
-                  address:false,
-                  outcome_amount:false
-                })
-            }, 1000);
-        })
-    }
+  const handleCopySms = () => {
+      navigator.clipboard.writeText(address.pay_amount).then(() => {
+          setCopied((prev:any) => ({
+              ...prev,
+              outcome_amount:true
+          }
+          ));
+          setTimeout(() => {
+              setCopied({
+                address:false,
+                outcome_amount:false
+              })
+          }, 1000);
+      })
+  }
    
   return (
     <div className="w-[95%] mx-auto">
@@ -264,8 +272,8 @@ useEffect(() => {
               animate={{scale:1}}
               exit={{scale:0 , transition:{ type:'spring' , delay:0.2}}}
               className=' rounded-md text-sm shadow-md h-24 bg-white p-2 relative md:left-[600px] left-18 top-[200px]  w-[250px]'>
-              <h4 className='font-semibold'>{ showPop.success ? 'Balance Updated' : 'Transaction being processed...'}</h4>
-               {showPop.success ? <div className='w-full grid place-items-center h-10'><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 48 48"><g fill="none" strokeLinejoin="round" strokeWidth={4}><path fill="#0032a5" stroke="#000" d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z"></path><path stroke="#fff" strokeLinecap="round" d="M16 24L22 30L34 18"></path></g></svg></div> : <img className="w-8 absolute left-[43%] top-[50%] " src={spinner} alt="Loading" width="20" />  }
+              <h4 className='font-semibold'>{ success ? 'Balance Updated' : 'Transaction being processed...'}</h4>
+               {success ? <div className='w-full grid place-items-center h-10'><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 48 48"><g fill="none" strokeLinejoin="round" strokeWidth={4}><path fill="#0032a5" stroke="#000" d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z"></path><path stroke="#fff" strokeLinecap="round" d="M16 24L22 30L34 18"></path></g></svg></div> : <img className="w-8 absolute left-[43%] top-[50%] " src={spinner} alt="Loading" width="20" />  }
             </motion.div>
         </motion.div>
       </AnimatePresence>
@@ -316,15 +324,19 @@ useEffect(() => {
       </form>
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
-          <p className="h-15 w-full break-words whitespace-normal overflow-hidden text-ellipsis flex justify-end items-center " onClick={handleCopySms}>
-            <span className="font-semibold text-sm flex gap-3 break-all ">
-               {invoice.pay_amount}
-              {copied.outcome_amount ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
-            </span>
-          </p>
+         
           <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
           <div className='grid gap-2 '>
-          <p className='h-8 text-md'>Pay with: <span className='font-semibold text-md'>{invoice.pay_currency}</span></p>
+            <div className='flex'>
+                <p className='h-8 text-md'>Pay with: <span className='font-semibold text-md'>{invoice.pay_currency}</span></p>
+               <p className="h-15 w-full break-words whitespace-normal overflow-hidden text-ellipsis flex justify-end items-center " onClick={handleCopySms}>
+              <span className="font-semibold text-sm flex gap-3 break-all ">
+                {invoice.pay_amount}
+                {copied.outcome_amount ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
+              </span>
+          </p>
+            </div>
+         
           <p className='h-8'>Network: {invoice.network}</p>
           <p className="h-15 w-[90%] break-words whitespace-normal overflow-hidden text-ellipsis" onClick={handleCopyAddress}>
             Address: 
