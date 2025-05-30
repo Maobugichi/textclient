@@ -126,9 +126,9 @@ const Payment = () => {
             </div>
              <div id='now' onClick={active} className="relative rounded-full w-20 h-8 grid transition-all duration-300 ease-out place-items-center border border-solid border-gray-300 cursor-pointer">
               <CheckCircle className={`absolute top-[-5px] right-[-5px] hidden`} color="green" size={20}/>
-              <div className="w-full p-1 gap-1 flex items-center">
+              <div className="w-full p-1 gap-1 flex items-center justify-center ">
                    <img className="h-3" src='https://nowpayments.io/images/favicon.ico' alt="now payment" />
-                   <p className="text-[9px] font-semibold">Nowpayment</p>
+                   <p className="text-[9px] font-semibold">Now</p>
               </div>
              
             </div>
