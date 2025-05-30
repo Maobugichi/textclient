@@ -85,26 +85,10 @@ function NowPay() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
-
-  if (name === 'pay_currency') {
-    const [ticker, network] = value.split('|');
-
-    const selectedCurrency = newArray.find(
-      (c: any) => c.ticker === ticker && c.network === network
-    );
-
-    if (selectedCurrency) {
-      setForm((prev) => ({
-        ...prev,
-        pay_currency: value, // keep full value like "USDT|Ethereum"
-      }));
-    }
-  } else {
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-  }
 };
 
 
@@ -140,6 +124,11 @@ const checkPaymentStatus = async (paymentId: string) => {
     throw error;
   }
 };
+
+useEffect(() => {
+  
+      console.log(form)
+},[form])
 
 useEffect(() => {
   if (!invoice || invoice.payment_status !== 'waiting') return;
@@ -189,15 +178,8 @@ useEffect(() => {
     try {
        setShowLoader(true)          
        setPollCount(0);
-       const { pay_currency, ...rest } = form;
-      const [ticker] = pay_currency.split('|');
-
-      const finalForm = {
-        ...rest,
-        pay_currency: ticker,
-      };
-      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', finalForm);
-      //const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+     
+      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
      
       setAddress(data.pay_address)
       setShowLoader(false)
@@ -205,6 +187,7 @@ useEffect(() => {
       localStorage.setItem('pending_payment_id', data.payment_id);
     } catch (err) {
       alert('Failed to create invoice');
+      console.log(err)
     }
   };
 
@@ -276,7 +259,7 @@ useEffect(() => {
           {newArray
             ?.filter((c:any) => c.available_for_payment)
             .map((c:any) => (
-              <option key={c.ticker} value={`${c.ticker}|${c.network}`}>
+              <option key={c.ticker} value={`${c.code}`}>
                 {c.code} - {c.name}
               </option>
             ))}
