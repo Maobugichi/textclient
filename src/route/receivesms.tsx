@@ -49,6 +49,7 @@ const ReceiveSms = () => {
              setIsError={setIsError}
              req_id={req_id}
              userId={userData.userId}
+             email={userData.userEmail}
              setIsCancel={setIsCancel}
              cancel={isCancel}
             />

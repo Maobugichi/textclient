@@ -33,7 +33,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       provider:provider,
       country:'5',
       service:'',
-      user_id: userData.userId
+      user_id: userData.userId,
+      email:userData.userEmail
     });
     const shouldPoll = useRef(true);
     const statusRef = useRef({ stat: "", req_id: ""});
@@ -182,11 +183,16 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
           ...target,
           price: cost,
         });
-         console.log(data)
-        setShowLoader(false)
        
+         setShowLoader(false)
+        if (data.phone?.error_msg) {
+          setErrorInfo(data.phone?.error_msg);
+          setIsError(true);
+          return 
+        }
         const requestId = data.phone.request_id;
         const smsNumber = data.phone.number;
+
         setNumberInfo((prev: any) => ({ ...prev, number: smsNumber }));
         setIsShow(true);
         lastDebitRef.current = data.debitRef;
@@ -200,7 +206,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
               service:''
             }))
       } catch (err: any) {
+        console.log(err)
         const msg = err.response?.data?.error || "Error occurred";
+         setShowLoader(false)
         setErrorInfo(msg);
         setIsError(true);
       }

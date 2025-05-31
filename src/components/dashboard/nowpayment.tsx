@@ -114,15 +114,17 @@ useEffect(() => {
 
 
   useEffect(() => {
-   localStorage.removeItem('pending_payment_id');
+   //localStorage.removeItem('pending_payment_id');
   const savedPaymentId = localStorage.getItem('pending_payment_id');
+  console.log(savedPaymentId)
   if (savedPaymentId && !invoice) {
-    
+      
     checkPaymentStatus(savedPaymentId).then((res) => {
-      if (res?.data?.payment_status === 'waiting') {
-        setInvoice(res.data);
+       console.log(res)
+      if (res?.payment_status === 'waiting') {
+        setInvoice(res);
       } else {
-        localStorage.removeItem('pending_payment_id'); 
+       localStorage.removeItem('pending_payment_id');
       }
     }).catch(() => {
       localStorage.removeItem('pending_payment_id'); 
@@ -131,6 +133,7 @@ useEffect(() => {
 }, []);
 
  
+
 
 const checkPaymentStatus = async (paymentId: string) => {
   try {
@@ -148,54 +151,51 @@ const checkPaymentStatus = async (paymentId: string) => {
 
 
 useEffect(() => {
+  console.log(invoice)
   if (!invoice) return;
-
-  const interval = setInterval(() => {
-    setPollCount((prev) => {
-      console.log(pollCount)
-      checkPaymentStatus(invoice.payment_id).then((res) => {
-         console.log(res)
-        if (res?.payment_status !== 'waiting') {
-          if (res?.payment_status == 'confirming') {
-            setShowPop((prev:any) => (
-              {
-                ...prev,
-                loading:true
-              }
-            ))
-          } else if (res?.credited) {
-              setSuccess(true)
-              clearInterval(interval)
-              localStorage.removeItem('pending_payment_id');
-              setTimeout(() => {
-                setShowPop({
-                 loading:false,
-              })
-               
-                setForm({
-                price_amount: '',
-                order_id:userData.userId,
-                email:userData.userEmail,
-                pay_currency: '',
-                order_description: 'deposit',
-              });
-               setAddress({
-                pay_address:'',
-                pay_amount:''})
-                setInvoice(null)
-              setSuccess(false)
-              }, 5000);
-           
-          }
+    const interval = setInterval(() => {
+      setPollCount((prev) => {
+        console.log(pollCount)
+        checkPaymentStatus(invoice.payment_id).then((res) => {
+          if (res?.payment_status !== 'waiting') {
+            if (res?.payment_status == 'confirming') {
+              setShowPop((prev:any) => (
+                {
+                  ...prev,
+                  loading:true
+                }
+              ))
+            } else if (res?.credited) {
+                setSuccess(true)
+                clearInterval(interval)
+                setTimeout(() => {
+                  setShowPop({
+                  loading:false,
+                })
+                
+                  setForm({
+                  price_amount: '',
+                  order_id:userData.userId,
+                  email:userData.userEmail,
+                  pay_currency: '',
+                  order_description: 'deposit',
+                });
+                setAddress({
+                  pay_address:'',
+                  pay_amount:''})
+                  setInvoice(null)
+                setSuccess(false)
+                }, 5000);
+                localStorage.removeItem('pending_payment_id');
+            
+            }
+          } 
           
-        } 
-        
+        });
+
+        return prev + 1;
       });
-
-      return prev + 1;
-    });
-  }, 8000);
-
+    }, 8000);
   return () => clearInterval(interval);
 }, [invoice]);
 
@@ -210,8 +210,13 @@ useEffect(() => {
     try {
        setShowLoader(true)          
        setPollCount(0);
-     
-      const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+       const pay_id = localStorage.getItem('pending_payment_id')
+       if (pay_id) {
+        localStorage.removeItem('pending_payment_id');
+        console.log('hello')
+       }
+       const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+      
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount

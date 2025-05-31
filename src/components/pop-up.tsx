@@ -16,15 +16,15 @@ interface PopProps {
     userId?:any;
     req_id?:any;
     setIsCancel?:Dispatch<SetStateAction<boolean>>;
-    cancel?:boolean
+    cancel?:boolean;
+    email:string
 }
-const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel}) => {
+const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel , email}) => {
     const [ copied , setCopied ] = useState<any>({
         number:false,
         sms:false
     })
-    const [ debitRef ,  setDebitRef] = useState<string>('')
-    
+    const [ debitRef ,  setDebitRef] = useState<string>('');
     useEffect(() => {
          const debitRef = localStorage.getItem("lastDebitRef");
          if (debitRef) {
@@ -44,7 +44,8 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
           const res = await axios.post('https://api.textflex.net/api/sms/cancel', {
            request_id: req_id,
            debitref: debitRef,
-           user_id: userId
+           user_id: userId,
+           email:email
           });
           console.log(res.data)
            localStorage.removeItem("req_id");
