@@ -17,7 +17,7 @@ interface PopProps {
     req_id?:any;
     setIsCancel?:Dispatch<SetStateAction<boolean>>;
     cancel?:boolean;
-    email:string
+    email?:string
 }
 const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel , email}) => {
     const [ copied , setCopied ] = useState<any>({
