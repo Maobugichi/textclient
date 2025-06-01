@@ -19,6 +19,7 @@ import Transactions from "../transactions";
 import {Dispatch , SetStateAction } from 'react';
 import Filters from "../filter";
 import { openFilter, filter , getTime } from "../../action";
+import axios from "axios";
 
 interface DashProps {
     info: any;
@@ -32,6 +33,20 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
+      const [links, setLinks] = useState<string>('');
+        useEffect(() => {
+            fetchLinks();
+        }, []);
+
+        const fetchLinks = async () => {
+            try {
+            const res = await axios.get("https://api.textflex.net/api/links");
+            
+            setLinks(res.data[0].link);
+            } catch (err) {
+            alert("Failed to fetch links");
+            }
+        };
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
@@ -79,7 +94,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
             forward:'Click to copy your referral link'
         }, 
         {
-            link:'https://t.me/textflexupdates',
+            link:links,
             text:'Textflex',
             forward:'Join our telegram channel for more info and updates'
         }

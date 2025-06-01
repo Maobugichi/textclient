@@ -17,7 +17,6 @@ interface HeaderProps {
 const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow , theme , setTheme }) => {
     const isItem = modalOptions;
     //const [ isShow , setShow] = useState(false);
-   
     const [ showProviders, setProviders ] = useState(false);
     function openNav() {
         setIsShow(true)
