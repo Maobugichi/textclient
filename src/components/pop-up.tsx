@@ -47,7 +47,6 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
            user_id: userId,
            email:email
           });
-          console.log(res.data)
            localStorage.removeItem("req_id");
            localStorage.removeItem("lastDebitRef");
            localStorage.removeItem("numberInfo");
@@ -63,7 +62,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
         if (cancel) {
            myTimeOut = setTimeout(() => {
                 if (setIsCancel) {
-                    setIsCancel(true)
+                    setIsCancel(false)
                 }
             }, 2000);
             

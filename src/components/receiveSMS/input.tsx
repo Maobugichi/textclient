@@ -109,6 +109,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         }
         attempts++;
         try {
+         
             const response = await axios.get(`https://api.textflex.net/api/sms/status/${req_id}`, {
                 params: {
                     cost,
@@ -216,7 +217,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
    
 
     useEffect(() => {
-      if (cancel && setNumberInfo) {
+      console.log('hello')
+      if (cancel) {
          statusRef.current.stat = "reject";
          statusRef.current.req_id = "";
          setReqId('')
@@ -224,10 +226,10 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             number:'',
             sms:''
           })
-       setTarget((prev:any) => ({
-            ...prev,
-            service:''
-        }))
+        setTarget((prev:any) => ({
+              ...prev,
+              service:''
+          }))
       }
     }, [cancel])
 
