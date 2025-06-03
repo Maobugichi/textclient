@@ -41,7 +41,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
         const fetchLinks = async () => {
             try {
             const res = await axios.get("https://api.textflex.net/api/links");
-            
             setLinks(res.data[0].link);
             } catch (err) {
             alert("Failed to fetch links");

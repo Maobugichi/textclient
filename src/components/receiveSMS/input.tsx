@@ -84,7 +84,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             const response = await axios.get(`https://api.textflex.net/api/sms/price`,{
               params:{id: Number(country)}
             });
-            //console.log(response.data)
+            
           setOption(Object.values(response.data));
         } catch (err) {
           console.error("Error fetching countries");
@@ -94,10 +94,9 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     }, [target]);
 
     async function refund(user_id:any , cost:any , debitRef:string , request_id:string) {
-       const res = await axios.post('https://api.textflex.net/api/refund-user', {
+        await axios.post('https://api.textflex.net/api/refund-user', {
         user_id , cost , debitRef , request_id
        })
-       console.log(res.data)
     }
 
     useEffect(() => {
@@ -118,8 +117,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                     debitref: lastDebitRef.current
                 }
             });
-            console.log(response.data)
-           
             const code = response.data.sms_code;
             if (code) {
                 clearInterval(interval);
@@ -128,7 +125,6 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 localStorage.removeItem("req_id");
                 localStorage.removeItem("lastDebitRef");
                 localStorage.removeItem("cost");
-
                 localStorage.removeItem("numberInfo");
             } else if (attempts >= 15) {
                 clearInterval(interval);
@@ -141,13 +137,16 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                 localStorage.removeItem("lastDebitRef");
                 localStorage.removeItem("cost");
                 localStorage.removeItem("numberInfo");
-                setTimeout(() => setIsShow(false), 8000);
-               
+                setTimeout(() => {
+                  setNumberInfo({
+                    number: "",
+                    sms: ""
+                  });
+                  setIsShow(false), 8000});
             }
         } catch (err) {
             clearInterval(interval);
             await refund(userData.userId, cost ,lastDebitRef.current ,req_id )
-            console.error("Polling error", err);
             statusRef.current.stat = "reject";
             localStorage.removeItem("req_id");
             localStorage.removeItem("lastDebitRef");
