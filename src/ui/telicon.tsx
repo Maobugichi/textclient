@@ -11,10 +11,8 @@ const TelIcon = () => {
   const fetchLinks = async () => {
     try {
       const res = await axios.get("https://api.textflex.net/api/links");
-      console.log(res)
       setLinks(res.data[0].link);
     } catch (err) {
-      //alert("Failed to fetch links");
     }
   };
   

@@ -43,6 +43,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
     const  balance = tableValues[0]?.balance;
     const [ error , setError ] = useState<boolean>(false);
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
+    const actualCost = useRef('')
     const stock = useRef('')
     useEffect(() => {
        axios.get('https://api.textflex.net/api/sms/countries')
@@ -115,7 +116,8 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
                     cost,
                     user_id: userData.userId,
                     attempts,
-                    debitref: lastDebitRef.current
+                    debitref: lastDebitRef.current,
+                    actual:actualCost.current
                 }
             });
             const code = response.data.sms_code;
@@ -147,6 +149,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
             }
         } catch (err) {
             clearInterval(interval);
+           
             await refund(userData.userId, cost ,lastDebitRef.current ,req_id )
             statusRef.current.stat = "reject";
             localStorage.removeItem("req_id");
@@ -182,6 +185,7 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         const { data } = await axios.post(`https://api.textflex.net/api/sms/get-number`, {
           ...target,
           price: cost,
+          actual:actualCost.current
         });
        
          setShowLoader(false)
@@ -212,12 +216,11 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
         setErrorInfo(msg);
         setIsError(true);
       }
-    },[target , cost , balance])
+    },[target , cost , balance,actualCost])
 
    
 
     useEffect(() => {
-      console.log('hello')
       if (cancel) {
          statusRef.current.stat = "reject";
          statusRef.current.req_id = "";
@@ -265,10 +268,13 @@ const Input:React.FC<InputPorps> = ({ tableValues  , setNumberInfo, setIsShow , 
       
     },[])
 
+   
 
      const extractCode = useCallback((e:React.ChangeEvent<HTMLSelectElement>) => {  
        const selectedId = e.target.value
        const selectedItem = option.find((item: any) => item.application_id == selectedId);
+       console.log(selectedItem.cost)
+       actualCost.current = selectedItem.cost
         if (selectedItem) {
           setCost(prev => {
             const newCost = selectedItem.cost * 50;
