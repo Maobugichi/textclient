@@ -14,7 +14,6 @@ import { ContextProvider } from "./components/context-provider";
 import Login from "./route/login";
 import LandingPage from "./route/landing-page";
 import Payment from "./components/payment";
-
 import 'react-loading-skeleton/dist/skeleton.css';
 import Esim from "./route/esim";
 import ScrollToTop from "./components/scrollToTheTop";
@@ -31,12 +30,10 @@ function App() {
     <HashRouter>
       <ContextProvider>
         <ScrollToTop />
-       
         <Routes>
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
           <Route path="homepage/:1" element={<LandingPage/>} />
-
           <Route path="privacy/:1" element={<PrivacyPage/>} />
           <Route path="terms/:1" element={<TermsPage/>} />
           <Route path="/" element={<Root />}>

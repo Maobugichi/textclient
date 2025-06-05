@@ -69,7 +69,7 @@ const TermsConditions = () => {
     const navigations = [ "Definitions","Permission to Use","Restrictions","Your Account","Compliance","Intellectual Property","Disclaimer","Contact"]
     const definitions = [
         {
-            header:`"${'We or TEXTPLUG ENTERPRISES'}"`,
+            header:`"${'We or TEXTFLEX ENTERPRISES'}"`,
             text:'Refers to the administrators and operators of the Site.'
         } ,
         {
@@ -100,21 +100,21 @@ const TermsConditions = () => {
         },
          {
             header:'Legal Compliance',
-            text:'You agree to adhere to all applicable local, national, and international laws and regulations while using our Site. TEXTPLUG ENTERPRISES reserves the right to investigate any reported violations of these Terms and take appropriate action where necessary.'
+            text:'You agree to adhere to all applicable local, national, and international laws and regulations while using our Site. TEXTFLEX ENTERPRISES reserves the right to investigate any reported violations of these Terms and take appropriate action where necessary.'
         },
          {
             header:'Intellectual Property',
-            text:'All content on this Site — including text, images, graphics, and logos — is protected by intellectual property laws and may include trademarks belonging to TEXTPLUG ENTERPRISES or its partners. Use of these materials does not grant you ownership or licensing rights unless explicitly authorized in writing by the respective rights holder.'
+            text:'All content on this Site — including text, images, graphics, and logos — is protected by intellectual property laws and may include trademarks belonging to TEXTFLEX ENTERPRISES or its partners. Use of these materials does not grant you ownership or licensing rights unless explicitly authorized in writing by the respective rights holder.'
         },
          {
             header:'Disclaimer',
-            text:'All materials and content on this Site are provided “as is.” TEXTPLUG ENTERPRISES makes no express or implied warranties, including but not limited to, implied warranties of merchantability or fitness for a particular purpose related to any of our services or products.'
+            text:'All materials and content on this Site are provided “as is.” TEXTFLEX ENTERPRISES makes no express or implied warranties, including but not limited to, implied warranties of merchantability or fitness for a particular purpose related to any of our services or products.'
         },
         
     ]
     return(
         <div className=" md:w-[80%] mx-auto grid gap-10">
-            <p className="w-[90%] mx-auto text-lg text-gray-700">These Terms and Conditions, together with any applicable license agreements and other documents made available on our website (the "Site"), collectively form the complete and binding agreement between you and TEXTPLUG ENTERPRISES. They supersede all prior agreements, representations, warranties, and understandings—whether written or verbal—relating to your use of the Site.</p>
+            <p className="w-[90%] mx-auto text-lg text-gray-700">These Terms and Conditions, together with any applicable license agreements and other documents made available on our website (the "Site"), collectively form the complete and binding agreement between you and TEXTFLEX ENTERPRISES. They supersede all prior agreements, representations, warranties, and understandings—whether written or verbal—relating to your use of the Site.</p>
 
             <div className="bg-[#F9FAFB] w-[90%] mx-auto p-10 grid gap- rounded-md">
                 <h2 className="text-xl mt-5 font-semibold">Quick Navigation</h2>
