@@ -101,11 +101,8 @@ useEffect(() => {
   }
 }, [currencies]);
 
-
-
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const { name, value } = e.target;
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -213,10 +210,10 @@ useEffect(() => {
        const pay_id = localStorage.getItem('pending_payment_id')
        if (pay_id) {
         localStorage.removeItem('pending_payment_id');
-        console.log('hello')
        }
+       console.log(form)
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
-      
+       console.log(data)
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount
@@ -225,8 +222,9 @@ useEffect(() => {
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
     } catch (err) {
-      alert('Failed to create invoice');
+      //alert('Failed to create invoice');
       console.log(err)
+      setShowLoader(false)
     }
   };
 

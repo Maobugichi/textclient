@@ -141,7 +141,7 @@ const Payment = () => {
                     <span className="text-gray-400">Min is ₦1000</span>
                   </div>
                   <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is ₦1000</label>
-                  <input onChange={handleChange} type="text" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
+                  <input onChange={handleChange} type="number" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
                   <button className="h-10 bg-[#0032a5] rounded-md grid place-items-center text-white" type="submit">
                     {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'submit' }  
                   </button>
