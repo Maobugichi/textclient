@@ -92,6 +92,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userId}`);
          const referralCode = response.data;
          await navigator.clipboard.writeText(referralCode)
+          alert("Referral code copied!");
      } catch(err) {
         console.log(err)
      }
