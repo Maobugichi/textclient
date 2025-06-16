@@ -35,6 +35,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
       const [links, setLinks] = useState<string>('');
+      const [referralCode, setReferralCode] = useState("");
       useEffect(() => {
             fetchLinks();
       }, []);
@@ -85,19 +86,30 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
         }
     ]
 
-   const generateReferralCode = async () => {
-     const userId = userData.userId 
-     console.log(userId)
-     try {
-         const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userId}`);
-         const referralCode = response.data;
-         await navigator.clipboard.writeText(referralCode)
-          alert("Referral code copied!");
-     } catch(err) {
-        console.log(err)
-     }
-    
-   };
+    useEffect(() => {
+    const fetchReferral = async () => {
+        try {
+            const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userData.userId}`);
+            setReferralCode(response.data);
+        } catch (err) {
+            console.error("Error fetching referral", err);
+        }
+    };
+
+    fetchReferral();
+}, [userData.userId]);
+
+   const generateReferralCode = () => {
+    if (!referralCode) return;
+
+    try {
+        navigator.clipboard.writeText(referralCode);
+        alert("Referral link copied!");
+    } catch (err) {
+        console.error("Clipboard copy failed", err);
+        alert("Failed to copy link");
+    }
+};
 
     const forwardInfo = [
         {
@@ -153,7 +165,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          forward={item.forward}
          theme={theme}
          link={item.link}
-         onClick={item.onClick}
+         onClick={generateReferralCode}
          userId={userData.userId}
         />
     ))

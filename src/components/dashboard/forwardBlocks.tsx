@@ -6,7 +6,7 @@ interface ForwardBlocksProps {
     forward:string;
     theme:boolean;
     link?:string;
-    onClick?:() => Promise<void>;
+    onClick?:() => void;
     userId:string
 }
 
