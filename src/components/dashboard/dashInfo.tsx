@@ -104,10 +104,10 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
 
     try {
         navigator.clipboard.writeText(referralCode);
-        alert("Referral link copied!");
+        alert("Referral code copied!");
     } catch (err) {
         console.error("Clipboard copy failed", err);
-        alert("Failed to copy link");
+        alert("Failed to copy code");
     }
 };
 
