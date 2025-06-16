@@ -5,37 +5,43 @@ const modalOptions = [
         icon:"🌱",
         text:"Bronze",
         indicator:'Starter Level',
-        percentage:"0%"
+        percentage:"0%",
+        threshold: 0
     }, 
     {
       icon:"⭐",
       text:"Silver",
       indicator:"Deposited above 60k",
-      percentage:"2%"
+      percentage:"2%",
+      threshold: 60000
     },
     {
         icon:"✨",
         text:"Gold",
         indicator:"Deposited above 250k",
-        percentage:"3%"
+        percentage:"3%",
+        threshold: 250000
     },
     {
         icon:"💫",
         text:"Platinum",
         indicator:"Deposited 550k",
-        percentage:'5%'
+        percentage:'5%',
+        threshold: 550000
     },
     {
         icon:"🌟",
         text:"Diamond",
         indicator:"Deposited 1M",
-        percentage:'7%'
+        percentage:'7%',
+        threshold: 1000000
     },
     {
         icon:"👑",
         text:"Elite",
         indicator:"Deposited 2M",
-        percentage:'10%'
+        percentage:'10%',
+        threshold: 2000000
     }
 
 ]

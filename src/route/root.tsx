@@ -11,7 +11,7 @@ import TelIcon from "../ui/telicon";
 const Root = () => {
     const myContext = useContext(ShowContext)
    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-   const { theme , setTheme } = myContext;
+   const { theme , setTheme , userData } = myContext;
    const [ isShow , setIsShow ] = useState<boolean>(false);
    const [ show , setShow] = useState<boolean>(false);
 
@@ -33,6 +33,7 @@ const Root = () => {
              setShow={setShow}
              theme={theme}
              setTheme={setTheme}
+             userData={userData}
             />
             <Modal
              setShow={setShow}

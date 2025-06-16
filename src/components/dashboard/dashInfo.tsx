@@ -27,30 +27,30 @@ interface DashProps {
     transaction:any;
     balance:any;
     setTransaction:Dispatch<SetStateAction<any>>;
+    userData:any
 }
 
-const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, userData}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
       const [links, setLinks] = useState<string>('');
-        useEffect(() => {
+      useEffect(() => {
             fetchLinks();
-        }, []);
+      }, []);
 
-        const fetchLinks = async () => {
-            try {
-            const res = await axios.get("https://api.textflex.net/api/links");
-            setLinks(res.data[0].link);
-            } catch (err) {
+     const fetchLinks = async () => {
+        try {
+        const res = await axios.get("https://api.textflex.net/api/links");
+        setLinks(res.data[1].link);
+        } catch (err) {
             alert("Failed to fetch links");
-            }
-        };
+        }
+     };
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
          }
-        
          window.addEventListener('resize' , handleWidth);
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
@@ -85,10 +85,22 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
         }
     ]
 
-   
+   const generateReferralCode = async () => {
+     const userId = userData.userId 
+     console.log(userId)
+     try {
+         const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userId}`);
+         const referralCode = response.data;
+         await navigator.clipboard.writeText(referralCode)
+     } catch(err) {
+        console.log(err)
+     }
+    
+   };
+
     const forwardInfo = [
         {
-            link:'',
+            onClick:generateReferralCode,
             text:'Referral Link',
             forward:'Click to copy your referral link'
         }, 
@@ -140,6 +152,8 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance}) =>
          forward={item.forward}
          theme={theme}
          link={item.link}
+         onClick={item.onClick}
+         userId={userData.userId}
         />
     ))
 

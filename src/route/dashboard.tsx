@@ -126,6 +126,7 @@ const DashBoard = () => {
          transaction={transactionHistory}
          setTransaction={setTransactionHistory}
          balance={balance}
+         userData={userData}
         />
     )
 }

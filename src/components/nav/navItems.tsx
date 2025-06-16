@@ -38,7 +38,7 @@ const NavItems:React.FC<NavProps> = ({ closeNav }) => {
         {
             icon:<Package size={17}/>,
             text:'eSIM Plans',
-            link:'plans/1'
+            link:'esimplan/1'
         },
         {
             icon:<Settings size={17}/>,

@@ -15,7 +15,8 @@ const Signup = () => {
         username:'',
         number:'',
         email:'',
-        password:''
+        password:'',
+        referralCode:''
     });
      const [ showLoader , setShowLoader ] = useState<any>(false);
      const [ errorMssg , setErrorMessage ] = useState<string>('')
@@ -44,34 +45,17 @@ const Signup = () => {
             username:'',
             number:'',
             email:'',
-            password:''
+            password:'',
+            referralCode:''
         })
     }
     function input(e:React.ChangeEvent<HTMLInputElement>) {
-        const name = e.target.name;
-        if (name == 'email') {
-            setCredentials((prev:any) => ({
-                ...prev,
-                email:e.target.value
-            }));
-        } else if (name == 'username') {
-            setCredentials((prev:any) => ({
-                ...prev,
-                username:e.target.value
-            }))
-        } else if (name == 'number') {
-            setCredentials((prev:any) => ({
-                ...prev,
-                number:e.target.value
-            }))
-        } else  {
-            setCredentials((prev:any) => ({
-                ...prev,
-                password:e.target.value
-            }))
-        }
-    
-        
+        const { name , value } = e.target
+        setCredentials((prev:any) => ({
+            ...prev,
+            [name]:value
+        }))
+       
     }
     
     useEffect(() => {
@@ -94,12 +78,13 @@ const Signup = () => {
         </div>
         <Form 
         onSubmit={submitCredentias}
-        className="flex flex-col justify-between  h-[300px]"
+        className="flex flex-col justify-between  h-[320px]"
        >
            <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type='number' name="number" placeholder="Phone Number" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <input onChange={input} type="text" name="referralCode" placeholder="input referral(Optional)" value={credentials.referralCode} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm h-12">{ showLoader ? <img className="h-8" src={interwind} alt="" /> : 'Sign up' }</button>
         </Form> 
         <span className="text-center">have an account?   <Link className="text-blue-400 underline" to="/login/:1">sign in</Link></span>

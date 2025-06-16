@@ -1,22 +1,57 @@
 import React from "react";
+import ReactSelect from "react-select";
+
+export interface OptionType {
+  label: string;
+  value: string | number; 
+}
 
 interface SelectProps {
-    children: React.ReactNode,
-    onChange?:(e:React.ChangeEvent<HTMLSelectElement>) => void,
-    id?:string;
-    className?:string;
-    value?:any;
-    isDisabled?:boolean
-    theme:boolean
+  options: OptionType[];
+  onChange?: (selectedOption: OptionType | null) => void;
+  id?: string;
+  className?: string;
+  value?: OptionType | null;
+  isDisabled?: boolean;
+  theme: boolean;
+  placeholder?: string;
 }
 
-const Select:React.FC<SelectProps> = ({ children , onChange , id , className , value , isDisabled , theme}) => {
-    
-    return(
-        <select disabled={isDisabled} value={value} onChange={(e) => onChange?.(e)} id={id} className={`p-2.5 h-12  border border-gray-300 rounded-sm border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  min-h-[48px] w-[95%] mx-auto ${className} ${theme ? 'bg-transparent border-blue-200' : 'bg-white'}`}>
-            {children}
-        </select>
-    )
-}
+const Select: React.FC<SelectProps> = ({
+  options ,
+  onChange,
+  id,
+  className,
+  value,
+  isDisabled,
+  theme,
+  placeholder
+}) => {
+  return (
+    <div id={id} className={`w-[95%] mx-auto ${className}`}>
+      <ReactSelect
+        isDisabled={isDisabled}
+        value={value}
+        onChange={onChange}
+        options={options}
+        placeholder={placeholder || "Select..."}
+        classNames={{
+          control: (state) =>
+            `p-1 border text-sm rounded-sm min-h-[48px] ${theme ? "bg-transparent border-blue-200" : "bg-white border-gray-300"} ${state.isFocused ? "ring-2 ring-blue-500" : ""}`,
+        }}
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            backgroundColor: theme ? "transparent" : "white",
+            borderColor: theme ? "#bfdbfe" : "#d1d5db",
+            minHeight: "48px",
+            boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
+          }),
+        }}
+        isSearchable
+      />
+    </div>
+  );
+};
 
-export default Select
+export default Select;

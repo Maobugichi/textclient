@@ -1,15 +1,14 @@
-import { useState , useEffect , useContext } from "react";
+import { useState , useEffect , useContext , useMemo } from "react";
 import axios from "axios";
 import Form from "../form";
 import Fieldset from "../fieldset";
-import Option from "../option";
 import Select from "../select";
-import Duration from "./duration";
-import Period from "./period";
+import { getPeriodOptions } from "./getPeriod";
 import interwind from "../../assets/Interwind.svg"
 import { ShowContext } from "../context-provider";
 import {Dispatch , SetStateAction } from 'react';
 import spinner from "../../assets/dualring.svg";
+import { OptionType } from "../select";
 
 interface RentProps {
     theme:boolean;
@@ -18,6 +17,7 @@ interface RentProps {
     setIsShow:Dispatch<SetStateAction<any>> ;
     tableValue:any
 }
+
 
 const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , tableValue }) => {
     const myContext = useContext(ShowContext);
@@ -53,16 +53,19 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
 
     useEffect(() => {
         if (apiResponse) {
-            const listArray = Array.from(Object.values(apiResponse));
-            const lists = listArray.map((item:any) => (
-                 <Option
-                  key={item.id}
-                  value={item.id}
-                 >
-                    {item.title}
-                 </Option>
-            ))
-            setList(lists)
+            const listArray = Object.values(apiResponse);
+            
+            const formattedOptions = listArray.map((item: any) => ({
+            label: item.title,
+            value: item.id,
+            }));
+            setList(formattedOptions); 
+             if (formattedOptions.length > 0) {
+            setInfo((prev: any) => ({
+                ...prev,
+                countryId: formattedOptions[0].value,
+            }));
+            }
         }
     },[apiResponse]);
 
@@ -121,17 +124,23 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         }
     },[limits.cost])
 
+    const durationOptions: OptionType[] = ["hour", "day", "week", "month"].map((item) => ({
+    label: item,
+    value: item,
+    }));
+
+    const periodOptions = useMemo(() => getPeriodOptions(max), [max]);
    
-   function getCountryId(e:React.ChangeEvent<HTMLSelectElement>) {
-     const target = e.target.value;
+   function getCountryId(selectedOption: OptionType | null) {
+     const target = selectedOption?.value || "";
      setInfo((prev:any) => ({
         ...prev,
         countryId:target
     }));
    }
 
-    function changeDuration(e:React.ChangeEvent<HTMLSelectElement>) {
-        const target = e.target.value;
+    function changeDuration(selectedOption: OptionType | null) {
+        const target = selectedOption?.value || "";
         if (target == 'day') {
             setMax(7)
         } else if (target == 'week') {
@@ -147,8 +156,8 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         }))
     }
 
-    function changePeriod(e:React.ChangeEvent<HTMLSelectElement>) {
-        const target = e.target.value;
+    function changePeriod(selectedOption: OptionType | null) {
+        const target = selectedOption?.value || "";
         setInfo((prev:any) => ({
             ...prev,
             period:target
@@ -207,39 +216,35 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
             <Fieldset
              provider='Country'
             > 
-               <Select 
-                onChange={getCountryId}
-                value={info.countryId}
-                theme={theme}
-               >
-                  <option value=""  disabled selected hidden>Select a Country</option>
-                 {list}
-               </Select>
+            <Select
+             options={list} 
+             onChange={getCountryId}
+             value={list.length && list.find((option:any) => option.value === info.countryId) || null}
+             theme={theme}
+            />
+               
             </Fieldset>
             <Fieldset
              provider='Duration'
              className=" flex  flex-col w-[97%] gap-4"
             > 
                <Select
+                options={durationOptions}
                 onChange={changeDuration}
-                value={info.duration}
+                value={durationOptions.find(option => option.value === info.duration) || null}
                 className="ml-3"
                 theme={theme}
-               >
-                 <option value=""  disabled selected hidden>Select a time</option>
-                 <Duration/>
-               </Select>
-               <Select 
+                placeholder="Select a time"
+                />
+              <Select 
                 onChange={changePeriod}
-                value={info.period}
+                options={periodOptions}
+                value={periodOptions.find(opt => opt.value === info.period) || null}
                 theme={theme}
-                className={`${info.duration !== '' ? 'block ml-3' : 'hidden'} `}
-                >
-                    <option value='' disabled selected hidden>Select a period</option>
-                    <Period
-                     max={max}
-                    />
-               </Select>
+                className={`${info.duration !== '' ? 'block ml-3' : 'hidden'}`}
+                placeholder="Select a period"
+                />
+
             </Fieldset>
             <Fieldset
              provider="Stock"

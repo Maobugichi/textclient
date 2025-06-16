@@ -222,7 +222,6 @@ useEffect(() => {
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
     } catch (err) {
-      //alert('Failed to create invoice');
       console.log(err)
       setShowLoader(false)
     }
@@ -348,16 +347,6 @@ useEffect(() => {
               {copied.address ? <ClipboardCheck size="25" /> : <Clipboard size="20" />}
             </span>
           </p>
-           
-
-          <a
-            href={invoice.invoice_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 h-8"
-          >
-            View Invoice
-          </a>
           </div>
         </div>
       )}
