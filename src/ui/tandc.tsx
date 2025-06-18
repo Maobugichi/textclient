@@ -27,7 +27,7 @@ const Contact = () => {
         <div id='contact' className="bg-[#F9FAFB] p-6 md:p-10 h-[250px] flex flex-col justify-center md:gap-5 gap-10 w-[90%] mx-auto  rounded-md">
          <h3 className="text-xl font-semibold w-full">Contact Us</h3>
          <p className="text-[15px] md:text-lg h-15 md:leading-7 w-[80%] text-gray-600">If you have any questions or concerns regarding these Terms or how we manage your personal data, please feel free to reach out to us at: </p>
-         <span className="text-[15px] h-12 md:text-lg text-blue-400 underline flex items-center gap-1 ">📧 Email: textflex7@gmail.com <ArrowRight size={20}/></span>
+         <span className="text-[15px] h-12 md:text-lg text-blue-400 underline flex items-center gap-1 ">📧 Email: support@textflex.net <ArrowRight size={20}/></span>
         </div>
    
     )
