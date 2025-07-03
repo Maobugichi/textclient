@@ -22,9 +22,6 @@ import TermsPage from "./ui/tandc";
 import EsimPlans from "./route/EsimPlans";
 
 
-
-
-
 function App() {
   
   return (

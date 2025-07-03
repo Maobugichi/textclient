@@ -23,9 +23,6 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
         return () => window.removeEventListener("resize", handleResize);
       }, []);
 
-      useEffect(() => {
-        console.log(isMobile)
-      },[isMobile])
 
     function closeNav() {
         setIsShow(false)

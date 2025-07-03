@@ -34,6 +34,12 @@ interface Country {
   [key: string]: any;
 }
 
+interface Cost {
+  id: number;
+  low_cost: number;
+  high_cost: number;
+}
+
 const Input: React.FC<InputProps> = ({
   tableValues,
   setNumberInfo,
@@ -58,7 +64,7 @@ const Input: React.FC<InputProps> = ({
   const [showLoader, setShowLoader] = useState(false);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
-
+   const [adminCosts, setAdminCosts] = useState<Cost[]>([]);
   const stock = useRef("");
   const actualCost = useRef("");
   const lastDebitRef = useRef("");
@@ -73,7 +79,10 @@ const Input: React.FC<InputProps> = ({
     email: userData.userEmail
   });
 
-  // Fetch Countries
+   useEffect(() => {
+    axios.get<Cost[]>("https://api.textflex.net/api/costs").then((res) => setAdminCosts(res.data));
+  }, []);
+
   useEffect(() => {
     axios
       .get("https://api.textflex.net/api/sms/countries")
@@ -340,7 +349,7 @@ const Input: React.FC<InputProps> = ({
         value={
           options
             .map((opt) => ({
-              label: `${opt.application} - ${(opt.cost * (opt.cost > 200 ? 15 : 50))
+              label: `${opt.application} - ${(opt.cost * (opt.cost > 200 ? adminCosts[0].low_cost : adminCosts[0].high_cost))
                 .toLocaleString("en-NG", { style: "currency", currency: "NGN" })
                 .replace("NGN", "")
                 .trim()}`,
