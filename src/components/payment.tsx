@@ -38,6 +38,13 @@ const Payment = () => {
      }))
   }
 
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  const filteredTrans = transs
+    .filter((item: any) => item.status === "successful" || item.status === "refunded")
+    .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const visibleTrans = filteredTrans.slice(0, visibleCount);
 
   useEffect(() => {
       setTrans(transactionHistory)
@@ -151,7 +158,7 @@ const Payment = () => {
           }
         </div>
         {
-          transs.length >= 1 ? ( 
+          visibleTrans.length >= 1 ? ( 
             <div className="grid gap-3 w-full ">
                 <div className="flex md:w-[55%] w-[90%] mx-auto md:mx-0 justify-between">
                       <p className="font-bold text-lg">Recent Activities</p>
@@ -165,8 +172,7 @@ const Payment = () => {
                       </div>
                 </div>
                 
-                {transs?.slice().sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                .map((item: any) => {
+                {visibleTrans.map((item: any) => {
                 let colorClass = "";
                 const newDate =  getTime(item)
                     switch(item.status) {
@@ -195,6 +201,14 @@ const Payment = () => {
                         />
                     ) 
                 })} 
+                {visibleCount < filteredTrans.length && (
+                  <button
+                    className="mx-auto mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={() => setVisibleCount(prev => prev + 10)}
+                  >
+                    See More
+                  </button>
+                )}
             </div> ) : (
               <div className="grid h-fit gap-2">
                 <h2 className="text-xl">Recent Transactions</h2>

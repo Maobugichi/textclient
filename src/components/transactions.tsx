@@ -10,7 +10,7 @@ interface TransactionProps {
 
 const Transactions:React.FC<TransactionProps> = ({ service , date , amount , status , color}) => {
     return(
-        <div className='flex gap-5'>
+        <div className='flex gap-5 '>
             <div className='bg-[#EEF4FD] rounded-full h-10 grid place-items-center w-10'>
                <MessageSquare/>
             </div>
