@@ -56,8 +56,8 @@ const Payment = () => {
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       if (amount < 1000) {
-        setErr(true)
-        return
+        //setErr(true)
+        //return
       }
       
       setShowLoader(true)
