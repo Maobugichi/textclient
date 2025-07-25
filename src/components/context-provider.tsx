@@ -20,12 +20,14 @@ const ContextProvider: React.FC<ContextProps> = ({ children }) => {
       return saved ? JSON.parse(saved) : {};
     } catch (err) {
       console.error("Error parsing userData from localStorage:", err);
-      return {}; // Fallback to empty object
+      return {}; 
     }
   });
   const [theme, setTheme] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(userData)
+    console.log('hiiiii')
     try {
       localStorage.setItem("userData", JSON.stringify(userData));
     } catch (err) {

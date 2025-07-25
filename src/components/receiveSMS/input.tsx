@@ -96,7 +96,6 @@ const Input: React.FC<InputProps> = ({
     const savedReqId = localStorage.getItem("req_id");
     const savedDebitRef = localStorage.getItem("lastDebitRef");
     const storedCost = localStorage.getItem("cost");
-
     if (savedInfo && savedReqId && savedDebitRef && storedCost) {
       setNumberInfo(JSON.parse(savedInfo));
       setReqId(savedReqId);
@@ -130,16 +129,13 @@ const Input: React.FC<InputProps> = ({
  
   useEffect(() => {
     if (!req_id || cancel) return;
-
     let attempts = 0;
     const interval = setInterval(async () => {
       if (cancel || attempts >= 15) {
         clearInterval(interval);
         return;
       }
-
       attempts++;
-
       try {
         const res = await axios.get(
           `https://api.textflex.net/api/sms/status/${req_id}`,
@@ -159,7 +155,7 @@ const Input: React.FC<InputProps> = ({
           clearInterval(interval);
           setNumberInfo((prev: any) => ({ ...prev, sms: code }));
           statusRef.current.stat = "used";
-          localStorage.clear();
+          localStorage.removeItem("numberInfo");
         } else if (attempts >= 15) {
           handlePollingTimeout();
         }
@@ -176,8 +172,7 @@ const Input: React.FC<InputProps> = ({
   const handlePollingTimeout = (msg = "⏱️ SMS polling timed out, code not sent.") => {
     setNumberInfo({ number: "", sms: msg });
     statusRef.current.stat = "reject";
-    localStorage.clear();
-
+    localStorage.removeItem("numberInfo");
     setTimeout(() => {
       setNumberInfo({ number: "", sms: "" });
       setIsShow(false);
@@ -196,18 +191,14 @@ const Input: React.FC<InputProps> = ({
   const fetchSMSNumber = useCallback(async () => {
     if (!target.service || !target.country) return;
     if (cost > balance) return setError(true);
-
     setShowLoader(true);
-
     try {
       const res = await axios.post("https://api.textflex.net/api/sms/get-number", {
         ...target,
         price: cost,
         actual: actualCost.current
       });
-
       setShowLoader(false);
-
       if (res.data.phone?.error_msg) {
         setErrorInfo(res.data.phone.error_msg);
         setIsError(true);
@@ -216,12 +207,10 @@ const Input: React.FC<InputProps> = ({
 
       const { number, request_id } = res.data.phone;
       lastDebitRef.current = res.data.debitRef;
-
       setNumberInfo((prev: any) => ({ ...prev, number }));
       setIsShow(true);
       setReqId(request_id);
       statusRef.current.stat = "ready";
-
       localStorage.setItem("req_id", request_id);
       localStorage.setItem("lastDebitRef", res.data.debitRef);
       localStorage.setItem("cost", cost.toString());
