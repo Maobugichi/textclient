@@ -56,7 +56,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
 
-   
       
     const blockInfo = [
         {

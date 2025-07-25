@@ -73,7 +73,7 @@ const Login = () => {
         
     },[show])
   return(
-      <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
+      <div className="relative bg-red-400 w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
         <Toast
          show={show}
          errorMssg={errorMssg}
