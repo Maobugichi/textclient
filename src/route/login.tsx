@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
 import Toast from "../components/toast";
+import logo from "../assets/textflexLogo.png"
 
 const Login = () => {
     const [ credentials , setCredentials ] = useState({
@@ -73,17 +74,18 @@ const Login = () => {
         
     },[show])
   return(
-      <div className="relative bg-red-400 w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh]  grid md:min-h-[50vh]">
+      <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh] place-items-center grid md:min-h-[50vh]">
+       
         <Toast
          show={show}
          errorMssg={errorMssg}
          />
-        <div className="text-center h-25 grid">
-            <h2 className="text-2xl font-semibold">Log In</h2>
-            <p>Enter your details below to log into your account</p>
+        <div className="text-center h-fit grid gap-4 place-items-center">
+             <img src={logo} alt="textflex logo" className="w-32"/>
+            <p className="text-lg font-semibold">Enter your details below to log into your account</p>
         </div>
         <Form 
-            className="flex flex-col gap-10  h-[300px]"
+            className="flex flex-col gap-5 h-fit w-[95%]"
             onSubmit={submitCredentias}
         >
             <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>

@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
 import interwind from "../assets/Interwind.svg"
 import Toast from "../components/toast";
+import logo from "../assets/textflexLogo.png"
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -67,20 +68,21 @@ const Signup = () => {
        }
     },[show])
     return(
-     <div className="w-[90%] mx-auto md:w-[40%] h-fit mt-15  min-h-[45vh] relative grid md:min-h-[80vh]">
+     <div className="w-[90%] mx-auto md:w-[40%] h-fit text-center gap-3 mt-15  min-h-[45vh] relative grid place-items-center md:min-h-[80vh]">
         <Toast
           show={show}
           errorMssg={errorMssg}
         />
+        <img src={logo} alt="textflex logo" className="w-32"/>
         <div className="text-center h-25 grid">
             <h2 className="text-2xl font-semibold">Create an account</h2>
             <p>Enter your details below to create your account</p>
         </div>
         <Form 
         onSubmit={submitCredentias}
-        className="flex flex-col justify-between  h-[320px]"
+        className="flex flex-col justify-between w-[95%] gap-4 h-fit"
        >
-           <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
+           <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username} className="outline p-3 rounded-md outline-[#5252] outline-solid "/>
            <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type='number' name="number" placeholder="Phone Number" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
            <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
