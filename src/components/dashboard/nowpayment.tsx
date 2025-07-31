@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState , useRef } from 'react';
 import axios from 'axios';
 import { ShowContext } from '../context-provider';
 import interwind from "../../assets/Interwind.svg"
 import spinner from "../../assets/dualring.svg"
 import { Clipboard, ClipboardCheck  } from "lucide-react";
-import { AnimatePresence , motion, time } from 'motion/react';
+import { AnimatePresence , motion } from 'motion/react';
 
 interface Currency {
   code: string;               
@@ -36,7 +36,7 @@ function NowPay() {
     const { userData  } = myContext;
     const [currencies, setCurrencies] = useState<Currency[]>([]);
     const [ rate ,setRate ] = useState<any>(null)
-    const [pollCount, setPollCount] = useState(0);
+    const pollCount = useRef(0);
     const [ success , setSuccess ] = useState<boolean>(false)
     const [form, setForm] = useState({
     price_amount: '',
@@ -166,9 +166,8 @@ const checkPaymentStatus = async (paymentId: string) => {
 useEffect(() => {
   if (!invoice) return;
     const interval = setInterval(() => {
-      setPollCount((prev) => {
-        return prev + 1;
-      });
+      pollCount.current = pollCount.current + 1
+     
       checkPaymentStatus(invoice.payment_id).then((res) => {
           if (res?.payment_status !== 'waiting') {
             if (res?.payment_status == 'confirming') {
@@ -241,8 +240,8 @@ useEffect(() => {
       return
     }
     try {
-       setShowLoader(true)          
-       setPollCount(0);
+       setShowLoader(true)  
+       pollCount.current = 0        
        const pay_id = localStorage.getItem('pending_payment_id')
        if (pay_id) {
         localStorage.removeItem('pending_payment_id');
