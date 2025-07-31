@@ -4,7 +4,7 @@ import { ShowContext } from '../context-provider';
 import interwind from "../../assets/Interwind.svg"
 import spinner from "../../assets/dualring.svg"
 import { Clipboard, ClipboardCheck  } from "lucide-react";
-import { AnimatePresence , motion } from 'motion/react';
+import { AnimatePresence , motion, time } from 'motion/react';
 
 interface Currency {
   code: string;               
@@ -27,6 +27,8 @@ interface InvoiceResponse {
   outcome_amount:string;
   pay_amount:string
 }
+
+const COUNTDOWN = 1000
 
 function NowPay() {
     const myContext = useContext(ShowContext)
@@ -56,7 +58,8 @@ function NowPay() {
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ showPop , setShowPop ] = useState<any>({
     loading:false,
-  })
+  });
+  const [ timeLeft , setTimeLeft ] = useState<number>(0)
   
   useEffect(() => {
     axios.get('https://api.textflex.net/api/now-currencies')
@@ -71,7 +74,37 @@ function NowPay() {
          setRate(res.data[0].rate)
       })
       .catch(console.error);
+       const savedPaymentId = localStorage.getItem('pending_payment_id');
+      if (savedPaymentId && !invoice) {
+        checkPaymentStatus(savedPaymentId).then((res) => {
+          if (res?.payment_status === 'waiting') {
+            setInvoice(res);
+          } else {
+          localStorage.removeItem('pending_payment_id');
+          }
+        }).catch(() => {
+          localStorage.removeItem('pending_payment_id'); 
+        });
+      }
+
+     
   }, []);
+
+
+  useEffect(() => {
+    if (timeLeft == 0) {
+       localStorage.removeItem('savedExpiration')
+       localStorage.removeItem('pending_payment_id');
+       setForm({
+        price_amount: '',
+        order_id:userData.userId,
+        email:userData.userEmail,
+        pay_currency: '',
+        order_description: 'deposit',
+      })
+       setInvoice(null)
+    }
+  },[timeLeft])
 
  const priorityCodes = ['BTC', 'USDTTRC20', 'ETH', 'SOL'];
 
@@ -109,35 +142,19 @@ const { name, value } = e.target;
     }));
 };
 
-
-  useEffect(() => {
-   //localStorage.removeItem('pending_payment_id');
-  const savedPaymentId = localStorage.getItem('pending_payment_id');
-  console.log(savedPaymentId)
-  if (savedPaymentId && !invoice) {
-      
-    checkPaymentStatus(savedPaymentId).then((res) => {
-       console.log(res)
-      if (res?.payment_status === 'waiting') {
-        setInvoice(res);
-      } else {
-       localStorage.removeItem('pending_payment_id');
-      }
-    }).catch(() => {
-      localStorage.removeItem('pending_payment_id'); 
-    });
-  }
-}, []);
-
- 
-
+const formatTime = (seconds:number) => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  const pad = (n:number) => n.toString().padStart(2,"0")
+  return`${pad(hrs)}:${pad(mins)}:${pad(secs)}`
+}
 
 const checkPaymentStatus = async (paymentId: string) => {
   try {
     const res = await axios.get(`https://api.textflex.net/api/now-status`, {
       params: { payment_id: paymentId },
     });
-    console.log('Payment status:', res.data);
     return res.data;
   } catch (error) {
     console.error('Error fetching payment status:', error);
@@ -146,14 +163,13 @@ const checkPaymentStatus = async (paymentId: string) => {
 };
 
 
-
 useEffect(() => {
-  console.log(invoice)
   if (!invoice) return;
     const interval = setInterval(() => {
       setPollCount((prev) => {
-        console.log(pollCount)
-        checkPaymentStatus(invoice.payment_id).then((res) => {
+        return prev + 1;
+      });
+      checkPaymentStatus(invoice.payment_id).then((res) => {
           if (res?.payment_status !== 'waiting') {
             if (res?.payment_status == 'confirming') {
               setShowPop((prev:any) => (
@@ -187,20 +203,40 @@ useEffect(() => {
             
             }
           } 
-          
         });
-
-        return prev + 1;
-      });
     }, 8000);
   return () => clearInterval(interval);
 }, [invoice]);
+
+useEffect(() => {
+   const savedExpiration = localStorage.getItem('savedExpiration');
+      let expirationTime:number;
+      if (savedExpiration) {
+        expirationTime = parseInt(savedExpiration,10)
+      } else {
+        expirationTime = Math.floor(Date.now() / 1000) + COUNTDOWN
+        localStorage.setItem('savedExpiration', expirationTime.toString())
+      }
+
+      const updateTimer = () => {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = expirationTime - now;
+        setTimeLeft(remaining > 0 ? remaining : 0)
+
+        if (remaining <= 0) {
+          localStorage.removeItem('savedExpiration')
+          localStorage.removeItem('pending_payment_id');
+        }
+      }
+      updateTimer();
+      const interval = setInterval(updateTimer,1000);
+      return () => clearInterval(interval)
+},[invoice])
 
 
   const createInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     const pay_id = localStorage.getItem('pending_payment_id')
-
     if (pay_id) {
       return
     }
@@ -211,9 +247,7 @@ useEffect(() => {
        if (pay_id) {
         localStorage.removeItem('pending_payment_id');
        }
-       console.log(form)
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
-       console.log(data)
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount
@@ -222,11 +256,22 @@ useEffect(() => {
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
     } catch (err) {
-      console.log(err)
       setShowLoader(false)
     }
   };
 
+  const cancelInvoice = () => {
+     localStorage.removeItem('savedExpiration')
+     localStorage.removeItem('pending_payment_id');
+     setInvoice(null)
+     setForm({
+        price_amount: '',
+        order_id:userData.userId,
+        email:userData.userEmail,
+        pay_currency: '',
+        order_description: 'deposit',
+      })
+  }
   const handleCopyAddress = () => {
       navigator.clipboard.writeText(address.pay_address).then(() => {
           setCopied((prev:any) => ({
@@ -311,23 +356,37 @@ useEffect(() => {
           {newArray
             ?.filter((c:any) => c.available_for_payment)
             .map((c:any) => (
-              <option key={c.ticker} value={`${c.code}`}>
+              <option key={c.code} value={`${c.code}`}>
                 {c.code} - {c.name}
               </option>
             ))}
         </select>
-       
-        <button
-          type="submit"
-          className="bg-blue-600 w-full grid place-items-center text-white px-4 py-2 rounded"
-        >
-            {showLoader ?  <img className="h-8" src={interwind} alt="loader" /> : 'Create Invoice' }  
-        </button>
+        {
+          !invoice &&
+                  ( <button
+                    type='submit'
+                    className="bg-[#0032a5] w-full grid place-items-center text-white px-4 py-2 rounded"
+                  >
+                      {showLoader ?  <img className="h-8" src={interwind} alt="loader" /> : 'Create Invoice' }  
+                  </button>)
+        }
       </form>
+      {
+        invoice && (<button
+                    type="button"
+                    onClick={cancelInvoice}
+                    className="bg-[#0032a5] w-full mt-5 grid place-items-center text-white px-4 py-2 rounded"
+                  >
+                      {showLoader ?  <img className="h-8" src={interwind} alt="loader" /> : 'Cancel Invoice' }  
+                  </button>) 
+      }
       {invoice && (
         <div className="mt-6 p-4 border border-gray-400 border-solid rounded bg-gray-50 ">
-         
-          <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
+          <div className='flex justify-between'>
+             <h2 className="text-xl font-semibold mb-2">Invoice Created</h2>
+             <p className='text-[11px]'>Expires in: {formatTime(timeLeft)}</p>
+          </div>
+          
           <div className='grid gap-2 '>
             <div className='flex'>
                 <p className='h-8 text-md'>Pay with: <span className='font-semibold text-md'>{invoice.pay_currency}</span></p>
