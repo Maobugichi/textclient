@@ -122,7 +122,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
 
     try {
         navigator.clipboard.writeText(referralCode);
-         
             socket.emit("join-room");
             socket.on("notification", (data) => {
             console.log("Notification received:", data);})

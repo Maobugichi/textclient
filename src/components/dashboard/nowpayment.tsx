@@ -332,7 +332,7 @@ useEffect(() => {
 
       <form onSubmit={createInvoice} className="space-y-4  max-w-md">
         <div className='w-full  flex justify-between'>
-            <span className="text-gray-400 text-sm">Min is $10</span>
+            <span className="text-gray-400 text-sm">Min is $5</span>
             <span className="text-gray-400 text-sm">rate: ₦{rate}</span>
         </div>
         
