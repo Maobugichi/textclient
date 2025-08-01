@@ -95,5 +95,8 @@ const providers = [
 
     return newDate
  }
+
+ 
+
 const listItem = ['Light' , 'Dark' , 'System']
 export { modalOptions , providers , listItem , openFilter , filter , getTime }

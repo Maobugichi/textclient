@@ -43,13 +43,11 @@ const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow , theme , setTheme,
     useEffect(() => {
       getLevel()
       const userLevel = getUserLevel(level);
-      console.log(userLevel)
       const { icon , text } = userLevel || { icon: '', text: '' }
       setIcon({
         icon:icon,
         text:text
       })
-      console.log(userLevel)
     },[])
     return(
         <header className={`fixed w-full top-0 h-16 grid place-items-center ${theme ? 'bg-[#191919] border-blue-100 text-white' : 'bg-white border-[#5252] text-black'} border-b border-solid  z-20`}>

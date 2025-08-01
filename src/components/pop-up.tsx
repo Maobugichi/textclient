@@ -3,6 +3,7 @@ import { Clipboard, ClipboardCheck ,X } from "lucide-react";
 import { useEffect, useState } from "react";
 import {Dispatch , SetStateAction } from 'react';
 import axios from "axios";
+import { io } from "socket.io-client";
 import interwind from "../assets/Interwind.svg"
 import spinner from "../assets/dualring.svg"
 
@@ -41,7 +42,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
 
           }
           setShowLoader(true)
-          const res = await axios.post('https://api.textflex.net/api/sms/cancel', {
+           await axios.post('https://api.textflex.net/api/sms/cancel', {
            request_id: req_id,
            debitref: debitRef,
            user_id: userId,
@@ -53,8 +54,16 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
            localStorage.removeItem("cost");
            setShowLoader(false)
            setIsShow(false)
-         alert('sms polling cancelled, your funds would be refunded')
-         console.log(res)
+            const socket = io('https://api.textflex.net', {
+            query: { 
+               // userId: response.data.userId,
+                //eventType: response.data.eventTag  
+            }
+            });
+            socket.emit("client-ready");
+            socket.on("notification", (data) => {
+            console.log("Notification received:", data); })
+        
         }
 
     useEffect(() => {

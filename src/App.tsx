@@ -20,7 +20,9 @@ import ScrollToTop from "./components/scrollToTheTop";
 import PrivacyPage from "./ui/privacy";
 import TermsPage from "./ui/tandc";
 import EsimPlans from "./route/EsimPlans";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { NotificationsInitializer } from "./components/NotifInitializer";
 
 function App() {
   
@@ -28,6 +30,8 @@ function App() {
     <HashRouter>
       <ContextProvider>
         <ScrollToTop />
+        <NotificationsInitializer />
+        <ToastContainer position="top-right"  />
         <Routes>
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />

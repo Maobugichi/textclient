@@ -12,8 +12,7 @@ import { motion } from "motion/react";
 
 
 const Payment = () => {
-   const myContext = useContext(ShowContext)
- 
+  const myContext = useContext(ShowContext)
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { userData , theme } = myContext;
   const [data , setData ] = useState<any>({
@@ -38,6 +37,7 @@ const Payment = () => {
      }))
   }
 
+  console.log(userData)
   const [visibleCount, setVisibleCount] = useState(10);
 
   const filteredTrans = transs
@@ -56,8 +56,8 @@ const Payment = () => {
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       if (amount < 1000) {
-        //setErr(true)
-        //return
+        setErr(true)
+        return
       }
       
       setShowLoader(true)

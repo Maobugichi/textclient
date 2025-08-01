@@ -26,8 +26,6 @@ const ContextProvider: React.FC<ContextProps> = ({ children }) => {
   const [theme, setTheme] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(userData)
-    console.log('hiiiii')
     try {
       localStorage.setItem("userData", JSON.stringify(userData));
     } catch (err) {

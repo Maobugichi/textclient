@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
 import Toast from "../components/toast";
 import logo from "../assets/textflexLogo.png"
+import { io } from "socket.io-client";
 
 const Login = () => {
     const [ credentials , setCredentials ] = useState({
@@ -51,6 +52,19 @@ const Login = () => {
                   })
             }
             setShowLoader(false)
+            console.log(response.data)
+            const socket = io('https://api.textflex.net', {
+            query: { 
+                userId: response.data.userId,
+                eventType: response.data.eventTag  
+            }
+            });
+            socket.emit("client-ready");
+            socket.on("notification", (data) => {
+            console.log("Notification received:", data);
+            setErrorMessage(data.message);
+            setShow(true);
+            });
             setUserData(response.data)
             navigate('/dashboard/1')
           })
@@ -75,12 +89,11 @@ const Login = () => {
     },[show])
   return(
       <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh] place-items-center grid md:min-h-[50vh]">
-       
         <Toast
          show={show}
          errorMssg={errorMssg}
          />
-        <div className="text-center h-fit grid gap-4 place-items-center">
+        <div className="text-center h-fit pb-5  grid gap-4 place-items-center">
              <img src={logo} alt="textflex logo" className="w-32"/>
             <p className="text-lg font-semibold">Enter your details below to log into your account</p>
         </div>
