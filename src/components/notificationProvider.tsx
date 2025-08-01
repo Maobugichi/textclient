@@ -29,14 +29,11 @@ export const useNotifications = () => {
         })
 
        socket.on("connect", () => {
-        console.log(`Socket connected for user ${userId}`);
         socket.emit("join-room", userId);
         //socket.emit("client-ready");
         });
          
         socket.on("notification", (data: NotificationPayLoad) => {
-            console.log(userId)
-            console.log("Notification received:", data);
             return toast[data.type](data.message)
         })
          

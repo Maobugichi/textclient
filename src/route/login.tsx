@@ -52,7 +52,7 @@ const Login = () => {
                   })
             }
             setShowLoader(false)
-            console.log(response.data)
+           
             const socket = io('https://api.textflex.net', {
             query: { 
                 userId: response.data.userId,
@@ -70,6 +70,7 @@ const Login = () => {
           })
           .catch((err) => {
             setErrorMessage(err.response.data.error)
+            console.log(err)
             setShow(true)
             setCredentials({
                 email:'',

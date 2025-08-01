@@ -52,6 +52,7 @@ const DashBoard = () => {
             const purchaseArray = response.data.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
+            console.log(response.data)
             setUserDetails(purchaseArray);
              await getUserBalance()  
         }

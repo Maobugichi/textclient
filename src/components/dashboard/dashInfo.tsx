@@ -11,7 +11,7 @@ import {
     Filter,
    
   } from 'lucide-react';
-
+import { io } from "socket.io-client";
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
@@ -31,6 +31,7 @@ interface DashProps {
 }
 
 const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, userData}) => {
+      console.log(userData)
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
@@ -44,7 +45,9 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
         try {
         const res = await axios.get("https://api.textflex.net/api/links");
         setLinks(res.data[1].link);
+        console.log(res.data[1].link)
         } catch (err) {
+            console.log(err)
             alert("Failed to fetch links");
         }
      };
@@ -86,9 +89,11 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
     ]
 
     useEffect(() => {
+       
     const fetchReferral = async () => {
         try {
             const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userData.userId}`);
+            console.log(response)
             setReferralCode(response.data);
         } catch (err) {
             console.error("Error fetching referral", err);
@@ -98,26 +103,46 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
     fetchReferral();
 }, [userData.userId]);
 
-   const generateReferralCode = () => {
+
+    const socket = io('https://api.textflex.net', {
+            query: { 
+                userId: userData.userId,
+            }
+    });
+
+
+   const generateReferralCode = (e:any) => {
+     
     if (!referralCode) return;
+    const target = e.target as HTMLElement
+    console.log(target.innerText)
+    if (target.innerText == 'Textflex' || target.innerText == 'Join our telegram channel for more info and updates') {
+        return
+    }
 
     try {
         navigator.clipboard.writeText(referralCode);
-        alert("Referral code copied!");
+         
+            socket.emit("join-room");
+            socket.on("notification", (data) => {
+            console.log("Notification received:", data);})
+           alert("Referral code copied!");
     } catch (err) {
         console.error("Clipboard copy failed", err);
         alert("Failed to copy code");
     }
-};
+   };
 
     const forwardInfo = [
         {
+            link:'',
             onClick:generateReferralCode,
             text:'Referral Link',
             forward:'Click to copy your referral link'
         }, 
         {
             link:links,
+            onClick:null,
             text:'Textflex',
             forward:'Join our telegram channel for more info and updates'
         }
@@ -157,7 +182,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          <Blocks
           extra={info.extra}
           icon={info.icon}
-          amount={info.amount}
+          amount={info.amount ? info.amount : 0}
           content={info.content}
           btnIcon={info.btnIcon}
           className=" h-fit  md:h-[80px] lg:h-[100px] min-h-[100px] overflow-hidden rounded-sm bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"

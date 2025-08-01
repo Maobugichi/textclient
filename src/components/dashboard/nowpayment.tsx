@@ -247,6 +247,7 @@ useEffect(() => {
         localStorage.removeItem('pending_payment_id');
        }
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
+       console.log(data)
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount
@@ -255,6 +256,7 @@ useEffect(() => {
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
     } catch (err) {
+      console.log(err)
       setShowLoader(false)
     }
   };

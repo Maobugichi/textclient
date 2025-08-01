@@ -5,15 +5,15 @@ interface ForwardBlocksProps {
     text:string;
     forward:string;
     theme:boolean;
-    link?:string;
-    onClick?:() => void;
+    link:string;
+    onClick?:(e:any) => void;
     userId:string
 }
 
 const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, link, onClick }) => {
     const content = (
         <div
-            onClick={() => onClick && onClick()}
+            onClick={(e) => onClick && onClick(e)}
             className={`w-full p-3 border border-solid rounded-md ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
         >
             <p>{text}</p>
@@ -21,9 +21,8 @@ const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, lin
         </div>
     );
 
-    return link && !onClick
-        ? <Link className="w-full md:w-[49.5%]" to={link}>{content}</Link>
-        : <div className="w-full md:w-[49.5%]">{content}</div>;
+    return <Link className="w-full md:w-[49.5%]" to={link}>{content}</Link>
+        
 };
 
 
