@@ -18,7 +18,6 @@ export const useNotifications = () => {
 
     useEffect(() => {
         const userId = userData.userId
-        
          if (!userId) return;
          if (socketRef.current) {
           socketRef.current.disconnect();
@@ -30,7 +29,7 @@ export const useNotifications = () => {
 
        socket.on("connect", () => {
         socket.emit("join-room", userId);
-        //socket.emit("client-ready");
+        
         });
          
         socket.on("notification", (data: NotificationPayLoad) => {

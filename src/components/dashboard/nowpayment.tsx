@@ -45,6 +45,10 @@ function NowPay() {
     pay_currency: '',
     order_description: 'deposit',
    });
+   const timerRef = useRef<number | null>(null); 
+   const cleanupRef = useRef<(() => void) | null>(null);
+   
+
    const [ copied , setCopied ] = useState<any>({
         address:false,
         outcome_amount:false
@@ -75,7 +79,13 @@ function NowPay() {
       })
       .catch(console.error);
        const savedPaymentId = localStorage.getItem('pending_payment_id');
-      if (savedPaymentId && !invoice) {
+       const savedInvoice = localStorage.getItem('invoice');
+      if (savedPaymentId) {
+        
+        if (savedInvoice) {
+          setInvoice(JSON.parse(savedInvoice));
+         
+        } else {
         checkPaymentStatus(savedPaymentId).then((res) => {
           if (res?.payment_status === 'waiting') {
             setInvoice(res);
@@ -84,7 +94,7 @@ function NowPay() {
           }
         }).catch(() => {
           localStorage.removeItem('pending_payment_id'); 
-        });
+        }); }
       }
 
      
@@ -92,19 +102,15 @@ function NowPay() {
 
 
   useEffect(() => {
-    if (timeLeft == 0) {
-       localStorage.removeItem('savedExpiration')
-       localStorage.removeItem('pending_payment_id');
-       setForm({
-        price_amount: '',
-        order_id:userData.userId,
-        email:userData.userEmail,
-        pay_currency: '',
-        order_description: 'deposit',
-      })
-       setInvoice(null)
+    const expire = localStorage.getItem('savedExpiration');
+    if (expire) {
+      timer();
     }
-  },[timeLeft])
+    return () => {
+      if (cleanupRef.current) cleanupRef.current();
+    };
+  }, []);
+
 
  const priorityCodes = ['BTC', 'USDTTRC20', 'ETH', 'SOL'];
 
@@ -156,6 +162,7 @@ const checkPaymentStatus = async (paymentId: string) => {
       params: { payment_id: paymentId },
     });
     return res.data;
+    console.log(res)
   } catch (error) {
     console.error('Error fetching payment status:', error);
     throw error;
@@ -167,10 +174,11 @@ useEffect(() => {
   if (!invoice) return;
     const interval = setInterval(() => {
       pollCount.current = pollCount.current + 1
-     
       checkPaymentStatus(invoice.payment_id).then((res) => {
+        console.log(res)
           if (res?.payment_status !== 'waiting') {
-            if (res?.payment_status == 'confirming') {
+            console.log('hello')
+            if (res?.payment_status == 'sending') {
               setShowPop((prev:any) => (
                 {
                   ...prev,
@@ -178,9 +186,10 @@ useEffect(() => {
                 }
               ))
             } else if (res?.credited) {
+              console.log('aheee')
                 setSuccess(true)
                 clearInterval(interval)
-                setTimeout(() => {
+                const myTimeOut = setTimeout(() => {
                   setShowPop({
                   loading:false,
                 })
@@ -195,11 +204,14 @@ useEffect(() => {
                 setAddress({
                   pay_address:'',
                   pay_amount:''})
+                  
                   setInvoice(null)
-                setSuccess(false)
+                  setSuccess(false)
                 }, 5000);
+                localStorage.removeItem('invoice');
+                localStorage.removeItem('savedExpiration');
                 localStorage.removeItem('pending_payment_id');
-            
+                return () => clearTimeout(myTimeOut)
             }
           } 
         });
@@ -207,30 +219,55 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [invoice]);
 
-useEffect(() => {
-   const savedExpiration = localStorage.getItem('savedExpiration');
-      let expirationTime:number;
-      if (savedExpiration) {
-        expirationTime = parseInt(savedExpiration,10)
-      } else {
-        expirationTime = Math.floor(Date.now() / 1000) + COUNTDOWN
-        localStorage.setItem('savedExpiration', expirationTime.toString())
-      }
 
-      const updateTimer = () => {
-        const now = Math.floor(Date.now() / 1000);
-        const remaining = expirationTime - now;
-        setTimeLeft(remaining > 0 ? remaining : 0)
+  const timer = () => {
+     const savedExpiration = localStorage.getItem('savedExpiration');
+    let expirationTime: number;
 
-        if (remaining <= 0) {
-          localStorage.removeItem('savedExpiration')
-          localStorage.removeItem('pending_payment_id');
+    if (savedExpiration) {
+      expirationTime = parseInt(savedExpiration, 10);
+    } else {
+      expirationTime = Math.floor(Date.now() / 1000) + COUNTDOWN;
+      localStorage.setItem('savedExpiration', expirationTime.toString());
+    }
+
+    const updateTimer = () => {
+      const now = Math.floor(Date.now() / 1000);
+      const remaining = expirationTime - now;
+      setTimeLeft(remaining > 0 ? remaining : 0);
+      //console.log(remaining)
+      if (remaining <= 0) {
+        console.log('Timer expired');
+        localStorage.removeItem('savedExpiration');
+        localStorage.removeItem('pending_payment_id');
+        localStorage.removeItem('invoice');
+        setInvoice(null);
+        setForm({
+          price_amount: '',
+          order_id: userData.userId,
+          email: userData.userEmail,
+          pay_currency: '',
+          order_description: 'deposit',
+        });
+
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
         }
       }
-      updateTimer();
-      const interval = setInterval(updateTimer,1000);
-      return () => clearInterval(interval)
-},[invoice])
+    };
+
+    updateTimer();
+    const interval = window.setInterval(updateTimer, 1000);
+    timerRef.current = interval;
+
+    const cleanup = () => {
+      clearInterval(interval);
+      timerRef.current = null;
+    };
+
+    cleanupRef.current = cleanup;
+    return cleanup;
+  };
 
 
   const createInvoice = async (e: React.FormEvent) => {
@@ -247,7 +284,7 @@ useEffect(() => {
         localStorage.removeItem('pending_payment_id');
        }
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
-       console.log(data)
+      
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount
@@ -255,6 +292,8 @@ useEffect(() => {
       setShowLoader(false)
       setInvoice(data);
       localStorage.setItem('pending_payment_id', data.payment_id);
+      localStorage.setItem('invoice', JSON.stringify(data));
+      timer()
     } catch (err) {
       console.log(err)
       setShowLoader(false)
@@ -262,17 +301,23 @@ useEffect(() => {
   };
 
   const cancelInvoice = () => {
-     localStorage.removeItem('savedExpiration')
-     localStorage.removeItem('pending_payment_id');
-     setInvoice(null)
-     setForm({
-        price_amount: '',
-        order_id:userData.userId,
-        email:userData.userEmail,
-        pay_currency: '',
-        order_description: 'deposit',
-      })
-  }
+  if (cleanupRef.current) cleanupRef.current(); 
+
+  localStorage.removeItem('invoice');
+  localStorage.removeItem('savedExpiration');
+  localStorage.removeItem('pending_payment_id');
+
+  setInvoice(null);
+  setForm({
+    price_amount: '',
+    order_id: userData.userId,
+    email: userData.userEmail,
+    pay_currency: '',
+    order_description: 'deposit',
+  });
+  setTimeLeft(0); // clear countdown visually
+  };
+
   const handleCopyAddress = () => {
       navigator.clipboard.writeText(address.pay_address).then(() => {
           setCopied((prev:any) => ({
