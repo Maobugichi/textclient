@@ -64,7 +64,7 @@ const Input: React.FC<InputProps> = ({
   const [showLoader, setShowLoader] = useState(false);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
-   const [adminCosts, setAdminCosts] = useState<Cost[]>([]);
+  //const [adminCosts, setAdminCosts] = useState<Cost[]>([]);
   const stock = useRef("");
   const actualCost = useRef("");
   const lastDebitRef = useRef("");
@@ -78,10 +78,6 @@ const Input: React.FC<InputProps> = ({
     user_id: userData.userId,
     email: userData.userEmail
   });
-
-   useEffect(() => {
-    axios.get<Cost[]>("https://api.textflex.net/api/costs").then((res) => setAdminCosts(res.data));
-  }, []);
 
   useEffect(() => {
     axios
@@ -245,11 +241,6 @@ const Input: React.FC<InputProps> = ({
     },
     [countries]
   );
-
-
-  useEffect(() => {
-    //console.log(options)
-  },[options])
 
   const handleCountryChange = useCallback((selectedOption: OptionType | null) => {
      if (!selectedOption) return;
