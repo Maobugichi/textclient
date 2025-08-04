@@ -33,9 +33,9 @@ const COUNTDOWN = 1000
 function NowPay() {
     const myContext = useContext(ShowContext)
    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { userData  } = myContext;
+    const { userData , setRate , rate } = myContext;
     const [currencies, setCurrencies] = useState<Currency[]>([]);
-    const [ rate ,setRate ] = useState<any>(null)
+   
     const pollCount = useRef(0);
     const [ success , setSuccess ] = useState<boolean>(false)
     const [form, setForm] = useState({
@@ -47,8 +47,6 @@ function NowPay() {
    });
    const timerRef = useRef<number | null>(null); 
    const cleanupRef = useRef<(() => void) | null>(null);
-   
-
    const [ copied , setCopied ] = useState<any>({
         address:false,
         outcome_amount:false
@@ -74,8 +72,8 @@ function NowPay() {
 
        axios.get('https://api.textflex.net/api/get-rate')
       .then(res => {
-         console.log(res.data[0].rate)
          setRate(res.data[0].rate)
+         localStorage.setItem("rate",res.data[0].rate)
       })
       .catch(console.error);
        const savedPaymentId = localStorage.getItem('pending_payment_id');
@@ -162,7 +160,6 @@ const checkPaymentStatus = async (paymentId: string) => {
       params: { payment_id: paymentId },
     });
     return res.data;
-    console.log(res)
   } catch (error) {
     console.error('Error fetching payment status:', error);
     throw error;
@@ -175,9 +172,7 @@ useEffect(() => {
     const interval = setInterval(() => {
       pollCount.current = pollCount.current + 1
       checkPaymentStatus(invoice.payment_id).then((res) => {
-        console.log(res)
           if (res?.payment_status !== 'waiting') {
-            console.log('hello')
             if (res?.payment_status == 'sending') {
               setShowPop((prev:any) => (
                 {
@@ -186,7 +181,6 @@ useEffect(() => {
                 }
               ))
             } else if (res?.credited) {
-              console.log('aheee')
                 setSuccess(true)
                 clearInterval(interval)
                 const myTimeOut = setTimeout(() => {
@@ -235,9 +229,7 @@ useEffect(() => {
       const now = Math.floor(Date.now() / 1000);
       const remaining = expirationTime - now;
       setTimeLeft(remaining > 0 ? remaining : 0);
-      //console.log(remaining)
       if (remaining <= 0) {
-        console.log('Timer expired');
         localStorage.removeItem('savedExpiration');
         localStorage.removeItem('pending_payment_id');
         localStorage.removeItem('invoice');
@@ -315,7 +307,7 @@ useEffect(() => {
     pay_currency: '',
     order_description: 'deposit',
   });
-  setTimeLeft(0); // clear countdown visually
+  setTimeLeft(0);
   };
 
   const handleCopyAddress = () => {
@@ -373,14 +365,11 @@ useEffect(() => {
       )
       }
 
-
-
       <form onSubmit={createInvoice} className="space-y-4  max-w-md">
         <div className='w-full  flex justify-between'>
             <span className="text-gray-400 text-sm">Min is $5</span>
             <span className="text-gray-400 text-sm">rate: ₦{rate}</span>
         </div>
-        
         <input
           name="price_amount"
           type="number"

@@ -246,6 +246,11 @@ const Input: React.FC<InputProps> = ({
     [countries]
   );
 
+
+  useEffect(() => {
+    //console.log(options)
+  },[options])
+
   const handleCountryChange = useCallback((selectedOption: OptionType | null) => {
      if (!selectedOption) return;
      setTarget((prev:any) => ({ ...prev, country: selectedOption.value }));
@@ -325,8 +330,10 @@ const Input: React.FC<InputProps> = ({
         theme={theme}
         isDisabled={error}
         options={options.map((opt) => {
-          const multiplier = opt.cost > 200 ? 15 : 50;
-          const price = (opt.cost * multiplier).toLocaleString("en-NG", {
+          const rate:any = localStorage.getItem("rate")
+          const usd = opt.cost / 100
+          const nairaCost = usd * rate
+          const price = (nairaCost).toLocaleString("en-NG", {
             style: "currency",
             currency: "NGN"
           });
@@ -337,13 +344,17 @@ const Input: React.FC<InputProps> = ({
         })}
         value={
           options
-            .map((opt) => ({
-              label: `${opt.application} - ${(opt.cost * (opt.cost > 200 ? adminCosts[0].low_cost : adminCosts[0].high_cost))
+            .map((opt) => {
+              const rate:any = localStorage.getItem("rate")
+              const usd = opt.cost / 100
+              const nairaCost = usd * rate
+              return({
+              label: `${opt.application} - ${(nairaCost)
                 .toLocaleString("en-NG", { style: "currency", currency: "NGN" })
                 .replace("NGN", "")
                 .trim()}`,
               value: opt.application_id
-            }))
+            })})
             .find((opt) => opt.value === target.service) || null
         }
         />

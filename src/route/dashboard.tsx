@@ -66,6 +66,10 @@ const DashBoard = () => {
       const params = new URLSearchParams(window.location.search);
       const refParam = params.get('reference');
       setRef(refParam);   
+      axios.get('https://api.textflex.net/api/get-rate')
+      .then(res => {
+         localStorage.setItem("rate",res.data[0].rate)
+      })
       localStorage.setItem('ref', refParam || '');
     },[])
 

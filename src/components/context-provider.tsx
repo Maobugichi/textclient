@@ -9,6 +9,8 @@ interface UserContextType {
   setUserData: React.Dispatch<React.SetStateAction<any>>;
   theme: boolean;
   setTheme: React.Dispatch<React.SetStateAction<boolean>>;
+  rate:any;
+  setRate:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ShowContext = createContext<UserContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ const ContextProvider: React.FC<ContextProps> = ({ children }) => {
     }
   });
   const [theme, setTheme] = useState<boolean>(false);
+  const [ rate ,setRate ] = useState<any>(null)
 
   useEffect(() => {
     try {
@@ -34,8 +37,8 @@ const ContextProvider: React.FC<ContextProps> = ({ children }) => {
   }, [userData]);
 
   const contextValue = useMemo(
-    () => ({ userData, setUserData, theme, setTheme }),
-    [userData, theme]
+    () => ({ userData, setUserData, theme, setTheme, rate , setRate }),
+    [userData, theme, rate]
   );
 
   return <ShowContext.Provider value={contextValue}>{children}</ShowContext.Provider>;

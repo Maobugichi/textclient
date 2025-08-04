@@ -11,36 +11,52 @@ const Service = () => {
         country:false,
         service:true
       })
+       const bearer = 'CwxD7iISBBCT7bsTffTONmFk0X0+SXFVtEgJQnc4odY='
       useEffect(() => {
-        const bearer = 'CwxD7iISBBCT7bsTffTONmFk0X0+SXFVtEgJQnc4odY='
-
         async function fetchBrandData() {
+            const data = localStorage.getItem("brand");
+            console.log(data)
+            const allBrandData: any[] = [];
+            const seenBrands: Set<string> = new Set();
+
             try {
-                const allBrandData: any[] = []; 
-                const seenBrands: Set<string> = new Set;
                 for (const brand of brandNames) {
-                     const response = await axios.get(`https://api.brandfetch.io/v2/search/${brand}?c=${bearer}`)
-                     const brandArray = response.data
-                     for (const brandData of brandArray) {
-                        const normalizedBrandName = brandData.name.toLowerCase().trim();
-                        if (!seenBrands.has(normalizedBrandName)) {
-                            if (brandData.name.toLowerCase() == brand)
-                            allBrandData.push(brandData)
-                            seenBrands.add(normalizedBrandName)
-                            
+                    try {
+                        const response = await axios.get(`https://api.brandfetch.io/v2/search/${brand}`, {
+                            headers: {
+                                Authorization: `Bearer ${bearer}`
+                            }
+                        });
+
+                        const brandArray = response.data;
+                        console.log("Brandfetch data for", brand, brandArray);
+
+                        for (const brandData of brandArray) {
+                            const normalizedBrandName = brandData.name.toLowerCase().trim();
+                            if (!seenBrands.has(normalizedBrandName)) {
+                                if (brandData.name.toLowerCase() === brand)
+                                    allBrandData.push(brandData);
+                                seenBrands.add(normalizedBrandName);
+                            }
                         }
-                       
-                     }
+                    } catch (brandErr) {
+                        console.error("Brandfetch API failed for:", brand, brandErr);
+                    }
                 }
-               
-                const meme = await axios.get(`https://restcountries.com/v3.1/all`)
-                setCountry(meme.data.slice(14,26))
-                
-                setBrand(allBrandData)
+
+                try {
+                    const meme = await axios.get(`https://restcountries.com/v3.1/all?fields=name,flags`);
+                    setCountry(meme.data.slice(14, 26));
+                } catch (countryErr) {
+                    console.error("RestCountries API failed", countryErr);
+                }
+                localStorage.setItem("brands",JSON.stringify(allBrandData))
+                setBrand(allBrandData);
             } catch (err) {
-                console.log(err)
+                console.log("Unexpected error:", err);
             }
-        } 
+        }
+
       fetchBrandData()
       },[])
 
