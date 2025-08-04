@@ -34,12 +34,6 @@ interface Country {
   [key: string]: any;
 }
 
-interface Cost {
-  id: number;
-  low_cost: number;
-  high_cost: number;
-}
-
 const Input: React.FC<InputProps> = ({
   tableValues,
   setNumberInfo,
