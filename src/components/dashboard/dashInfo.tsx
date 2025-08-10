@@ -34,7 +34,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
       const [links, setLinks] = useState<string>('');
-      const [referralCode, setReferralCode] = useState("");
+      //const [referralCode, setReferralCode] = useState("");
       useEffect(() => {
          fetchLinks();
       }, []);
@@ -88,7 +88,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
      const fetchReferral = async () => {
         try {
             const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userData.userId}`);
-            setReferralCode(response.data);
+            //setReferralCode(response.data);
             return response.data
         } catch (err) {
             console.error("Error fetching referral", err);
