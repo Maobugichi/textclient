@@ -52,7 +52,6 @@ const DashBoard = () => {
             const purchaseArray = response.data.data.filter((item:any) => (
                 item.purchased_number !== null
             ))
-            console.log(response.data)
             setUserDetails(purchaseArray);
              await getUserBalance()  
         }
@@ -70,7 +69,13 @@ const DashBoard = () => {
       .then(res => {
          localStorage.setItem("rate",res.data[0].rate)
       })
+
+      axios.get("https://api.textflex.net/api/costs")
+      .then(res => {
+        localStorage.setItem("cost",JSON.stringify(res.data[0]))
+      })
       localStorage.setItem('ref', refParam || '');
+      getTransaction()
     },[])
 
      async function getTransaction() {
@@ -86,10 +91,7 @@ const DashBoard = () => {
          setTransactionHistory(newData)
          await getUserBalance()  
         }
-     useEffect(() => {
-       
-       getTransaction()
-     },[])
+   
 
     useEffect(() => {
         const mxTrials = 15;

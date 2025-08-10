@@ -62,6 +62,7 @@ function NowPay() {
     loading:false,
   });
   const [ timeLeft , setTimeLeft ] = useState<number>(0)
+  const [ err, setErr ] = useState<boolean>(false)
   
   useEffect(() => {
     axios.get('https://api.textflex.net/api/now-currencies')
@@ -140,6 +141,13 @@ useEffect(() => {
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 const { name, value } = e.target;
+  if (name == "price_amount" && parseInt(value) < 5) {
+    setErr(true)
+    setTimeout(() => {
+      setErr(false)
+    }, 3000);
+    return
+  } 
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -216,7 +224,7 @@ useEffect(() => {
 
   const timer = () => {
      const savedExpiration = localStorage.getItem('savedExpiration');
-    let expirationTime: number;
+     let expirationTime: number;
 
     if (savedExpiration) {
       expirationTime = parseInt(savedExpiration, 10);
@@ -294,7 +302,6 @@ useEffect(() => {
 
   const cancelInvoice = () => {
   if (cleanupRef.current) cleanupRef.current(); 
-
   localStorage.removeItem('invoice');
   localStorage.removeItem('savedExpiration');
   localStorage.removeItem('pending_payment_id');
@@ -375,7 +382,7 @@ useEffect(() => {
           type="number"
           placeholder="Amount"
           value={form.price_amount}
-          className='border pl-5 w-full h-10 rounded-sm border-solid border-gray-500'
+          className={`border pl-5 w-full h-10 rounded-sm border-solid ${err ? "border-red-400" : "border-gray-500"}`}
           onChange={handleChange}
           required
         />

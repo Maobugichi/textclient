@@ -26,8 +26,6 @@ interface InputProps {
   req_id: string;
 }
 
-
-
 interface Country {
   id: string;
   title: string;
@@ -48,23 +46,21 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const myContext = useContext(ShowContext);
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-
   const { userData } = myContext;
   const balance = tableValues[0]?.balance;
-
   const [provider, setProvider] = useState<any>("Swift");
   const [countries, setCountries] = useState<Record<string, Country>>({});
   const [options, setOptions] = useState<any[]>([]);
   const [showLoader, setShowLoader] = useState(false);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
-  //const [adminCosts, setAdminCosts] = useState<Cost[]>([]);
   const stock = useRef("");
-  const actualCost = useRef("");
+  const actualCost = useRef<number>(0);
   const lastDebitRef = useRef("");
-  //const shouldPoll = useRef(true);
   const statusRef = useRef({ stat: "", req_id: "" });
-
+  const rate = localStorage.getItem("rate");
+  const raw = localStorage.getItem("cost");
+  const myCost = raw ? JSON.parse(raw) : null;
   const [target, setTarget] = useState<any>({
     provider,
     country: "5",
@@ -72,7 +68,6 @@ const Input: React.FC<InputProps> = ({
     user_id: userData.userId,
     email: userData.userEmail
   });
-
   useEffect(() => {
     axios
       .get("https://api.textflex.net/api/sms/countries")
@@ -82,6 +77,7 @@ const Input: React.FC<InputProps> = ({
 
 
   useEffect(() => {
+    
     const savedInfo = localStorage.getItem("numberInfo");
     const savedReqId = localStorage.getItem("req_id");
     const savedDebitRef = localStorage.getItem("lastDebitRef");
@@ -131,6 +127,7 @@ const Input: React.FC<InputProps> = ({
           `https://api.textflex.net/api/sms/status/${req_id}`,
           {
             params: {
+              rate,
               cost,
               user_id: userData.userId,
               attempts,
@@ -186,7 +183,8 @@ const Input: React.FC<InputProps> = ({
       const res = await axios.post("https://api.textflex.net/api/sms/get-number", {
         ...target,
         price: cost,
-        actual: actualCost.current
+        actual: actualCost.current,
+       
       });
       setShowLoader(false);
       if (res.data.phone?.error_msg) {
@@ -205,6 +203,7 @@ const Input: React.FC<InputProps> = ({
       localStorage.setItem("lastDebitRef", res.data.debitRef);
       localStorage.setItem("cost", cost.toString());
     } catch (err: any) {
+      console.log(err)
       setShowLoader(false);
       setErrorInfo(err.response?.data?.error || "Error occurred");
       setIsError(true);
@@ -223,7 +222,6 @@ const Input: React.FC<InputProps> = ({
   const handleInputChange = useCallback(
     (selectedOption: OptionType | null) => {
        if (!selectedOption) return;
-
       const selectedProvider = selectedOption.value;
       setProvider(selectedProvider);
 
@@ -244,14 +242,18 @@ const Input: React.FC<InputProps> = ({
   const extractCode = useCallback(
     (selectedOption: OptionType | null) => {
        if (!selectedOption) return;
-
+       
       const selectedId = selectedOption.value;
       const selectedItem = options.find((opt) => opt.application_id === selectedId);
-
       if (selectedItem) {
-        actualCost.current = selectedItem.cost;
-        const multiplier = selectedItem.cost > 200 ? 15 : 50;
-        setCost(selectedItem.cost * multiplier);
+        const rate:any = localStorage.getItem("rate");
+        const usd = parseInt(selectedItem.cost) / 100
+        const naira = usd * rate 
+        const gains = naira <= 1000 ? parseFloat(myCost.low_cost) : parseFloat(myCost.high_cost)
+        const moneyGained = naira * (1 + gains)
+        const apiGain = moneyGained - naira
+        actualCost.current = naira;
+        setCost(apiGain);
         setTarget((prev:any) => ({ ...prev, service: selectedId }));
       }
     },
@@ -318,7 +320,9 @@ const Input: React.FC<InputProps> = ({
           const rate:any = localStorage.getItem("rate")
           const usd = opt.cost / 100
           const nairaCost = usd * rate
-          const price = (nairaCost).toLocaleString("en-NG", {
+          const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
+          const totalPrice = nairaCost * (1 + gains)
+          const price = (totalPrice).toLocaleString("en-NG", {
             style: "currency",
             currency: "NGN"
           });
