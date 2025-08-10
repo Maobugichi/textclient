@@ -89,6 +89,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
         try {
             const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userData.userId}`);
             setReferralCode(response.data);
+            return response.data
         } catch (err) {
             console.error("Error fetching referral", err);
         }
@@ -100,8 +101,9 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
         return
     }
     try {
-        await fetchReferral()
-        navigator.clipboard.writeText(referralCode);
+       const code = await fetchReferral()
+       await navigator.clipboard.writeText(code);
+        console.log("Copied:", code);
     } catch (err) {
         console.error("Clipboard copy failed", err);
         alert("Failed to copy code");
