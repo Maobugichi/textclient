@@ -1,4 +1,5 @@
 import Fieldset from "../fieldset";
+import { SingleValue, ActionMeta } from "react-select";
 import React, {
   useRef,
   useState,
@@ -60,7 +61,9 @@ const Input: React.FC<InputProps> = ({
   const statusRef = useRef({ stat: "", req_id: "" });
   const rate = localStorage.getItem("rate");
   const raw = localStorage.getItem("cost");
+  
   const myCost = raw ? JSON.parse(raw) : null;
+
   const [target, setTarget] = useState<any>({
     provider,
     country: "5",
@@ -77,7 +80,6 @@ const Input: React.FC<InputProps> = ({
 
 
   useEffect(() => {
-    
     const savedInfo = localStorage.getItem("numberInfo");
     const savedReqId = localStorage.getItem("req_id");
     const savedDebitRef = localStorage.getItem("lastDebitRef");
@@ -175,6 +177,7 @@ const Input: React.FC<InputProps> = ({
     });
   };
 
+
   const fetchSMSNumber = useCallback(async () => {
     if (!target.service || !target.country) return;
     if (cost > balance) return setError(true);
@@ -239,26 +242,19 @@ const Input: React.FC<InputProps> = ({
      setTarget((prev:any) => ({ ...prev, country: selectedOption.value }));
   }, []);
 
-  const extractCode = useCallback(
-    (selectedOption: OptionType | null) => {
-       if (!selectedOption) return;
-       
-      const selectedId = selectedOption.value;
-      const selectedItem = options.find((opt) => opt.application_id === selectedId);
-      if (selectedItem) {
-        const rate:any = localStorage.getItem("rate");
-        const usd = parseInt(selectedItem.cost) / 100
-        const naira = usd * rate 
-        const gains = naira <= 1000 ? parseFloat(myCost.low_cost) : parseFloat(myCost.high_cost)
-        const moneyGained = naira * (1 + gains)
-        const apiGain = moneyGained - naira
-        actualCost.current = naira;
-        setCost(apiGain);
-        setTarget((prev:any) => ({ ...prev, service: selectedId }));
-      }
-    },
-    [options]
-  );
+const extractCode = (
+  selectedOption: SingleValue<OptionType>,
+
+) => {
+ const match = selectedOption?.label.match(/₦([\d,]+\.\d{2})/);
+  const selectedId = selectedOption?.value;
+  if (match) {
+    const amount = parseFloat(match[1].replace(/,/g, ""));
+    console.log("Numeric amount:", amount); 
+     setCost(amount);
+     setTarget((prev:any) => ({ ...prev, service: selectedId }));
+  }
+};
 
   useEffect(() => {
     const match = options.find(
@@ -327,7 +323,7 @@ const Input: React.FC<InputProps> = ({
             currency: "NGN"
           });
           return {
-            label: `${opt.application} - ${price.replace("NGN", "").trim()}`,
+            label: `${price.replace("NGN", "").trim()}`,
             value: opt.application_id
           };
         })}
@@ -337,8 +333,10 @@ const Input: React.FC<InputProps> = ({
               const rate:any = localStorage.getItem("rate")
               const usd = opt.cost / 100
               const nairaCost = usd * rate
+              const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
+              const totalPrice = nairaCost * (1 + gains)
               return({
-              label: `${opt.application} - ${(nairaCost)
+              label: `${opt.application} - ${(totalPrice)
                 .toLocaleString("en-NG", { style: "currency", currency: "NGN" })
                 .replace("NGN", "")
                 .trim()}`,

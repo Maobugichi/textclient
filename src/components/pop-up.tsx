@@ -51,7 +51,6 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
            localStorage.removeItem("req_id");
            localStorage.removeItem("lastDebitRef");
            localStorage.removeItem("numberInfo");
-           localStorage.removeItem("cost");
            setShowLoader(false)
            setIsShow(false)
             const socket = io('https://api.textflex.net', {

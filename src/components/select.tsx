@@ -27,6 +27,7 @@ const Select: React.FC<SelectProps> = ({
   theme,
   placeholder
 }) => {
+  
   return (
     <div id={id} className={`w-[95%] mx-auto ${className}`}>
       <ReactSelect

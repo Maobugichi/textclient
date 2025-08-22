@@ -35,10 +35,21 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
       const [ open , setOpen ] = useState<boolean>(false)
       const [links, setLinks] = useState<string>('');
       const [referralCode, setReferralCode] = useState("");
+      const [visibleCount, setVisibleCount] = useState(10);
       useEffect(() => {
          fetchLinks();
       }, []);
 
+      
+      useEffect(() => {
+         const handleWidth = () => {
+            setWidth(window.innerWidth);
+         }
+         window.addEventListener('resize' , handleWidth);
+         return () =>  window.removeEventListener('resize' , handleWidth);
+      },[])
+
+      console.log(transs)
      const fetchLinks = async () => {
         try {
         const res = await axios.get("https://api.textflex.net/api/links");
@@ -48,13 +59,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
             alert("Failed to fetch links");
         }
      };
-      useEffect(() => {
-         const handleWidth = () => {
-            setWidth(window.innerWidth);
-         }
-         window.addEventListener('resize' , handleWidth);
-         return () =>  window.removeEventListener('resize' , handleWidth);
-      },[])
+
 
       
     const blockInfo = [
@@ -119,10 +124,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
     }
    };
 
- 
-
-  
-
 
     const forwardInfo = [
         {
@@ -138,8 +139,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
             forward:'Join our telegram channel for more info and updates'
         }
     ]
-
-    const [visibleCount, setVisibleCount] = useState(10);
 
     const filteredTrans = transs
         .filter((item: any) => item.status === "successful" || item.status === "refunded")
