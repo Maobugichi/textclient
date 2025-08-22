@@ -165,7 +165,7 @@ const Input: React.FC<InputProps> = ({
     setTimeout(() => {
       setNumberInfo({ number: "", sms: "" });
       setIsShow(false);
-    }, 8000);
+    }, 5000);
   };
 
   const refund = async (user_id: string, cost: number, debitRef: string, request_id: string) => {

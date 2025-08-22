@@ -48,21 +48,17 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          window.addEventListener('resize' , handleWidth);
          return () =>  window.removeEventListener('resize' , handleWidth);
       },[])
+      const fetchLinks = async () => {
+            try {
+            const res = await axios.get("https://api.textflex.net/api/links");
+            setLinks(res.data[1].link);
+            } catch (err) {
+                console.log(err)
+                alert("Failed to fetch links");
+            }
+      };
 
-      console.log(transs)
-     const fetchLinks = async () => {
-        try {
-        const res = await axios.get("https://api.textflex.net/api/links");
-        setLinks(res.data[1].link);
-        } catch (err) {
-            console.log(err)
-            alert("Failed to fetch links");
-        }
-     };
-
-
-      
-    const blockInfo = [
+      const blockInfo = [
         {
             extra:'Balance',
             amount: balance ,
@@ -88,7 +84,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
             btnIcon:<ArrowUpRight  size={17}/>,
             link:'/number/1'
         }
-    ]
+      ]
 
     useEffect(() => {
       const fetchReferral = async () => {

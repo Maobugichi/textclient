@@ -141,13 +141,7 @@ useEffect(() => {
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 const { name, value } = e.target;
-  if (name == "price_amount" && parseInt(value) < 5) {
-    setErr(true)
-    setTimeout(() => {
-      setErr(false)
-    }, 3000);
-    return
-  } 
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -276,13 +270,16 @@ useEffect(() => {
     if (pay_id) {
       return
     }
+     if (parseInt(form.price_amount) < 5) {
+          setErr(true)
+          setTimeout(() => {
+            setErr(false)
+          }, 3000);
+          return
+        } 
     try {
        setShowLoader(true)  
        pollCount.current = 0        
-       const pay_id = localStorage.getItem('pending_payment_id')
-       if (pay_id) {
-        localStorage.removeItem('pending_payment_id');
-       }
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
       
         setAddress({
@@ -391,7 +388,7 @@ useEffect(() => {
           name="pay_currency"
           value={form.pay_currency}
           onChange={handleChange}
-           className='border w-full h-10 rounded-sm border-solid border-gray-500'
+          className='border pl-4 w-full h-10 rounded-sm border-solid border-gray-500'
            required
         >
           <option value="">Select Payment Currency</option>
