@@ -1,5 +1,5 @@
 import Fieldset from "../fieldset";
-import { SingleValue, ActionMeta } from "react-select";
+import { SingleValue } from "react-select";
 import React, {
   useRef,
   useState,
