@@ -189,6 +189,12 @@ const Input: React.FC<InputProps> = ({
         actual: actualCost.current,
        
       });
+      setTarget((prev:any) => {
+        return{
+          ...prev,
+          service:""
+        }
+      })
       setShowLoader(false);
       if (res.data.phone?.error_msg) {
         setErrorInfo(res.data.phone.error_msg);
@@ -248,9 +254,9 @@ const extractCode = (
 ) => {
  const match = selectedOption?.label.match(/₦([\d,]+\.\d{2})/);
   const selectedId = selectedOption?.value;
+
   if (match) {
-    const amount = parseFloat(match[1].replace(/,/g, ""));
-    console.log("Numeric amount:", amount); 
+     const amount = parseFloat(match[1].replace(/,/g, "")); 
      setCost(amount);
      setTarget((prev:any) => ({ ...prev, service: selectedId }));
   }
@@ -313,9 +319,11 @@ const extractCode = (
         theme={theme}
         isDisabled={error}
         options={options.map((opt) => {
+       
           const rate:any = localStorage.getItem("rate")
+          const rateObj = JSON.parse(rate)
           const usd = opt.cost / 100
-          const nairaCost = usd * rate
+          const nairaCost = usd * rateObj.rate
           const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
           const totalPrice = nairaCost * (1 + gains)
           const price = (totalPrice).toLocaleString("en-NG", {
@@ -323,7 +331,7 @@ const extractCode = (
             currency: "NGN"
           });
           return {
-            label: `${price.replace("NGN", "").trim()}`,
+            label: `${opt.application} - ${price.replace("NGN", "").trim()}`,
             value: opt.application_id
           };
         })}
@@ -331,8 +339,9 @@ const extractCode = (
           options
             .map((opt) => {
               const rate:any = localStorage.getItem("rate")
+              const rateObj = JSON.parse(rate)
               const usd = opt.cost / 100
-              const nairaCost = usd * rate
+              const nairaCost = usd * rateObj.rate
               const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
               const totalPrice = nairaCost * (1 + gains)
               return({

@@ -37,7 +37,6 @@ const Payment = () => {
      }))
   }
 
-  console.log(userData)
   const [visibleCount, setVisibleCount] = useState(10);
 
   const filteredTrans = transs
@@ -103,11 +102,10 @@ const Payment = () => {
       setTransactionHistory(newData)
     }
       getTransaction()
+    
   },[])
-
-  useEffect(() => {
-    console.log(isActive)
-  },[isActive])
+   const rate:any = localStorage.getItem("rate");
+   const rateObj = JSON.parse(rate)
     return(
       <div className={`h-[50vh] md:h-[80vh] w-full flex flex-col  gap-10 ${theme ? 'text-white' : 'text-black'}`}>
         <div className="md:w-[40%]  flex flex-col gap-4">
@@ -116,7 +114,6 @@ const Payment = () => {
           <div className="flex gap-2 cursor-pointer">
            {
             options.map((value:string,i:number) => {
-              console.log(i)
               return(
                 <motion.div
                  key={i}
@@ -134,7 +131,7 @@ const Payment = () => {
               <div className="w-full flex flex-col gap-3">
                   <div className="text-[12px] flex justify-between w-full ">
                     <label htmlFor="amount" className="font-semibold">Enter Amount</label>
-                    <span className="text-gray-400">Min is ₦1000</span>
+                    <span className="text-gray-400">Min is {rateObj.squadmin}</span>
                   </div>
                   <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is ₦1000</label>
                   <input onChange={handleChange} type="number" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>

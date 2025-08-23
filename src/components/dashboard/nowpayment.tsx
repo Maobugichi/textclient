@@ -31,9 +31,9 @@ interface InvoiceResponse {
 const COUNTDOWN = 1000
 
 function NowPay() {
-    const myContext = useContext(ShowContext)
+   const myContext = useContext(ShowContext)
    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { userData , setRate , rate } = myContext;
+    const { userData } = myContext;
     const [currencies, setCurrencies] = useState<Currency[]>([]);
    
     const pollCount = useRef(0);
@@ -51,18 +51,18 @@ function NowPay() {
         address:false,
         outcome_amount:false
     })
-  const [ address , setAddress ] = useState<any>({
+   const [ address , setAddress ] = useState<any>({
       pay_address:'',
       pay_amount:''
-  }) 
-  const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
-  const [ newArray , setNewArray ] = useState<any>([])
-  const [ showLoader, setShowLoader ] = useState<boolean>(false)
-  const [ showPop , setShowPop ] = useState<any>({
+   }) 
+   const [invoice, setInvoice] = useState<InvoiceResponse | null>(null);
+   const [ newArray , setNewArray ] = useState<any>([])
+   const [ showLoader, setShowLoader ] = useState<boolean>(false)
+   const [ showPop , setShowPop ] = useState<any>({
     loading:false,
-  });
-  const [ timeLeft , setTimeLeft ] = useState<number>(0)
-  const [ err, setErr ] = useState<boolean>(false)
+   });
+   const [ timeLeft , setTimeLeft ] = useState<number>(0)
+   const [ err, setErr ] = useState<boolean>(false)
   
   useEffect(() => {
     axios.get('https://api.textflex.net/api/now-currencies')
@@ -70,17 +70,9 @@ function NowPay() {
         setCurrencies(res.data.selectedCurrencies);
       })
       .catch(console.error);
-
-       axios.get('https://api.textflex.net/api/get-rate')
-      .then(res => {
-         setRate(res.data[0].rate)
-         localStorage.setItem("rate",res.data[0].rate)
-      })
-      .catch(console.error);
        const savedPaymentId = localStorage.getItem('pending_payment_id');
        const savedInvoice = localStorage.getItem('invoice');
       if (savedPaymentId) {
-        
         if (savedInvoice) {
           setInvoice(JSON.parse(savedInvoice));
          
@@ -95,11 +87,16 @@ function NowPay() {
           localStorage.removeItem('pending_payment_id'); 
         }); }
       }
-
      
+
   }, []);
 
+  const myrate = localStorage.getItem("rate");
+  let myRateObj 
 
+  if (myrate) {
+    myRateObj = JSON.parse(myrate);
+  }
   useEffect(() => {
     const expire = localStorage.getItem('savedExpiration');
     if (expire) {
@@ -109,7 +106,6 @@ function NowPay() {
       if (cleanupRef.current) cleanupRef.current();
     };
   }, []);
-
 
  const priorityCodes = ['BTC', 'USDTTRC20', 'ETH', 'SOL'];
 
@@ -279,9 +275,8 @@ useEffect(() => {
         } 
     try {
        setShowLoader(true)  
-       pollCount.current = 0        
+       pollCount.current = 0;        
        const { data } = await axios.post<InvoiceResponse>('https://api.textflex.net/api/invoice', form);
-      
         setAddress({
         pay_address:data.pay_address,
         pay_amount:data.pay_amount
@@ -371,8 +366,8 @@ useEffect(() => {
 
       <form onSubmit={createInvoice} className="space-y-4  max-w-md">
         <div className='w-full  flex justify-between'>
-            <span className="text-gray-400 text-sm">Min is $5</span>
-            <span className="text-gray-400 text-sm">rate: ₦{rate}</span>
+            <span className="text-gray-400 text-sm">Min is {`$${myRateObj.cryptomin}`}</span>
+            <span className="text-gray-400 text-sm">rate: ₦{myRateObj.rate}</span>
         </div>
         <input
           name="price_amount"
