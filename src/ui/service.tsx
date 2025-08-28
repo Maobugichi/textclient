@@ -14,7 +14,7 @@ const Service = () => {
        const bearer = 'CwxD7iISBBCT7bsTffTONmFk0X0+SXFVtEgJQnc4odY='
       useEffect(() => {
         async function fetchBrandData() {
-            const data = localStorage.getItem("brand");
+           
            
             const allBrandData: any[] = [];
             const seenBrands: Set<string> = new Set();
