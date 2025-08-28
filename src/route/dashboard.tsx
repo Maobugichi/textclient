@@ -74,7 +74,7 @@ const DashBoard = () => {
       axios.get("https://api.textflex.net/api/costs")
       .then(res => {
       
-        localStorage.setItem("cost",JSON.stringify(res.data[0]))
+        localStorage.setItem("cost_diff",JSON.stringify(res.data[0]))
       })
       localStorage.setItem('ref', refParam || '');
       getTransaction()

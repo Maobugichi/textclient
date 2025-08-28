@@ -60,7 +60,7 @@ const Input: React.FC<InputProps> = ({
   const lastDebitRef = useRef("");
   const statusRef = useRef({ stat: "", req_id: "" });
   const rate = localStorage.getItem("rate");
-  const raw = localStorage.getItem("cost");
+  const raw = localStorage.getItem("cost_diff");
   
   const myCost = raw ? JSON.parse(raw) : null;
 
@@ -84,6 +84,7 @@ const Input: React.FC<InputProps> = ({
     const savedReqId = localStorage.getItem("req_id");
     const savedDebitRef = localStorage.getItem("lastDebitRef");
     const storedCost = localStorage.getItem("cost");
+    console.log("Cc" , myCost)
     if (savedInfo && savedReqId && savedDebitRef && storedCost) {
       setNumberInfo(JSON.parse(savedInfo));
       setReqId(savedReqId);
@@ -129,7 +130,7 @@ const Input: React.FC<InputProps> = ({
           `https://api.textflex.net/api/sms/status/${req_id}`,
           {
             params: {
-              rate,
+              rate:rate && JSON.parse(rate).rate,
               cost,
               user_id: userData.userId,
               attempts,
@@ -137,18 +138,21 @@ const Input: React.FC<InputProps> = ({
               actual: actualCost.current
             }
           }
+         
         );
-
         const code = res.data.sms_code;
         if (code) {
           clearInterval(interval);
           setNumberInfo((prev: any) => ({ ...prev, sms: code }));
           statusRef.current.stat = "used";
           localStorage.removeItem("numberInfo");
+          localStorage.removeItem("req_id");
+          localStorage.removeItem("lastDebitRef");
         } else if (attempts >= 15) {
           handlePollingTimeout();
         }
       } catch (err) {
+        console.log(err)
         clearInterval(interval);
         await refund(userData.userId, cost, lastDebitRef.current, req_id);
         handlePollingTimeout("❌ Error polling SMS");
@@ -162,6 +166,8 @@ const Input: React.FC<InputProps> = ({
     setNumberInfo({ number: "", sms: msg });
     statusRef.current.stat = "reject";
     localStorage.removeItem("numberInfo");
+    localStorage.removeItem("req_id");
+    localStorage.removeItem("lastDebitRef");
     setTimeout(() => {
       setNumberInfo({ number: "", sms: "" });
       setIsShow(false);
@@ -321,10 +327,12 @@ const extractCode = (
         options={options.map((opt) => {
        
           const rate:any = localStorage.getItem("rate")
+          
           const rateObj = JSON.parse(rate)
           const usd = opt.cost / 100
           const nairaCost = usd * rateObj.rate
           const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
+         
           const totalPrice = nairaCost * (1 + gains)
           const price = (totalPrice).toLocaleString("en-NG", {
             style: "currency",

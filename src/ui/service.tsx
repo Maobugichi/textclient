@@ -15,7 +15,7 @@ const Service = () => {
       useEffect(() => {
         async function fetchBrandData() {
             const data = localStorage.getItem("brand");
-            console.log(data)
+           
             const allBrandData: any[] = [];
             const seenBrands: Set<string> = new Set();
 
