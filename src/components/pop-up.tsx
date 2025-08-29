@@ -1,5 +1,5 @@
 import { motion , AnimatePresence } from "motion/react"
-import { Clipboard, ClipboardCheck ,X } from "lucide-react";
+import { Clipboard, ClipboardCheck ,X , CircleCheckBig} from "lucide-react";
 import { useEffect, useState } from "react";
 import {Dispatch , SetStateAction } from 'react';
 import axios from "axios";
@@ -23,7 +23,7 @@ interface PopProps {
 const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIsError , errorInfo , req_id , userId , setIsCancel , cancel , email}) => {
     const [ copied , setCopied ] = useState<any>({
         number:false,
-        sms:false
+        sms:""
     })
     const [ debitRef ,  setDebitRef] = useState<string>('');
     useEffect(() => {
@@ -37,6 +37,7 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
     const [ showLoader , setShowLoader ] = useState<boolean>(false)
 
      async  function cancelRequest() {
+          if (numberInfo.sms !== "") return
           if (setIsCancel) {
               setIsCancel(true)
 
@@ -54,15 +55,14 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
            setShowLoader(false)
            setIsShow(false)
             const socket = io('https://api.textflex.net', {
-            query: { 
-               // userId: response.data.userId,
-                //eventType: response.data.eventTag  
-            }
+                query: { 
+                // userId: response.data.userId,
+                    //eventType: response.data.eventTag  
+                }
             });
             socket.emit("client-ready");
             socket.on("notification", (data) => {
             console.log("Notification received:", data); })
-        
         }
 
     useEffect(() => {
@@ -77,6 +77,8 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
             return () => clearTimeout(myTimeOut)
         }
     },[cancel])
+
+    
     const handleCopyNumber = () => {
         navigator.clipboard.writeText(numberInfo.number).then(() => {
             setCopied((prev:any) => ({
@@ -119,7 +121,6 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
         }
     }
 
-
     return(
      <AnimatePresence>
         {
@@ -141,7 +142,8 @@ const PopUp:React.FC<PopProps> = ({numberInfo , show , setIsShow , error , setIs
                         { copied.sms ? <ClipboardCheck size='15'/> : <Clipboard size='15'/>}
                     </div>
                     
-                    <button  className="w-[90%]  h-[45%] bg-[#0032a5] md:h-[60%] text-white text-sm grid place-items-center  rounded"  onClick={cancelRequest}>{showLoader ? <img className="h-10" src={interwind}/> :'cancel'}</button>
+                  {numberInfo.sms == "❌ Error polling SMS" || numberInfo.sms == "⏱️ SMS polling timed out, code not sent." ? ( <button  className={`w-[90%]  h-[45%]  bg-[#335CBF] md:h-[60%] text-white text-sm grid place-items-center  rounded`}  onClick={() => setIsShow(false)}>Close</button>) :
+                   <button  className={`w-[90%]  h-[45%] ${numberInfo.sms == '' ? "bg-[#0032a5]" : "bg-[#335CBF]"} md:h-[60%] text-white text-sm grid place-items-center  rounded`}  onClick={cancelRequest}>{showLoader ? <img className="h-10" src={interwind}/> : numberInfo.sms == '' ? 'cancel' : (<CircleCheckBig />)}</button>}
                 </motion.div>
             </motion.div> 
             )

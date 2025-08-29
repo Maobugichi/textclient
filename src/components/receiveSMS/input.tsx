@@ -84,7 +84,6 @@ const Input: React.FC<InputProps> = ({
     const savedReqId = localStorage.getItem("req_id");
     const savedDebitRef = localStorage.getItem("lastDebitRef");
     const storedCost = localStorage.getItem("cost");
-    console.log("Cc" , myCost)
     if (savedInfo && savedReqId && savedDebitRef && storedCost) {
       setNumberInfo(JSON.parse(savedInfo));
       setReqId(savedReqId);
@@ -139,7 +138,9 @@ const Input: React.FC<InputProps> = ({
             }
           }
          
+         
         );
+       
         const code = res.data.sms_code;
         if (code) {
           clearInterval(interval);
@@ -152,7 +153,6 @@ const Input: React.FC<InputProps> = ({
           handlePollingTimeout();
         }
       } catch (err) {
-        console.log(err)
         clearInterval(interval);
         await refund(userData.userId, cost, lastDebitRef.current, req_id);
         handlePollingTimeout("❌ Error polling SMS");
@@ -171,7 +171,7 @@ const Input: React.FC<InputProps> = ({
     setTimeout(() => {
       setNumberInfo({ number: "", sms: "" });
       setIsShow(false);
-    }, 5000);
+    }, 8000);
   };
 
   const refund = async (user_id: string, cost: number, debitRef: string, request_id: string) => {
@@ -325,9 +325,7 @@ const extractCode = (
         theme={theme}
         isDisabled={error}
         options={options.map((opt) => {
-       
           const rate:any = localStorage.getItem("rate")
-          
           const rateObj = JSON.parse(rate)
           const usd = opt.cost / 100
           const nairaCost = usd * rateObj.rate
