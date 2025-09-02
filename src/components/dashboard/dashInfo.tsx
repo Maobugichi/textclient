@@ -57,6 +57,18 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
                 alert("Failed to fetch links");
             }
       };
+       let lengthArr = 0
+       const dashed =  localStorage.getItem("arr-length")
+
+       if (dashed) {
+        try {
+                const data = JSON.parse(dashed);
+                lengthArr = data.balance
+                console.log("Parsed data:", data);
+            } catch (err) {
+                console.error("Invalid JSON in storage:", err);
+            }
+        }
 
       const blockInfo = [
         {
@@ -70,7 +82,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
         } ,
         {
             extra:'Purchase Number',
-            amount:info.length,
+            amount:info.length ?  info.length : lengthArr, 
             icon:<Users size={17}/>,
             content:'Receive SMS',
             btnIcon:<ArrowUpRight size={17} />,
@@ -99,6 +111,23 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
 
      fetchReferral()
    },[])
+
+   let balanced:number 
+  
+   const bal = localStorage.getItem("user-balance");
+   
+ 
+    if (bal) {
+    try {
+            const data = JSON.parse(bal);
+            balanced = data.balance
+            
+        } catch (err) {
+            console.error("Invalid JSON in storage:", bal, err);
+        }
+    }
+
+   
    
    
    const generateReferralCode = async  (e:any) => {
@@ -152,7 +181,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
          <Blocks
           extra={info.extra}
           icon={info.icon}
-          amount={`₦${info.amount}`}
+          amount={balanced ? `₦${balanced}` :  `₦${info.amount}`}
           content={info.content}
           btnIcon={info.btnIcon}
           className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-sm bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"

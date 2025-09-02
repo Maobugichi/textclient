@@ -18,7 +18,12 @@ const DashBoard = () => {
         const res = await axios.get('https://api.textflex.net/api/user-balance', {
             params: { user_id: userData.userId }
         });
+           
+        localStorage.removeItem("user-balance"); 
+        localStorage.setItem("user-balance", JSON.stringify(res.data));
         setBalance(res.data.balance);
+        console.log("Saved in storage:", localStorage.getItem("user-balance"));
+
     };
 
 
@@ -51,8 +56,11 @@ const DashBoard = () => {
             });
             const purchaseArray = response.data.data.filter((item:any) => (
                 item.purchased_number !== null
-            ))
-            setUserDetails(purchaseArray);
+            ));
+
+             const length = purchaseArray.length
+             localStorage.setItem("arr-length", JSON.stringify(length))
+             setUserDetails(purchaseArray);
              await getUserBalance()  
         }
         if (checkAuth()) {
@@ -89,6 +97,7 @@ const DashBoard = () => {
         const newData = response.data.filter((item:any) => (
             item.user_id == userData.userId
         ))
+        
         
          setTransactionHistory(newData)
          await getUserBalance()  
@@ -128,6 +137,8 @@ const DashBoard = () => {
         }
     },[ref]);
 
+    
+  
     return(
         <DashInfo
          info={userDetails}

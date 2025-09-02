@@ -60,6 +60,7 @@ const Payment = () => {
       }
       
       setShowLoader(true)
+      
       const response = await axios.post('https://api.textflex.net/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url
       const ref = response.data.data.data.transaction_ref
