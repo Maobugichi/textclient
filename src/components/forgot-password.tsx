@@ -14,8 +14,8 @@ const ForgotPassword = () => {
     setError("");
 
     try {
-      const response = await axios.post("https://api.textflex.net/api/forgot-password",  { email } , { withCredentials:true});
-      console.log(response.data)
+      await axios.post("https://api.textflex.net/api/forgot-password",  { email } , { withCredentials:true});
+
       setMessage("If this email exists, a reset link has been sent.");
     } catch (err: any) {
       console.log(err)
