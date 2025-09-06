@@ -19,17 +19,18 @@ import {Dispatch , SetStateAction } from 'react';
 import Filters from "../filter";
 import { openFilter, filter , getTime } from "../../action";
 import axios from "axios";
+import { useBalance } from "../../balance";
+
 
 interface DashProps {
     info: any;
     theme:boolean;
     transaction:any;
-    balance:any;
     setTransaction:Dispatch<SetStateAction<any>>;
     userData:any
 }
 
-const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, userData}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) => {
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
@@ -69,6 +70,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
                 console.error("Invalid JSON in storage:", err);
             }
         }
+      const { balance } = useBalance(); 
 
       const blockInfo = [
         {
@@ -111,24 +113,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
 
      fetchReferral()
    },[])
-
-   let balanced:number 
-  
-   const bal = localStorage.getItem("user-balance");
-   
- 
-    if (bal) {
-    try {
-            const data = JSON.parse(bal);
-            balanced = data.balance
-            
-        } catch (err) {
-            console.error("Invalid JSON in storage:", bal, err);
-        }
-    }
-
-   
-   
    
    const generateReferralCode = async  (e:any) => {
     const target = e.target as HTMLElement
@@ -175,13 +159,14 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , balance, use
     },[transaction])
 
    
+    console.log("balance", balance)
   
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
         <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>
          <Blocks
           extra={info.extra}
           icon={info.icon}
-          amount={balanced ? `₦${balanced}` :  `₦${info.amount}`}
+          amount={`₦${balance}`}
           content={info.content}
           btnIcon={info.btnIcon}
           className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-sm bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"

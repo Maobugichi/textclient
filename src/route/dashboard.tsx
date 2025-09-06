@@ -3,7 +3,10 @@ import { useEffect , useContext, useState, useRef } from "react"
 import { ShowContext } from "../components/context-provider";
 import axios from "axios";
 import checkAuth from "../components/checkauth";
+import { useBalance } from "../balance";
 const DashBoard = () => {
+
+    const { refreshBalance } = useBalance();
     const [ userDetails , setUserDetails ] = useState<any>(0)
      const [ transactionHistory , setTransactionHistory ] = useState<any>([])
     const myContext = useContext(ShowContext)
@@ -12,20 +15,9 @@ const DashBoard = () => {
     const count = useRef(0);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData , theme } = myContext;
-    const [balance, setBalance] = useState(0);
+    
 
-    const getUserBalance = async () => {
-        const res = await axios.get('https://api.textflex.net/api/user-balance', {
-            params: { user_id: userData.userId }
-        });
-           
-        localStorage.removeItem("user-balance"); 
-        localStorage.setItem("user-balance", JSON.stringify(res.data));
-        setBalance(res.data.balance);
-        console.log("Saved in storage:", localStorage.getItem("user-balance"));
-
-    };
-
+   
 
     useEffect(() => {
         const myRef = localStorage.getItem('ref');
@@ -61,7 +53,7 @@ const DashBoard = () => {
              const length = purchaseArray.length
              localStorage.setItem("arr-length", JSON.stringify(length))
              setUserDetails(purchaseArray);
-             await getUserBalance()  
+             await refreshBalance()  
         }
         if (checkAuth()) {
             getUserData();
@@ -100,7 +92,7 @@ const DashBoard = () => {
         
         
          setTransactionHistory(newData)
-         await getUserBalance()  
+         await refreshBalance()  
         }
    
 
@@ -110,7 +102,7 @@ const DashBoard = () => {
             try {
                  const response = await axios.post('https://api.textflex.net/api/squad-callback',{transaction_ref: ref});
                   if (response.data?.data === 'success') {
-                    await getUserBalance()
+                    await refreshBalance()
                     await getTransaction()
                     setRedo(true)
                     localStorage.removeItem('ref')
@@ -145,7 +137,7 @@ const DashBoard = () => {
          theme={theme}
          transaction={transactionHistory}
          setTransaction={setTransactionHistory}
-         balance={balance}
+        
          userData={userData}
         />
     )

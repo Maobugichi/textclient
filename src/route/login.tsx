@@ -2,7 +2,7 @@ import Form from "../components/form"
 import { useState , useContext, useEffect } from "react";
 import interwind from "../assets/Interwind.svg";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShowContext } from "../components/context-provider";
 import Toast from "../components/toast";
 import logo from "../assets/textflexLogo.png"
@@ -89,7 +89,7 @@ const Login = () => {
         
     },[show])
   return(
-      <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh] place-items-center grid md:min-h-[50vh]">
+      <div className="relative w-[90%] mx-auto md:w-[40%]  h-fit  mt-20 min-h-[30vh] place-items-center grid  md:min-h-[50vh]">
         <Toast
          show={show}
          errorMssg={errorMssg}
@@ -105,7 +105,10 @@ const Login = () => {
             <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
             <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
             <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] h-12 text-white p-3 rounded-sm">{ showLoader ? <img className="h-8" src={interwind} alt="" /> : 'Login' }</button>
-            </Form> 
+        </Form> 
+        <Link className="text-blue-400 underline mt-5" to="/forgot-password/:1">
+          forgot password?
+        </Link>
       </div>  
     )
 }
