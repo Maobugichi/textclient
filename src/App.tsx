@@ -25,6 +25,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { NotificationsInitializer } from "./components/NotifInitializer";
 import { BalanceProvider } from "./balance";
 import ForgotPassword from "./components/forgot-password";
+import ResetPassword from "./components/reset-password";
 
 function App() {
   
@@ -39,7 +40,7 @@ function App() {
          <Route path="signup/:1" element={<Signup />} />
          <Route path="login/:1" element={<Login />} />
          <Route path="forgot-password/:1" element={<ForgotPassword/>}/>
-         <Route path="reset-password/:1" element={<ForgotPassword/>}/>
+         <Route path="reset-password/:1" element={<ResetPassword/>}/>
           <Route path="homepage/:1" element={<LandingPage/>} />
           <Route path="privacy/:1" element={<PrivacyPage/>} />
           <Route path="terms/:1" element={<TermsPage/>} />
