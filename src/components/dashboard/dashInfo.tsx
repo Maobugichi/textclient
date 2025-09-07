@@ -65,7 +65,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) =
         try {
                 const data = JSON.parse(dashed);
                 lengthArr = data.balance
-                console.log("Parsed data:", data);
+    
             } catch (err) {
                 console.error("Invalid JSON in storage:", err);
             }
@@ -158,8 +158,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) =
          setTrans(transaction)
     },[transaction])
 
-   
-    console.log("balance", balance)
   
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
         <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>

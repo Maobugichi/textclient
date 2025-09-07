@@ -18,7 +18,7 @@ const SignOut = () => {
     }
     return(
         <div className="flex  items-center justify-between pl-5 pr-5  md:p-5">
-            <p className="flex flex-col">
+            <p className="flex flex-col w-[60%]">
                 {userData.username}
                 <span className="text-[13px] text-gray-500">{userData.userEmail}</span>
             </p>  
