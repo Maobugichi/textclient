@@ -1,5 +1,5 @@
 import logo from "../assets/textflexLogo.png"
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -11,6 +11,7 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
   const token = searchParams.get("token");
   const userId = searchParams.get("id");
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +25,9 @@ export default function ResetPassword() {
         newPassword: password,
       },{ withCredentials:true});
       setMessage("Password reset successful! You can now log in.");
+      setTimeout(() => {
+        navigate("/login/1")
+      }, 3000);
     } catch (err: any) {
       setMessage(err.response?.data?.message || "Reset failed.");
     }
@@ -35,7 +39,7 @@ export default function ResetPassword() {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
       >
-        <div>
+        <div className="grid place-items-center">
            <img src={logo} alt="textflex logo" className="w-32"/>
            <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
         </div>
