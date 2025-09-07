@@ -20,7 +20,7 @@ const SignOut = () => {
         <div className="flex  items-center justify-between pl-5 pr-5  md:p-5">
             <p className="flex flex-col w-[60%]">
                 {userData.username}
-                <span className="text-[13px] text-gray-500">{userData.userEmail}</span>
+                <span className="text-[13px] text-gray-500 break-all">{userData.userEmail}</span>
             </p>  
             <button onClick={logout} className="bg-red-400 rounded-full h-8 grid place-items-center w-8"><LogOut size={15} color="white"/></button>    
         </div>

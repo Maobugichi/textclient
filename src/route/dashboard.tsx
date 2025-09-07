@@ -67,7 +67,7 @@ const DashBoard = () => {
       setRef(refParam);   
       axios.get('https://api.textflex.net/api/get-rate')
       .then(res => {
-        console.log(res)
+       
          localStorage.setItem("rate",JSON.stringify(res.data[0]))
       })
 

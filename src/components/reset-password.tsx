@@ -1,4 +1,4 @@
-// src/pages/ResetPassword.tsx
+import logo from "../assets/textflexLogo.png"
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -35,7 +35,11 @@ export default function ResetPassword() {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
+        <div>
+           <img src={logo} alt="textflex logo" className="w-32"/>
+           <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
+        </div>
+        
 
         {message && <p className="text-green-600 mb-3">{message}</p>}
         {error && <p className="text-red-600 mb-3">{error}</p>}
@@ -43,6 +47,7 @@ export default function ResetPassword() {
         <input
         type="password"
         placeholder="New password"
+        className="w-full border border-[#ccc] rounded px-3 py-3 mb-4"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />

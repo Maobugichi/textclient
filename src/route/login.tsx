@@ -61,7 +61,7 @@ const Login = () => {
             });
             socket.emit("client-ready");
             socket.on("notification", (data) => {
-            console.log("Notification received:", data);
+            
             setErrorMessage(data.message);
             setShow(true);
             });

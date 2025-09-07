@@ -29,8 +29,7 @@ const Service = () => {
                         });
 
                         const brandArray = response.data;
-                        console.log("Brandfetch data for", brand, brandArray);
-
+                       
                         for (const brandData of brandArray) {
                             const normalizedBrandName = brandData.name.toLowerCase().trim();
                             if (!seenBrands.has(normalizedBrandName)) {
