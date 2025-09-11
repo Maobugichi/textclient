@@ -45,7 +45,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                        <X onClick={closeNav} className="md:hidden"/>
                    </div>
                    
-                   <div className={`h-[85%] ${theme ? 'text-gray-200' : 'text-black'} mt-8`}>
+                   <div className={`h-[75%] ${theme ? 'text-gray-200' : 'text-black'} mt-8`}>
                         <NavItems
                         closeNav={closeNav}
                         />
@@ -54,7 +54,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                     </div>
                </motion.nav>) :
                 (<nav
-                className={`fixed z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
+                className={`fixed  z-20 md:w-[20%] h-[100vh] top-0 md:flex flex-col gap-5  border-r border-solid  ${theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'}`}>
                     <div className={`h-fit min-h-[64px] flex items-center justify-around  border-b border-solid ${theme ? 'border-blue-100': 'border-[#5252]'}`}>
                         <Link  to="/homepage/1">
                           {textlogo ? <img className="h-[58px] w-[180px] mx-auto" src={textlogo} alt="logo" /> : (<Skeleton className="w-[80%] h-32  md:h-32 rounded-md" baseColor="#333333" highlightColor="#f5f5f5" /> ) }
