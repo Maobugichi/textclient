@@ -43,18 +43,19 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     const [ showBtn , setShowBtn ] = useState<boolean>(false);
     const [ showErr , setShowErr ] = useState<boolean>(false)
     const [ showLoader , setShowLoader ] = useState<any>(false);
-
+    const raw = localStorage.getItem("cost_diff");
+    const myCost = raw ? JSON.parse(raw) : null;
+  
     useEffect(() => {
         axios.get('https://api.textflex.net/api/sms/countries')
          .then(function(response) {
-            setApiResponse(response.data)
+            setApiResponse(response.data);
          })
     },[]);
 
     useEffect(() => {
         if (apiResponse) {
             const listArray = Object.values(apiResponse);
-            
             const formattedOptions = listArray.map((item: any) => ({
             label: item.title,
             value: item.id,
@@ -81,12 +82,20 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                    
                     if (limits.length >= 1) {
                     const { country_id , count , cost } = limits[0];
+                   
+                    const dollarCost = Number(cost) / 100
+                    const rate:any = localStorage.getItem("rate")
+                    const rateObj = JSON.parse(rate)
+                   
+                    const nairaCost = dollarCost * rateObj.rate
+                    const gains = parseFloat(myCost.rent_cost) 
+                    const price = nairaCost * (1 + gains)
                     setShowBtn(true)    
                     setLimits((prev:any) => ({
                         ...prev,
                         countryId:country_id, 
                         count:count,
-                        cost:cost
+                        cost:price
                     }))
                     
                     } else {
@@ -146,7 +155,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         } else if (target == 'week') {
             setMax(4)
         } else if (target == 'month') {
-            setMax(1)
+            setMax(12)
         } else if (target == 'hour') {
             setMax(24)
         }
@@ -204,7 +213,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
         if (showErr) {
             myTimeout = setTimeout(() => {
                 setShowErr(false)
-            }, 2000);
+            }, 4000);
         }
         return () => clearTimeout(myTimeout)
     }, [limits])
@@ -286,7 +295,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
             {
                 showErr && 
                      (
-                        <div className="border border-solid border-red-400 text-red-400 grid place-items-center h-fit min-h-[75px] text-[15px]  rounded-md">
+                        <div className="border border-solid border-red-400 text-red-400 grid place-items-center h-fit min-h-[75px] text-[15px] w-[90%] mx-auto rounded-md">
                           <p className="w-[90%]">No stock available for the selected duration</p>
                         </div>
                      )

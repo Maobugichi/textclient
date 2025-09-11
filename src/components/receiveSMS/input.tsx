@@ -61,7 +61,6 @@ const Input: React.FC<InputProps> = ({
   const statusRef = useRef({ stat: "", req_id: "" });
   const rate = localStorage.getItem("rate");
   const raw = localStorage.getItem("cost_diff");
-  
   const myCost = raw ? JSON.parse(raw) : null;
 
   const [target, setTarget] = useState<any>({
@@ -329,7 +328,7 @@ const extractCode = (
           const rateObj = JSON.parse(rate)
           const usd = opt.cost / 100
           const nairaCost = usd * rateObj.rate
-          const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
+          const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) : parseFloat(myCost.high_cost);
          
           const totalPrice = nairaCost * (1 + gains)
           const price = (totalPrice).toLocaleString("en-NG", {
