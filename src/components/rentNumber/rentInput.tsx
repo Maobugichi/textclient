@@ -43,7 +43,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     const [ showBtn , setShowBtn ] = useState<boolean>(false);
     const [ showErr , setShowErr ] = useState<boolean>(false)
     const [ showLoader , setShowLoader ] = useState<any>(false);
-    const raw = localStorage.getItem("cost_diff");
+  
     
     const [ liveCost, setLiveCost ] = useState({
         low_Cost:"",
