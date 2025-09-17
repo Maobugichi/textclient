@@ -45,7 +45,20 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     const [ showLoader , setShowLoader ] = useState<any>(false);
     const raw = localStorage.getItem("cost_diff");
     const myCost = raw ? JSON.parse(raw) : null;
+    const [ liveCost, setLiveCost ] = useState({
+        low_Cost:"",
+        hight_cost:"",
+        rent_cost:""
+    })
   
+
+    useEffect(() => {
+      axios.get('https://api.textflex.net/api/costs')
+       .then(function(response) {
+        
+            setLiveCost(response.data[0])
+         })
+    },[])
     useEffect(() => {
         axios.get('https://api.textflex.net/api/sms/countries')
          .then(function(response) {
@@ -88,7 +101,9 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                     const rateObj = JSON.parse(rate)
                    
                     const nairaCost = dollarCost * rateObj.rate
-                    const gains = parseFloat(myCost.rent_cost) 
+                  
+                    const gains = parseFloat(liveCost.rent_cost) 
+                   
                     const price = nairaCost * (1 + gains)
                     setShowBtn(true)    
                     setLimits((prev:any) => ({
