@@ -23,7 +23,7 @@ import EsimPlans from "./route/EsimPlans";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationsInitializer } from "./components/NotifInitializer";
-import { BalanceProvider } from "./balance";
+
 import ForgotPassword from "./components/forgot-password";
 import ResetPassword from "./components/reset-password";
 
@@ -32,7 +32,7 @@ function App() {
   return (
     <HashRouter>
       <ContextProvider>
-        <BalanceProvider>
+       
         <ScrollToTop />
         <NotificationsInitializer />
         <ToastContainer position="top-right"  />
@@ -56,7 +56,7 @@ function App() {
           
         </Route>
         </Routes>
-        </BalanceProvider>
+       
       </ContextProvider>
     </HashRouter>
   )

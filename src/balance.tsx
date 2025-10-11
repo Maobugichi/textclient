@@ -1,69 +1,65 @@
-import { createContext, useContext, useEffect, useState , useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { useContext } from "react";
 import { ShowContext } from "./components/context-provider";
 
-type BalanceContextType = {
-  balance: number;
-  refreshBalance: () => Promise<void>;
-};
-
-const BalanceContext = createContext<BalanceContextType | null>(null);
-
-
-export const BalanceProvider = ({ children }: { children: React.ReactNode }) => {
-  const [balance, setBalance] = useState<number>(0);
-
-  const myContext = useContext(ShowContext);
-
-   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-   const { userData } = myContext;
-   const refreshBalance = useCallback(async (signal?: AbortSignal) => {
-    if (!userData?.userId) return;
-  
-    try {
-      const res = await axios.get("https://api.textflex.net/api/user-balance", {
-        params: { user_id: userData.userId },
-        signal, 
-      });
-      
-      const newBalance = res.data?.balance ?? 0;
-      const storageKey = `user-balance-${userData.userId}`;
-      localStorage.setItem(storageKey,JSON.stringify({ balance: newBalance }))
-     
-      setBalance(newBalance);
-    } catch (err) {
-      if (!axios.isCancel(err)) {
-        console.error("Failed to fetch balance:", err);
-       
-      }
-    }
-}, [userData?.userId]);
-
-  
-  useEffect(() => {
-    if (!userData?.userId) return;
-
-    const storageKey = `user-balance-${userData.userId}`
-    const bal = localStorage.getItem(storageKey);
-    if (bal) {
-      try {
-        setBalance(JSON.parse(bal).balance ?? 0);
-      } catch {}
-    }
-    refreshBalance();
-    const interval = setInterval(refreshBalance, 15000); 
-    return () => clearInterval(interval);
-  }, [userData?.userId]);
-
-  return (
-    <BalanceContext.Provider value={{ balance, refreshBalance }}>
-      {children}
-    </BalanceContext.Provider>
-  );
-};
+const API_BASE_URL = "https://api.textflex.net/api";
 
 export const useBalance = () => {
-  const ctx = useContext(BalanceContext);
-  if (!ctx) throw new Error("useBalance must be used inside BalanceProvider");
-  return ctx;
+  const queryClient = useQueryClient();
+  const myContext = useContext(ShowContext);
+
+  if (!myContext) {
+    throw new Error("ShowContext must be used within a ContextProvider");
+  }
+
+  const { userData } = myContext;
+  const userId = userData?.userId;
+
+  
+  const {
+    data: balance = 0,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["userBalance", userId],
+    queryFn: async () => {
+      if (!userId) return 0;
+
+      const res = await axios.get(`${API_BASE_URL}/user-balance`, {
+        params: { user_id: userId },
+      });
+
+      return res.data?.balance ?? 0;
+    },
+    enabled: Boolean(userId), 
+    staleTime: 10000, 
+    refetchInterval: 30000, 
+    refetchOnWindowFocus: true,
+    retry: 3, // Retry 3 times on failure
+  });
+
+  // Manual refresh function
+  const refreshBalance = async () => {
+    await refetch();
+  };
+
+  
+  const updateBalance = (newBalance: number) => {
+    queryClient.setQueryData(["userBalance", userId], newBalance);
+  };
+
+  const invalidateBalance = () => {
+    queryClient.invalidateQueries({ queryKey: ["userBalance", userId] });
+  };
+
+  return {
+    balance,
+    isLoading,
+    error,
+    refreshBalance,
+    updateBalance,
+    invalidateBalance,
+  };
 };

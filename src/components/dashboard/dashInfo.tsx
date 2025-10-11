@@ -19,7 +19,7 @@ import {Dispatch , SetStateAction } from 'react';
 import Filters from "../filter";
 import { openFilter, filter , getTime } from "../../action";
 import axios from "axios";
-import { useBalance } from "../../balance";
+
 
 
 interface DashProps {
@@ -27,10 +27,12 @@ interface DashProps {
     theme:boolean;
     transaction:any;
     setTransaction:Dispatch<SetStateAction<any>>;
-    userData:any
+    userData:any;
+    balance:any
 }
 
-const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) => {
+const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  balance }) => {
+
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [ open , setOpen ] = useState<boolean>(false)
@@ -41,6 +43,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) =
          fetchLinks();
       }, []);
 
+      console.log(info)
       
       useEffect(() => {
          const handleWidth = () => {
@@ -70,8 +73,8 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData}) =
                 console.error("Invalid JSON in storage:", err);
             }
         }
-      const { balance } = useBalance(); 
-
+   
+    console.log(balance)
       const blockInfo = [
         {
             extra:'Balance',

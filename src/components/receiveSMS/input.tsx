@@ -14,6 +14,7 @@ import { Dispatch, SetStateAction } from "react";
 import spinner from "../../assets/dualring.svg";
 import interwind from "../../assets/Interwind.svg";
 import { OptionType } from "../select";
+import { fetchSMSNumber, getServices, handlePolling } from "./util";
 interface InputProps {
   tableValues: any;
   numberInfo: any;
@@ -99,18 +100,8 @@ const Input: React.FC<InputProps> = ({
 
 
   useEffect(() => {
-    const getServices = async () => {
-      try {
-        setOptions([]);
-        const res = await axios.get("https://api.textflex.net/api/sms/price", {
-          params: { id: Number(target.country) }
-        });
-        setOptions(Object.values(res.data));
-      } catch {
-        console.error("Error fetching price options");
-      }
-    };
-    getServices();
+   
+    getServices(setOptions,target);
   }, [target.country]);
 
  
@@ -118,112 +109,15 @@ const Input: React.FC<InputProps> = ({
     if (!req_id || cancel) return;
     let attempts = 0;
     const interval = setInterval(async () => {
-      if (cancel || attempts >= 15) {
-        clearInterval(interval);
-        return;
-      }
-      attempts++;
-      try {
-        const res = await axios.get(
-          `https://api.textflex.net/api/sms/status/${req_id}`,
-          {
-            params: {
-              rate:rate && JSON.parse(rate).rate,
-              cost,
-              user_id: userData.userId,
-              attempts,
-              debitref: lastDebitRef.current,
-              actual: actualCost.current
-            }
-          }
-         
-         
-        );
-       
-        const code = res.data.sms_code;
-        if (code) {
-          clearInterval(interval);
-          setNumberInfo((prev: any) => ({ ...prev, sms: code }));
-          statusRef.current.stat = "used";
-          localStorage.removeItem("numberInfo");
-          localStorage.removeItem("req_id");
-          localStorage.removeItem("lastDebitRef");
-        } else if (attempts >= 15) {
-          handlePollingTimeout();
-        }
-      } catch (err) {
-        clearInterval(interval);
-        await refund(userData.userId, cost, lastDebitRef.current, req_id);
-        handlePollingTimeout("❌ Error polling SMS");
-      }
+     handlePolling(cancel,attempts,interval,cost,userData.user_id , lastDebitRef , actualCost , setNumberInfo,statusRef,setIsShow,req_id)
     }, 10000);
 
     return () => clearInterval(interval);
   }, [req_id, cancel]);
 
-  const handlePollingTimeout = (msg = "⏱️ SMS polling timed out, code not sent.") => {
-    setNumberInfo({ number: "", sms: msg });
-    statusRef.current.stat = "reject";
-    localStorage.removeItem("numberInfo");
-    localStorage.removeItem("req_id");
-    localStorage.removeItem("lastDebitRef");
-    setTimeout(() => {
-      setNumberInfo({ number: "", sms: "" });
-      setIsShow(false);
-    }, 8000);
-  };
-
-  const refund = async (user_id: string, cost: number, debitRef: string, request_id: string) => {
-    await axios.post("https://api.textflex.net/api/refund-user", {
-      user_id,
-      cost,
-      debitRef,
-      request_id
-    });
-  };
 
 
-  const fetchSMSNumber = useCallback(async () => {
-    if (!target.service || !target.country) return;
-    if (cost > balance) return setError(true);
-    setShowLoader(true);
-    try {
-      const res = await axios.post("https://api.textflex.net/api/sms/get-number", {
-        ...target,
-        price: cost,
-        actual: actualCost.current,
-       
-      });
-      setTarget((prev:any) => {
-        return{
-          ...prev,
-          service:""
-        }
-      })
-      setShowLoader(false);
-      if (res.data.phone?.error_msg) {
-        setErrorInfo(res.data.phone.error_msg);
-        setIsError(true);
-        return;
-      }
-
-      const { number, request_id } = res.data.phone;
-      lastDebitRef.current = res.data.debitRef;
-      setNumberInfo((prev: any) => ({ ...prev, number }));
-      setIsShow(true);
-      setReqId(request_id);
-      statusRef.current.stat = "ready";
-      localStorage.setItem("req_id", request_id);
-      localStorage.setItem("lastDebitRef", res.data.debitRef);
-      localStorage.setItem("cost", cost.toString());
-    } catch (err: any) {
-      console.log(err)
-      setShowLoader(false);
-      setErrorInfo(err.response?.data?.error || "Error occurred");
-      setIsError(true);
-    }
-  }, [target, cost, balance]);
-
+  
   useEffect(() => {
     if (cancel) {
       statusRef.current = { stat: "reject", req_id: "" };
@@ -375,7 +269,7 @@ const extractCode = (
 
       {target.country && target.service && (
         <button
-          onClick={fetchSMSNumber}
+          onClick={() =>  fetchSMSNumber(target,cost,balance,setError, setShowLoader,actualCost,setTarget,setErrorInfo,setIsError,lastDebitRef,setNumberInfo,setIsShow,setReqId,statusRef)}
           className={`w-[90%] h-10 mx-auto text-white text-sm grid place-items-center rounded ${
             cost > balance ? "bg-[#0032a5]/20" : "bg-[#0032a5]"
           }`}
