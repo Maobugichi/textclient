@@ -60,7 +60,7 @@ const Input: React.FC<InputProps> = ({
   const actualCost = useRef<number>(0);
   const lastDebitRef = useRef("");
   const statusRef = useRef({ stat: "", req_id: "" });
-  const rate = localStorage.getItem("rate");
+ 
   const raw = localStorage.getItem("cost_diff");
   const myCost = raw ? JSON.parse(raw) : null;
 
