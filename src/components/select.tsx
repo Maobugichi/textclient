@@ -29,7 +29,7 @@ const Select: React.FC<SelectProps> = ({
 }) => {
   
   return (
-    <div id={id} className={`w-[95%] mx-auto font-normal ${className} rounded-xl`}>
+    <div id={id} className={`w-[95%]  mx-auto font-normal ${className} rounded-xl`}>
       <ReactSelect
         isDisabled={isDisabled}
         value={value}
@@ -38,7 +38,7 @@ const Select: React.FC<SelectProps> = ({
         placeholder={placeholder || "Select..."}
         classNames={{
           control: (state) =>
-            `p-1 border text-sm rounded-xl min-h-[48px] ${theme ? "bg-transparent border-blue-200" : "bg-white border-gray-300"} ${state.isFocused ? "ring-2 ring-blue-500" : ""}`,
+            `p-1 border text-sm rounded-xl relative z-20 min-h-[48px] ${theme ? "bg-transparent border-blue-200" : "bg-white border-gray-300"} ${state.isFocused ? "ring-2 ring-blue-500" : ""}`,
         }}
         styles={{
           control: (base, state) => ({

@@ -20,7 +20,7 @@ import ScrollToTop from "./components/scrollToTheTop";
 import PrivacyPage from "./ui/privacy";
 import TermsPage from "./ui/tandc";
 import EsimPlans from "./route/EsimPlans";
-import { ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationsInitializer } from "./components/NotifInitializer";
 import ForgotPassword from "./components/forgot-password";

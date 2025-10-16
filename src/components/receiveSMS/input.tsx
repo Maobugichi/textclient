@@ -13,6 +13,7 @@ import { useGetSMSNumber } from "./hook/useSms";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePollSms } from "./hook/usePolling";
 import { Card } from "../ui/card";
+import { toast } from "sonner";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
@@ -142,19 +143,16 @@ const Input: React.FC<InputProps> = ({
         actualCost: actualCost.current,
       },
       {
-        onSuccess: (data) => {
-          console.log("SMS Number:", data);
+        onSuccess: () => {
+          toast.success('purchased number successfully')
           setIsShow(true);
         },
       }
     );
   };
 
-
-
   return (
-   <Card className="bg-[#EEF4FD]">
-
+   <Card className="bg-[#EEF4FD]  h-fit">
      <Fieldset
       provider={`${provider} SMS`}
       className="font-semibold "
@@ -171,7 +169,6 @@ const Input: React.FC<InputProps> = ({
         />
       </Fieldset>
 
-     
       <Fieldset className="font-semibold " provider="Country">
         {isLoading ? (
           <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
@@ -200,7 +197,6 @@ const Input: React.FC<InputProps> = ({
           />
         )}
       </Fieldset>
-
       
       <Fieldset className="font-semibold " provider="Service">
         {serviceLoading ? (
@@ -250,7 +246,6 @@ const Input: React.FC<InputProps> = ({
           />
         )}
       </Fieldset>
-
      
       {target.country && target.service && (
         <Fieldset className="font-semibold grid place-items-center" provider="Stock">

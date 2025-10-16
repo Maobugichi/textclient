@@ -7,7 +7,6 @@ import { io } from "socket.io-client";
 import { useMutation } from "@tanstack/react-query";
 import api from "../lib/axios-config";
 import { ShowContext } from "../components/context-provider";
-import Toast from "../components/toast";
 import logo from "../assets/textflexLogo.png";
 
 import {
@@ -32,13 +31,13 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
-  const [errorMssg, setErrorMessage] = useState("");
+
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const myContext = useContext(ShowContext);
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { setUserData } = myContext;
-
+  
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -60,16 +59,12 @@ const Login = () => {
       });
 
       socket.emit("client-ready");
-      socket.on("notification", (notif) => {
-        setErrorMessage(notif.message);
-        setShow(true);
-      });
-
+      toast.success('Welcome back!')
       navigate("/dashboard/1");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.error)
-      setErrorMessage(error.response?.data?.error || "Login failed");
+      //setErrorMessage(error.response?.data?.error || "Login failed");
       setShow(true);
     },
   });
@@ -151,7 +146,7 @@ const Login = () => {
             className="w-full rounded-xl text-lg bg-[#0032a5] h-12 text-white font-medium"
           >
             {isLoading ? (
-              <ClipLoader size={20}/>
+              <ClipLoader size={20} color="white"/>
             ) : (
               "Login"
             )}

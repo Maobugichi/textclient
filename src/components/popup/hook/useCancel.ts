@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import api from "../../../lib/axios-config";
+import { toast } from "sonner";
 
 interface CancelProps {
   request_id: string;
@@ -18,11 +19,12 @@ export function useCancelRequest() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('cancelled purchase successfully')
       queryClient.removeQueries({ queryKey: ["smsRequest"] });
     },
     onError: (error) => {
-      console.error("Cancel failed:", error);
-      
+      toast.success(`Cancel failed: ${error}`)
+     
     },
   });
 }

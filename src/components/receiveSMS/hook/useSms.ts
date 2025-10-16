@@ -31,7 +31,7 @@ export const useGetSMSNumber = () => {
       const { purchased_number, sms } = data.table
       const { request_id } = data.phone
       const { debitRef } = data
-      console.log(data)
+     
       
       queryClient.setQueryData(['smsRequest'], {
         purchased_number,

@@ -3,8 +3,9 @@ import Input from "../components/receiveSMS/input";
 import TableCont from "../components/table-cont";
 import { useEffect, useState , useContext } from "react";
 import { ShowContext } from "../components/context-provider";
-import axios from "axios";
 import checkAuth from "../components/checkauth";
+import { Card } from "../components/ui/card";
+import api from "../lib/axios-config";
 
 const ReceiveSms = () => {
     const [ tableValues , setTableValues ] = useState<any>('');
@@ -23,7 +24,7 @@ const ReceiveSms = () => {
 
     useEffect(() => {
         const getUserData = async () => {
-            const response = await axios.get('https://api.textflex.net/api/orders', { 
+            const response = await api.get('https://api.textflex.net/api/orders', { 
                 params: { userId: userData.userId  }
             });
             const purchaseArray = response.data.data.filter((item:any) => (
@@ -39,7 +40,7 @@ const ReceiveSms = () => {
         }
     },[])
     return(
-        <div className={`w-full overflow-hidden font-montserrat md:grid flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`w-full overflow-hidden font-montserrat md:grid  flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
             <PopUp
              
              show={isShow}
@@ -52,8 +53,8 @@ const ReceiveSms = () => {
              setIsCancel={setIsCancel}
              cancel={isCancel}
             />
-             <h2 className="font-semibold text-2xl">Receive SMS</h2>
-            <div className=" w-full h-fit  min-h-[65vh]  md:min-h-[80vh] flex flex-col md:flex-row gap-4">
+             <h2 className="font-semibold text-left text-2xl">Receive SMS</h2>
+            <Card className="border-none shadow-none grid md:grid-cols-3 grid-cols-1  w-[90%] md:w-full mx-auto ">
                 <Input
                  tableValues={tableValues}
                  numberInfo={numberInfo}
@@ -70,7 +71,7 @@ const ReceiveSms = () => {
                  tableValues={tableValues}
                  theme={theme}
                 />
-            </div>
+            </Card>
         </div>
        
     )

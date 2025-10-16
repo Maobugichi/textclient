@@ -4,11 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-
 import { ShowContext } from "../components/context-provider";
-import Toast from "../components/toast";
 import logo from "../assets/textflexLogo.png";
-
 import {
   Form,
   FormControl,
@@ -22,7 +19,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import api from "../lib/axios-config";
 import ClipLoader from "react-spinners/ClipLoader";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 // ✅ Define Zod schema
 const signupSchema = z.object({
@@ -54,7 +51,7 @@ const Signup = () => {
   });
 
   const [show, setShow] = useState(false);
-  const [errorMssg, setErrorMessage] = useState("");
+ 
 
   useEffect(() => {
     if (show) {
@@ -70,13 +67,13 @@ const Signup = () => {
     },
     onSuccess: (data) => {
       setUserData(data);
+      toast.success('Welcome onboard')
       navigate("/dashboard/1");
 
     },
     onError: (err: any) => {
-        toast.error(err.response?.data?.message)
-      setErrorMessage(err.response?.data?.message || "Signup failed");
-      setShow(true);
+       toast.error(err.response?.data?.message)
+       setShow(true);
     },
   });
 
@@ -216,7 +213,7 @@ const Signup = () => {
             className="w-full grid place-items-center text-lg tracking-wide bg-[#0032a5] text-white p-3 rounded-sm h-12"
           >
             {mutation.isPending ? (
-             <ClipLoader size={20}/>
+             <ClipLoader size={20} color="white"/>
             ) : (
               "Sign up"
             )}
