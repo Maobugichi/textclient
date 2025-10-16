@@ -39,15 +39,14 @@ const ReceiveSms = () => {
         }
     },[])
     return(
-        <div className={`w-full md:grid flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`w-full overflow-hidden font-montserrat md:grid flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
             <PopUp
-             numberInfo={numberInfo}
+             
              show={isShow}
              setIsShow={setIsShow}
              error={error}
              errorInfo={errorInfo}
              setIsError={setIsError}
-             req_id={req_id}
              userId={userData.userId}
              email={userData.userEmail}
              setIsCancel={setIsCancel}

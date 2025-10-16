@@ -2,10 +2,10 @@ import {
   HashRouter,
   Route,
   Routes,
+  Navigate,
 } from "react-router-dom";
 import Root from "./route/root";
 import DashBoard from "./route/dashboard";
-import { Navigate } from "react-router-dom";
 import ReceiveSms from "./route/receivesms";
 import RentNumber from "./route/rent-number";
 import Signup from "./route/signup";
@@ -23,43 +23,61 @@ import EsimPlans from "./route/EsimPlans";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationsInitializer } from "./components/NotifInitializer";
-
 import ForgotPassword from "./components/forgot-password";
 import ResetPassword from "./components/reset-password";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
 function App() {
-  
+  // Create persister for browser storage
+  const persister = createSyncStoragePersister({
+    storage: window.sessionStorage, // Or window.localStorage
+  });
+
+  // Create query client
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours
+        staleTime: 1000 * 60 * 5, // 5 minutes
+      },
+    },
+  });
+
   return (
-    <HashRouter>
-      <ContextProvider>
-       
-        <ScrollToTop />
-        <NotificationsInitializer />
-        <ToastContainer position="top-right"  />
-        <Routes>
-         <Route path="signup/:1" element={<Signup />} />
-         <Route path="login/:1" element={<Login />} />
-         <Route path="forgot-password/:1" element={<ForgotPassword/>}/>
-         <Route path="reset-password/:1" element={<ResetPassword/>}/>
-          <Route path="homepage/:1" element={<LandingPage/>} />
-          <Route path="privacy/:1" element={<PrivacyPage/>} />
-          <Route path="terms/:1" element={<TermsPage/>} />
-          <Route path="/" element={<Root />}>
-          <Route index element={<Navigate to="homepage/:1" />} />
-          <Route path="payment/:1" element={<Payment/>} />
-          <Route path="dashboard/:id" element={<DashBoard/>}/>
-          <Route path="sms/:id" element={<ReceiveSms/>}/>
-          <Route path="number/:id" element={<RentNumber/>}/>
-          <Route path="esim/:id" element={<Esim/>}/>
-          <Route path="esimplan/:id" element={<EsimPlans/>}/>
-          <Route path="settings/:1" element={<Settings/>}/>
-          
-        </Route>
-        </Routes>
-       
-      </ContextProvider>
-    </HashRouter>
-  )
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+    >
+      <HashRouter>
+        <ContextProvider>
+          <ScrollToTop />
+          <NotificationsInitializer />
+          <ToastContainer position="top-right" />
+          <Routes>
+            <Route path="signup/:1" element={<Signup />} />
+            <Route path="login/:1" element={<Login />} />
+            <Route path="forgot-password/:1" element={<ForgotPassword />} />
+            <Route path="reset-password/:1" element={<ResetPassword />} />
+            <Route path="homepage/:1" element={<LandingPage />} />
+            <Route path="privacy/:1" element={<PrivacyPage />} />
+            <Route path="terms/:1" element={<TermsPage />} />
+            <Route path="/" element={<Root />}>
+              <Route index element={<Navigate to="homepage/:1" />} />
+              <Route path="payment/:1" element={<Payment />} />
+              <Route path="dashboard/:id" element={<DashBoard />} />
+              <Route path="sms/:id" element={<ReceiveSms />} />
+              <Route path="number/:id" element={<RentNumber />} />
+              <Route path="esim/:id" element={<Esim />} />
+              <Route path="esimplan/:id" element={<EsimPlans />} />
+              <Route path="settings/:1" element={<Settings />} />
+            </Route>
+          </Routes>
+        </ContextProvider>
+      </HashRouter>
+    </PersistQueryClientProvider>
+  );
 }
 
-export default App
+export default App;

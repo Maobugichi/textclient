@@ -19,7 +19,7 @@ const Blocks:React.FC<BlocksProps> = ({extra , amount , icon , content , btnIcon
     return(
         <div className={`${className}`}>
             <div className="flex w-[90%]   justify-between  relative z-10">
-            <p className="flex  flex-col text-lg font-semibold">
+            <p className="flex  flex-col text-2xl tracking-wider font-semibold">
                 <span className="text-sm">
                     {extra ? extra : <Skeleton count={1}/>}
                 </span>

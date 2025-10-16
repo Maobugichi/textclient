@@ -1,18 +1,9 @@
 import { SetStateAction } from "react";
 import axios from "axios";
+import api from "../../lib/axios-config";
  const rate = localStorage.getItem("rate");
 
- const getServices = async (setOptions:React.Dispatch<SetStateAction<any>>,target:any) => {
-      try {
-        setOptions([]);
-        const res = await axios.get("https://api.textflex.net/api/sms/price", {
-          params: { id: Number(target.country) }
-        });
-        setOptions(Object.values(res.data));
-      } catch {
-        console.error("Error fetching price options");
-      }
-    };
+ 
 
  const handlePollingTimeout = (msg = "⏱️ SMS polling timed out, code not sent.",setNumberInfo:React.Dispatch<SetStateAction<any>>,statusRef:any,setIsShow:React.Dispatch<SetStateAction<boolean>>) => {
     setNumberInfo({ number: "", sms: msg });
@@ -27,7 +18,7 @@ import axios from "axios";
   };
 
   const refund = async (user_id: string, cost: number, debitRef: string, request_id: string) => {
-    await axios.post("https://api.textflex.net/api/refund-user", {
+    await api.post("/api/refund-user", {
       user_id,
       cost,
       debitRef,
@@ -116,4 +107,4 @@ import axios from "axios";
      }
 }
  
-    export { getServices , handlePolling , fetchSMSNumber}
+    export {  handlePolling , fetchSMSNumber , refund}

@@ -8,17 +8,13 @@ import {
     CreditCard,
     ArrowUpRight,
     Plus,
-    Filter,
-   
   } from 'lucide-react';
 import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
-import Transactions from "../transactions";
 import {Dispatch , SetStateAction } from 'react';
-import Filters from "../filter";
-import { openFilter, filter , getTime } from "../../action";
 import axios from "axios";
+import TransactionsList from "./transations";
 
 
 
@@ -32,10 +28,9 @@ interface DashProps {
 }
 
 const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  balance }) => {
-
+      console.log(userData)
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
-      const [ open , setOpen ] = useState<boolean>(false)
       const [links, setLinks] = useState<string>('');
       const [referralCode, setReferralCode] = useState("");
       const [visibleCount, setVisibleCount] = useState(10);
@@ -43,8 +38,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
          fetchLinks();
       }, []);
 
-      console.log(info)
-      
+      console.log(setVisibleCount)
       useEffect(() => {
          const handleWidth = () => {
             setWidth(window.innerWidth);
@@ -74,7 +68,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
             }
         }
    
-    console.log(balance)
+   
       const blockInfo = [
         {
             extra:'Balance',
@@ -184,7 +178,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
           amount={info.amount ? info.amount : 0}
           content={info.content}
           btnIcon={info.btnIcon}
-          className=" h-fit  md:h-[80px] lg:h-[100px] min-h-[100px] overflow-hidden rounded-sm bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
+          className=" h-fit  md:h-[80px] lg:h-[100px] py-3 min-h-[100px] overflow-hidden rounded-sm bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={true}
         />
         </Link>
@@ -204,9 +198,9 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
 
    
     return(
-        <div className={`h-fit lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`h-fit font-montserrat lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
-                <h1 className="text-2xl font-semibold">Dashboard</h1>
+                <h1 className="text-2xl font-semibold">Welcome {userData.username}</h1>
                  <BlockCont
                   theme={theme}
                  >
@@ -225,70 +219,11 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
                     {forward}
                 </div>
 
-                    
-                     {visibleTrans?.length > 0 ? 
-                      <div className="grid gap-3 w-full overflow-hidden">
-                        <div className="flex md:w-[45%]  w-[90%]  justify-between">
-                             <p className="font-bold text-lg w-[70%]">Recent Activities</p>
-                             <div className=" w-[20%]   relative">
-                                <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid  w-full h-8 grid place-items-center rounded-md"><Filter/></button>
-                                <Filters
-                                 handleClick={(e) => filter(e, setTrans, transaction, setOpen)}
-                                 open={open}
-                                 right='left-0'
-                                />
-                             </div>
-                        </div>
-                       
-                        {visibleTrans?.map((item: any) => {
-                        let colorClass = "";
-                        const newDate =  getTime(item)
-                        
-                            switch(item.status) {
-                            case "successful":
-                                colorClass = "bg-green-200 text-green-600";
-                                break;
-                            case "refunded":
-                                colorClass = "bg-orange-200 text-orange-800";
-                                break;
-                            case "pending":
-                                colorClass = "bg-yellow-200 text-yellow-500";
-                                break;
-                            case "failed":
-                                colorClass = "text-red-600";
-                                break;
-                            default:
-                                colorClass = "text-gray-600";
-                            }
-                            return(
-                                <Transactions
-                                service={item.note}
-                                amount={item.amount}
-                                date={newDate}
-                                status={item.status}
-                                color={colorClass}
-                                />
-                            ) 
-                        })}
-                         {visibleCount < filteredTrans.length && (
-                            <button
-                              className="mx-auto mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                              onClick={() => setVisibleCount(prev => prev + 10)}
-                            >
-                                See More
-                            </button>
-                        )}
-                      </div> 
-                         :
-                      <div className="h-fit flex flex-col gap-3">
-                        <h2 className="text-xl font-semibold">Recent Transactions</h2>
-                        <p>No transactions available</p>
-                        <div>   
-
-                        </div>
-                      </div> }
-           
-              
+                <TransactionsList
+                    transactions={visibleTrans}
+                    initialVisible={5}
+                    loadMoreIncrement={5}
+                />
             </div>
         </div>
     )

@@ -1,127 +1,166 @@
-import { useEffect, useState } from "react"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
+
+import { Badge } from "./ui/badge";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { Copy } from "lucide-react";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 interface TableProps {
-   tableValue?:any
-   theme:boolean;
-   action?:string
+  tableValue?: any[];
+  theme?: boolean;
+  action?: string;
 }
 
+const DataTable: React.FC<TableProps> = ({ tableValue, action }) => {
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${label} copied to clipboard!`);
+  };
 
-const Table:React.FC<TableProps> = ({tableValue , theme, action}) => {
-  const [ tableContent , setTableContent ] = useState<any>({
-    ref:'',
-    number:'',
-    code:'',
-    country:'',
-    service:'',
-    provider:'',
-    staus:''
-  });
-  useEffect(() => {
-    if (tableValue) {
-      const safeTableValue = Array.isArray(tableValue) ? tableValue : [];
-      const myTable = safeTableValue?.map((item:any) => (
-        <p className="h-8 text-center grid place-content-center overflow-x-auto">
-          {item.reference_code}
-        </p>
-      ))
+  const getStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower?.includes("success") || statusLower?.includes("completed")) return "default";
+    if (statusLower?.includes("pending") || statusLower?.includes("waiting")) return "secondary";
+    if (statusLower?.includes("failed") || statusLower?.includes("error")) return "destructive";
+    return "outline";
+  };
 
-      const number = safeTableValue?.map((item:any) => (
-          <p className="h-8 text-center overflow-x-auto  grid place-content-center">{item.purchased_number}</p>
-      ));
-      const country = safeTableValue.map((item:any) => (
-          <p className="h-8 p-4 w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.country}</p>
-      ))
-      const code = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.sms}</p>
-      ))
-      const status = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.status}</p>
-      ))  
-      const service = safeTableValue.map((item:any) => (
-        <p className="h-8   w-full p-4 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.service}</p>
-      ))   
-      const provider = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full p-2 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.provider}</p>
-      ))      
-       const amount = safeTableValue.map((item:any) => (
-        <p className="h-8  w-full p-2 whitespace-nowrap overflow-x-auto hide-scrollbar flex items-center">{item.amount}</p>
-      ))      
-      setTableContent({
-        ref:myTable,
-        number:number,
-        code:code,
-        country:country,
-        service:service,
-        provider:provider,
-        status:status,
-        amount:amount
-      })
-    }
-  },[tableValue])
+  if (!tableValue || tableValue.length === 0) {
     return (
-       <>
-        {tableValue ? (
-          <div className={`w-full flex flex-row border border-solid rounded-sm ${theme ? 'border-blue-200' : 'border-[#5252]'}  h-fit max-h-[290px] overflow-auto hide-scrollbar`}>
-            <div className="w-fit min-w-[85px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'}  flex items-center  text-[11px] md:text-sm font-light pl-3`}>Order ID</div>
-              <div className={`text-[12px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.ref}</div>
-            </div>
-            <div className="w-fit min-w-[80px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Number</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.number}</div>
-            </div>
-            <div className="w-fit min-w-[80px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Code</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.code}</div>
-            </div>
-            <div className="w-fit min-w-[82px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} text-[11px] flex items-center md:text-sm font-light pl-3`}>Country</div>
-              <div className={`text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.country}</div>
-            </div>
-            <div className="w-fit min-w-[90px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Service</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.service}</div>
-            </div>
-            <div className="w-fit min-w-[70px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Provider</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.provider}</div>
-            </div>
-            <div className="w-fit min-w-[80px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Amount</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.amount}</div>
-            </div>
-            <div className="w-fit min-w-[80px]">
-              <div className={`h-9 border-b ${theme ? 'border-blue-200' : 'border-[#5252]'} flex items-center text-[11px] md:text-sm font-light pl-3`}>Status</div>
-              <div className={`flex flex-col text-[11px] border-r ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>{tableContent.status}</div>
-            </div>
-           
-          </div>
-          ) : (
-            <table className={`table-auto w-full border-collapse border border-solid h-fit min-h-[150px] rounded-lg  ${theme ? 'border-blue-200' : 'border-[#5252]'}`}>
-              <thead className="h-9 text-[11px] md:text-sm">
-                <tr className="h-9 ">
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Order ID</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Number</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Code</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Country</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Service</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Provider</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Amount</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>Status</th>
-                    <th className={ `border-b  border-solid ${theme ? 'border-blue-200' : 'border-[#5252]'} font-light pl-3 w-fit min-w-[80px]`}>{action}</th>
-                  </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="text-sm pl-3" colSpan={8}>No result.</td>
-                </tr>
-              </tbody>
-            </table>
-          )}
+      <div className="rounded-lg  border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Order ID</TableHead>
+              <TableHead>Number</TableHead>
+              <TableHead>Code</TableHead>
+              <TableHead>Country</TableHead>
+              <TableHead>Service</TableHead>
+              <TableHead>Provider</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              {action && <TableHead>{action}</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={action ? 9 : 8} className="text-center h-32 text-muted-foreground">
+                No results found.
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
 
-       </>
-    ) 
-}
+  return (
+    <div className="rounded-lg border">
+      <ScrollArea className="h-[400px] w-full">
+        <Table>
+          <TableHeader className="sticky top-0 bg-background z-10">
+            <TableRow>
+              <TableHead className="font-semibold">Order ID</TableHead>
+              <TableHead className="font-semibold">Number</TableHead>
+              <TableHead className="font-semibold">Code</TableHead>
+              <TableHead className="font-semibold">Country</TableHead>
+              <TableHead className="font-semibold">Service</TableHead>
+              <TableHead className="font-semibold">Provider</TableHead>
+              <TableHead className="font-semibold">Amount</TableHead>
+              <TableHead className="font-semibold">Status</TableHead>
+              {action && <TableHead className="font-semibold">{action}</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tableValue.map((item: any, index: number) => (
+              <TableRow key={item.reference_code || index} className="hover:bg-muted/50">
+                <TableCell className="font-mono text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate max-w-[100px]" title={item.reference_code}>
+                      {item.reference_code}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleCopy(item.reference_code, "Order ID")}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono text-sm">
+                  <div className="flex items-center gap-2">
+                    <span>{item.purchased_number}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleCopy(item.purchased_number, "Number")}
+                    >
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono text-sm">
+                  {item.sms ? (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-blue-600">{item.sms}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => handleCopy(item.sms, "Code")}
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-xs">Waiting...</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">{item.country}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm capitalize">{item.service}</span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">{item.provider}</span>
+                </TableCell>
+                <TableCell>
+                  <span className="font-semibold text-sm">₦{item.amount}</span>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={getStatusVariant(item.status)} className="text-xs">
+                    {item.status}
+                  </Badge>
+                </TableCell>
+                {action && (
+                  <TableCell>
+                    <Button variant="outline" size="sm">
+                      {action}
+                    </Button>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
+  );
+};
 
-export default Table
+export default DataTable;

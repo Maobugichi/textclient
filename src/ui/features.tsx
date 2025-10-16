@@ -34,7 +34,7 @@ const Features = () => {
     return(
         <div className="h-fit min-h-[95vh] w-[90%] md:w-[80%] mx-auto relative mt-24 flex flex-col gap-5">
             <h2 className="text-4xl font-semibold">Features</h2>
-            <p className="text-lg md:w-[55%] text-gray-400 leading-8">Textflex delivers trusted virtual phone numbers from a wide range of countries, enabling seamless SMS reception at competitive rates designed for global accessibility</p>
+            <p className="text-lg md:w-[55%] text-gray-400 leading-8 tracking-wider">Textflex delivers trusted virtual phone numbers from a wide range of countries, enabling seamless SMS reception at competitive rates designed for global accessibility</p>
             <div className="flex flex-wrap justify-between gap-5 w-full">
                 {featureItems}
             </div>

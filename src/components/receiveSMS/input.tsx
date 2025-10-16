@@ -1,66 +1,44 @@
 import Fieldset from "../fieldset";
 import { SingleValue } from "react-select";
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  useEffect,
-  useContext,
-} from "react";
-import axios from "axios";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import Select from "../select";
 import { ShowContext } from "../context-provider";
-import { Dispatch, SetStateAction } from "react";
+import type { InputProps } from "./types";
 import spinner from "../../assets/dualring.svg";
-import interwind from "../../assets/Interwind.svg";
 import { OptionType } from "../select";
-import { fetchSMSNumber, getServices, handlePolling } from "./util";
-interface InputProps {
-  tableValues: any;
-  numberInfo: any;
-  setNumberInfo: Dispatch<SetStateAction<any>>;
-  setIsShow: Dispatch<SetStateAction<boolean>>;
-  setIsError: Dispatch<SetStateAction<any>>;
-  setErrorInfo: Dispatch<SetStateAction<any>>;
-  setReqId: Dispatch<SetStateAction<any>>;
-  theme: boolean;
-  cancel: boolean;
-  req_id: string;
-}
-
-interface Country {
-  id: string;
-  title: string;
-  [key: string]: any;
-}
+import ClipLoader from "react-spinners/ClipLoader";
+import { useCountries } from "./hook/useCountries";
+import { useServices } from "./hook/useServices";
+import { useGetSMSNumber } from "./hook/useSms";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePollSms } from "./hook/usePolling";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
   setNumberInfo,
   setIsShow,
-  setIsError,
-  setErrorInfo,
   theme,
   numberInfo,
   setReqId,
   cancel,
-  req_id
 }) => {
+  const [provider, setProvider] = useState<any>("Swift");
+  const queryClient = useQueryClient();
+
   const myContext = useContext(ShowContext);
-  if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
+  if (!myContext)
+  throw new Error("ShowContext must be used within a ContextProvider");
   const { userData } = myContext;
   const balance = tableValues[0]?.balance;
-  const [provider, setProvider] = useState<any>("Swift");
-  const [countries, setCountries] = useState<Record<string, Country>>({});
+
   const [options, setOptions] = useState<any[]>([]);
-  const [showLoader, setShowLoader] = useState(false);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
   const stock = useRef("");
   const actualCost = useRef<number>(0);
-  const lastDebitRef = useRef("");
   const statusRef = useRef({ stat: "", req_id: "" });
- 
+  console.log(setOptions)
+  console.log(setError)
   const raw = localStorage.getItem("cost_diff");
   const myCost = raw ? JSON.parse(raw) : null;
 
@@ -69,108 +47,111 @@ const Input: React.FC<InputProps> = ({
     country: "5",
     service: "",
     user_id: userData.userId,
-    email: userData.userEmail
+    email: userData.userEmail,
   });
-  useEffect(() => {
-    axios
-      .get("https://api.textflex.net/api/sms/countries")
-      .then((res) => setCountries(res.data))
-      .catch(console.error);
-  }, [provider]);
 
+  const { data: countries, isLoading } = useCountries(provider);
+  const { data: services, isLoading: serviceLoading } = useServices(
+    target.country
+  );
+  const { mutate: getSMSNumber, isPending } = useGetSMSNumber();
 
+ 
+  usePollSms({
+    cost,
+    userId: userData.userId,
+    actualCost,
+    statusRef,
+    setNumberInfo,
+    setIsShow,
+    cancel,
+  });
+
+  
   useEffect(() => {
-    const savedInfo = localStorage.getItem("numberInfo");
-    const savedReqId = localStorage.getItem("req_id");
-    const savedDebitRef = localStorage.getItem("lastDebitRef");
-    const storedCost = localStorage.getItem("cost");
-    if (savedInfo && savedReqId && savedDebitRef && storedCost) {
-      setNumberInfo(JSON.parse(savedInfo));
-      setReqId(savedReqId);
-      lastDebitRef.current = savedDebitRef;
-      setCost(parseFloat(storedCost));
+    const smsInfo = queryClient.getQueryData<any>(["smsRequest"]);
+    if (smsInfo) {
+      setNumberInfo({ number: smsInfo.purchased_number, sms: "" });
+      setReqId(smsInfo.request_id);
+      setCost(smsInfo.cost);
     }
   }, []);
 
-  useEffect(() => {
-    if (numberInfo.number || numberInfo.sms) {
-      localStorage.setItem("numberInfo", JSON.stringify(numberInfo));
-    }
-  }, [numberInfo]);
-
-
-  useEffect(() => {
-   
-    getServices(setOptions,target);
-  }, [target.country]);
-
  
-  useEffect(() => {
-    if (!req_id || cancel) return;
-    let attempts = 0;
-    const interval = setInterval(async () => {
-     handlePolling(cancel,attempts,interval,cost,userData.user_id , lastDebitRef , actualCost , setNumberInfo,statusRef,setIsShow,req_id)
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [req_id, cancel]);
-
-
-
-  
   useEffect(() => {
     if (cancel) {
       statusRef.current = { stat: "reject", req_id: "" };
       setReqId("");
       setNumberInfo({ number: "", sms: "" });
-      setTarget((prev:any) => ({ ...prev, service: "" }));
+      setTarget((prev: any) => ({ ...prev, service: "" }));
     }
   }, [cancel]);
 
-  const handleInputChange = useCallback(
-    (selectedOption: OptionType | null) => {
-       if (!selectedOption) return;
-      const selectedProvider = selectedOption.value;
-      setProvider(selectedProvider);
-
-      const country = selectedProvider === "Dynamic"
-        ? Object.values(countries)[0]?.id || "5"
-        : "5";
-
-      setTarget((prev:any) => ({ ...prev, provider: selectedProvider, country }));
-    },
-    [countries]
-  );
-
-  const handleCountryChange = useCallback((selectedOption: OptionType | null) => {
-     if (!selectedOption) return;
-     setTarget((prev:any) => ({ ...prev, country: selectedOption.value }));
-  }, []);
-
-const extractCode = (
-  selectedOption: SingleValue<OptionType>,
-
-) => {
- const match = selectedOption?.label.match(/₦([\d,]+\.\d{2})/);
-  const selectedId = selectedOption?.value;
-
-  if (match) {
-     const amount = parseFloat(match[1].replace(/,/g, "")); 
-     setCost(amount);
-     setTarget((prev:any) => ({ ...prev, service: selectedId }));
-  }
-};
 
   useEffect(() => {
-    const match = options.find(
-      (item) => item.country_id === target.country && item.application_id === target.service
+    const match = services?.find(
+      (item) =>
+        item.country_id === target.country &&
+        item.application_id === target.service
     );
     stock.current = match?.count || "";
-  }, [target, options]);
+  }, [target, services]);
 
   
+  const handleInputChange = (selectedOption: OptionType | null) => {
+    if (!selectedOption) return;
+    const selectedProvider = selectedOption.value;
+    setProvider(selectedProvider);
+
+    const country =
+      selectedProvider === "Dynamic"
+        ? Object.values(countries ?? [])[0]?.id || "5"
+        : "5";
+
+    setTarget((prev: any) => ({ ...prev, provider: selectedProvider, country }));
+  };
+
+  // 🧩 Country change handler
+  const handleCountryChange = (selectedOption: OptionType | null) => {
+    if (!selectedOption) return;
+    setTarget((prev: any) => ({ ...prev, country: selectedOption.value }));
+  };
+
+  // 🧩 Service change handler
+  const extractCode = (selectedOption: SingleValue<OptionType>) => {
+    const match = selectedOption?.label.match(/₦([\d,]+\.\d{2})/);
+    const selectedId = selectedOption?.value;
+    if (match) {
+      const amount = parseFloat(match[1].replace(/,/g, ""));
+      setCost(amount);
+      setTarget((prev: any) => ({ ...prev, service: selectedId }));
+    }
+  };
+
+  // 🧩 Get number mutation trigger
+  const handleClick = () => {
+    getSMSNumber(
+      {
+        target,
+        cost,
+        balance,
+        actualCost: actualCost.current,
+      },
+      {
+        onSuccess: (data) => {
+          console.log("SMS Number:", data);
+          setIsShow(true);
+        },
+      }
+    );
+  };
+
   return (
-    <Fieldset provider={`${provider} SMS`} className={`w-full border border-[#ccc] p-1 border-solid rounded-md h-fit min-h-[300px] bg-[#EEF4FD] md:w-[35%]`}>
+    <Fieldset
+      provider={`${provider} SMS`}
+      className={`w-full  border border-[#ccc] p-1 py-5 border-solid rounded-md h-fit min-h-[300px] grid space-y-4 bg-[#EEF4FD] md:w-[35%]`}
+    >
+     
       <Fieldset provider="Service Provider">
         <Select
           id="providers"
@@ -178,83 +159,89 @@ const extractCode = (
           theme={theme}
           options={[
             { label: "Swift SMS", value: "Swift" },
-            { label: "Dynamic SMS", value: "Dynamic" }
+            { label: "Dynamic SMS", value: "Dynamic" },
           ]}
           value={{ label: provider, value: provider }}
         />
       </Fieldset>
 
+      {/* Country */}
       <Fieldset provider="Country">
-       <Select
-        id="country"
-        onChange={handleCountryChange}
-        theme={theme}
-        options={
-          provider === "Swift"
-            ? Object.values(countries)
-                .filter((item: any) => item.title.toLowerCase() === "usa")
+        {isLoading ? (
+          <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
+            <ClipLoader size={20} />
+            <span className="ml-2 text-sm text-gray-500">
+              Loading countries...
+            </span>
+          </div>
+        ) : (
+          <Select
+            id="country"
+            onChange={handleCountryChange}
+            theme={theme}
+            options={Object.values(countries ?? []).map((item: any) => ({
+              label: item.title,
+              value: item.id.toString(),
+            }))}
+            value={
+              Object.values(countries ?? [])
                 .map((item: any) => ({
                   label: item.title,
-                  value: item.id.toString()
+                  value: item.id.toString(),
                 }))
-            : Object.values(countries).map((item: any) => ({
-                label: item.title,
-                value: item.id.toString()
-              }))
-        }
-        value={Object.values(countries)
-          .map((item: any) => ({
-            label: item.title,
-            value: item.id.toString()
-          }))
-          .find((opt) => opt.value === target.country) || null}
-      />
+                .find((opt) => opt.value === target.country) || null
+            }
+          />
+        )}
       </Fieldset>
 
+      {/* Service */}
       <Fieldset provider="Service">
-       <Select
-        id="services"
-        onChange={extractCode}
-        theme={theme}
-        isDisabled={error}
-        options={options.map((opt) => {
-          const rate:any = localStorage.getItem("rate")
-          const rateObj = JSON.parse(rate)
-          const usd = opt.cost / 100
-          const nairaCost = usd * rateObj.rate
-          const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) : parseFloat(myCost.high_cost);
-         
-          const totalPrice = nairaCost * (1 + gains)
-          const price = (totalPrice).toLocaleString("en-NG", {
-            style: "currency",
-            currency: "NGN"
-          });
-          return {
-            label: `${opt.application} - ${price.replace("NGN", "").trim()}`,
-            value: opt.application_id
-          };
-        })}
-        value={
-          options
-            .map((opt) => {
-              const rate:any = localStorage.getItem("rate")
-              const rateObj = JSON.parse(rate)
-              const usd = opt.cost / 100
-              const nairaCost = usd * rateObj.rate
-              const gains = nairaCost <= 1000 ?  parseFloat(myCost.low_cost) :parseFloat(myCost.high_cost);
-              const totalPrice = nairaCost * (1 + gains)
-              return({
-              label: `${opt.application} - ${(totalPrice)
-                .toLocaleString("en-NG", { style: "currency", currency: "NGN" })
-                .replace("NGN", "")
-                .trim()}`,
-              value: opt.application_id
-            })})
-            .find((opt) => opt.value === target.service) || null
-        }
-        />
+        {serviceLoading ? (
+          <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
+            <ClipLoader size={20} />
+            <span className="ml-2 text-sm text-gray-500">
+              Loading services...
+            </span>
+          </div>
+        ) : (
+          <Select
+            id="services"
+            onChange={extractCode}
+            theme={theme}
+            isDisabled={error}
+            options={(services ?? []).map((opt) => {
+              const rate: any = localStorage.getItem("rate");
+              const rateObj = JSON.parse(rate);
+              const usd = opt.cost / 100;
+              const nairaCost = usd * rateObj.rate;
+              const gains =
+                nairaCost <= 1000
+                  ? parseFloat(myCost.low_cost)
+                  : parseFloat(myCost.high_cost);
+              const totalPrice = nairaCost * (1 + gains);
+              const price = totalPrice.toLocaleString("en-NG", {
+                style: "currency",
+                currency: "NGN",
+              });
+              return {
+                label: `${opt.application} - ${price.replace("NGN", "").trim()}`,
+                value: opt.application_id,
+              };
+            })}
+            value={
+              options
+                .map((opt) => ({
+                  label: opt.label,
+                  value: opt.value,
+                }))
+                .find((opt) => opt.value === target.service) || null
+            }
+          />
+        )}
       </Fieldset>
 
+      {/* Stock */}
       {target.country && target.service && (
         <Fieldset provider="Stock">
           <input
@@ -267,22 +254,30 @@ const extractCode = (
         </Fieldset>
       )}
 
+      
       {target.country && target.service && (
         <button
-          onClick={() =>  fetchSMSNumber(target,cost,balance,setError, setShowLoader,actualCost,setTarget,setErrorInfo,setIsError,lastDebitRef,setNumberInfo,setIsShow,setReqId,statusRef)}
+          onClick={handleClick}
           className={`w-[90%] h-10 mx-auto text-white text-sm grid place-items-center rounded ${
             cost > balance ? "bg-[#0032a5]/20" : "bg-[#0032a5]"
           }`}
         >
-          {showLoader ? <img className="h-10" src={interwind} /> : "Get Number"}
+          {isPending ? <ClipLoader size={14} color="white"/> : "Get Number"}
         </button>
       )}
 
+      {/* Number + Code Display */}
       {numberInfo.number && (
         <div className="h-20 mb-2 rounded-md mx-auto border grid place-items-center border-gray-300 bg-white w-[90%]">
           <p className="text-sm w-[90%]">number: {numberInfo.number}</p>
           <p className="relative text-sm w-[90%]">
-            code: {numberInfo.sms || <img className="w-8 absolute left-[33%] top-[-5px]" src={spinner} />}
+            code:{" "}
+            {numberInfo.sms || (
+              <img
+                className="w-8 absolute left-[33%] top-[-5px]"
+                src={spinner}
+              />
+            )}
           </p>
         </div>
       )}

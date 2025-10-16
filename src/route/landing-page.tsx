@@ -9,7 +9,7 @@ import TelIcon from "../ui/telicon"
 const LandingPage = () => {
    
     return(
-        <main className="h-fit min-h-screen overflow-x-hidden overflow-y-scroll hide-scrollbar">
+        <main className="h-fit min-h-screen font-montserrat overflow-x-hidden overflow-y-scroll hide-scrollbar">
             <LandingHeader/>
             <Hero/>
             <Features/>

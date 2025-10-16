@@ -9,7 +9,7 @@ const Reasons = () => {
             <h2 className="text-2xl md:text-4xl font-semibold w-[80%] md:w-[50%] text-center mx-auto">
             Clients choose us for our proven excellence and consistent results.
             </h2>
-            <div className=" h-fit w-[80%] mx-auto">
+            <div className="grid space-y-10 h-fit w-[80%] mx-auto">
                     {list.map((item:any) => (
                         <Lis
                          content={item.content}
