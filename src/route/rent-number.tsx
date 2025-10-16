@@ -14,6 +14,7 @@ const RentNumber = () => {
      const [ numberInfo , setNumberInfo ] = useState<any>({
         number:'',
     });
+    console.log(numberInfo)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { theme } = myContext;
 
@@ -38,7 +39,7 @@ const RentNumber = () => {
             <PopUp
              setIsShow={setIsShow}
              show={isShow}
-             numberInfo={numberInfo}
+           
             />
             <h2 className="font-semibold text-2xl">Rent Number</h2>
             <div className="flex flex-col md:flex-row justify-between w-full gap-5">
