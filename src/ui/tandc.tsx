@@ -159,7 +159,7 @@ const TermsConditions = () => {
 
 const TermsPage = () => {
     return(
-        <main className="h-[100vh] mt-32 grid gap-10">
+        <main className="font-montserrat h-[100vh] mt-32 grid gap-10">
         <ScrollToSection/>
          <Terms
           header="Terms and Conditions"

@@ -28,6 +28,7 @@ import ResetPassword from "./components/reset-password";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { Toaster } from "sonner";
 
 function App() {
   // Create persister for browser storage
@@ -54,7 +55,7 @@ function App() {
         <ContextProvider>
           <ScrollToTop />
           <NotificationsInitializer />
-          <ToastContainer position="top-right" />
+          <Toaster position="top-right" richColors closeButton/>
           <Routes>
             <Route path="signup/:1" element={<Signup />} />
             <Route path="login/:1" element={<Login />} />

@@ -1,98 +1,249 @@
-import axios from "axios";
-import Form from "../components/form";
-import {  useState, useContext, useEffect } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+
 import { ShowContext } from "../components/context-provider";
-import interwind from "../assets/Interwind.svg"
 import Toast from "../components/toast";
-import logo from "../assets/textflexLogo.png"
+import logo from "../assets/textflexLogo.png";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../components/ui/form";
+
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import api from "../lib/axios-config";
+import ClipLoader from "react-spinners/ClipLoader";
+import { toast, Toaster } from "sonner";
+
+// ✅ Define Zod schema
+const signupSchema = z.object({
+  username: z.string().min(2, "Username is required"),
+  number: z.string().min(10, "Valid phone number required"),
+  email: z.email("Enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  referralCode: z.string().optional(),
+});
+
+type SignupFormData = z.infer<typeof signupSchema>;
 
 const Signup = () => {
-    const navigate = useNavigate();
-    const myContext = useContext(ShowContext)
-    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { setUserData } = myContext;
-    const [ credentials , setCredentials ] = useState({
-        username:'',
-        number:'',
-        email:'',
-        password:'',
-        referralCode:''
-    });
-     const [ showLoader , setShowLoader ] = useState<any>(false);
-     const [ errorMssg , setErrorMessage ] = useState<string>('')
-     const [ show , setShow ] = useState<boolean>(false);
-    async function submitCredentias(e:React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setShowLoader(true)
-        const { username , number , email , password } = credentials
-        if ( username == '' || number == '' || email == '' || password == '') {
-            setShowLoader(false)
-            return
-        }
-        await axios.post('https://api.textflex.net/api/register/', credentials , { withCredentials: true })
-        .then(function (response) {
-            console.log('Success:', response.data);
-            setShowLoader(false)
-            setUserData(response.data)
-            navigate('/dashboard/1')
-        })
-        .catch((err) => {
-            setErrorMessage(err.response.data.message || err.response.data)
-            setShow(true);
-            setShowLoader(false);
-        });
-        setCredentials({
-            username:'',
-            number:'',
-            email:'',
-            password:'',
-            referralCode:''
-        })
-    }
-    function input(e:React.ChangeEvent<HTMLInputElement>) {
-        const { name , value } = e.target
-        setCredentials((prev:any) => ({
-            ...prev,
-            [name]:value
-        }))
-       
-    }
-    
-    useEffect(() => {
-       if (show) {
-        setTimeout(() => {
-            setShow(false)
-        }, 3000);
-       
-       }
-    },[show])
-    return(
-     <div className="w-[90%] mx-auto md:w-[40%] h-fit text-center gap-3 mt-15  min-h-[45vh] relative grid place-items-center md:min-h-[80vh]">
-        <Toast
-          show={show}
-          errorMssg={errorMssg}
-        />
-        <img src={logo} alt="textflex logo" className="w-32"/>
-        <div className="text-center h-25 grid">
-            <h2 className="text-2xl font-semibold">Create an account</h2>
-            <p>Enter your details below to create your account</p>
-        </div>
-        <Form 
-        onSubmit={submitCredentias}
-        className="flex flex-col justify-between w-[95%] gap-4 h-fit"
-       >
-           <input onChange={input} type='text' name="username" placeholder="username" value={credentials.username} className="outline p-3 rounded-md outline-[#5252] outline-solid "/>
-           <input onChange={input} type='email' name="email" placeholder="Enter your email" value={credentials.email} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <input onChange={input} type='number' name="number" placeholder="Phone Number" value={credentials.number} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <input onChange={input} type="password" name="password" placeholder="Enter your password" value={credentials.password} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <input onChange={input} type="text" name="referralCode" placeholder="input referral(Optional)" value={credentials.referralCode} className="outline p-3 rounded-md outline-[#5252] outline-solid"/>
-           <button  type="submit" className="w-full grid place-items-center bg-[#0032a5] text-white p-3 rounded-sm h-12">{ showLoader ? <img className="h-8" src={interwind} alt="" /> : 'Sign up' }</button>
-        </Form> 
-        <span className="text-center">have an account?   <Link className="text-blue-400 underline" to="/login/:1">sign in</Link></span>
-        <p className="text-sm mt-2">By clicking sign up, you agree to our <Link to="/terms/1"><span className="underline">Terms of Service</span></Link> and <Link to="/privacy/1"><span className="underline">Privacy Policy</span></Link>.</p>
-      </div>  
-    )
-}
+  const navigate = useNavigate();
+  const myContext = useContext(ShowContext);
+  if (!myContext)
+    throw new Error("ShowContext must be used within a ContextProvider");
+  const { setUserData } = myContext;
 
-export default Signup
+  const form = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      username: "",
+      number: "",
+      email: "",
+      password: "",
+      referralCode: "",
+    },
+  });
+
+  const [show, setShow] = useState(false);
+  const [errorMssg, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => setShow(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
+
+  const mutation = useMutation({
+    mutationFn: async (data: SignupFormData) => {
+      const res = await api.post("/api/register/", data);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setUserData(data);
+      navigate("/dashboard/1");
+
+    },
+    onError: (err: any) => {
+        toast.error(err.response?.data?.message)
+      setErrorMessage(err.response?.data?.message || "Signup failed");
+      setShow(true);
+    },
+  });
+
+  const onSubmit = (data: SignupFormData) => {
+    mutation.mutate(data);
+  };
+
+  return (
+    <div className="w-[90%] mx-auto md:w-[40%] text-center gap-3 mt-16 min-h-[45vh] grid place-items-center md:min-h-[80vh]">
+      
+      
+      <img src={logo} alt="textflex logo" className="w-32" />
+
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl font-semibold">Create an account</h2>
+        <p className="text-gray-600">
+          Enter your details below to create your account
+        </p>
+      </div>
+
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col justify-between w-[95%] gap-4 h-fit"
+        >
+          {/* Username */}
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-left text-gray-700 ">
+                  Username
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Enter username"
+                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Email */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-left text-gray-700 ">
+                  Email Address
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Enter your email"
+                    type="email"
+                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+         
+          <FormField
+            control={form.control}
+            name="number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-left text-gray-700 ">
+                  Phone Number
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Enter your phone number"
+                    type="tel"
+                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+        
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-left text-gray-700 ">
+                  Password
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Enter your password"
+                    type="password"
+                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+         
+          <FormField
+            control={form.control}
+            name="referralCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-left text-gray-700 ">
+                  Referral Code (optional)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Referral (optional)"
+                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+        
+          <Button
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-full grid place-items-center text-lg tracking-wide bg-[#0032a5] text-white p-3 rounded-sm h-12"
+          >
+            {mutation.isPending ? (
+             <ClipLoader size={20}/>
+            ) : (
+              "Sign up"
+            )}
+          </Button>
+        </form>
+      </Form>
+
+      <span className="text-center text-gray-700">
+        Already have an account?{" "}
+        <Link className="text-blue-500 underline" to="/login/:1">
+          Sign in
+        </Link>
+      </span>
+
+      <p className="text-sm mt-2 text-gray-600">
+        By clicking sign up, you agree to our{" "}
+        <Link to="/terms/1" className="underline">
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link to="/privacy/1" className="underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
+    </div>
+  );
+};
+
+export default Signup;
