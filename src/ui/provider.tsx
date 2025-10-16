@@ -64,9 +64,9 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme})
     
     return(
         <div onClick={openProviderList} className={`cursor-pointer ${ theme ? 'bg-[#333333]' : 'bg-[#f4f7fa]'} h-10  w-32 rounded-md flex items-center justify-center gap-4 relative z-10`}>
-            <p className='flex flex-col text-[10px] md:text-[14px]'>
+            <p className='flex flex-col text-[11px]'>
                 <span className='text-[9px] md:text-[10px]'>Provider</span>
-                Dynamic SMS
+                <span className='font-semibold'>Dynamic SMS</span>
             </p>
             <div>
                 <ArrowLeft color='#0032a5' size={15}/>

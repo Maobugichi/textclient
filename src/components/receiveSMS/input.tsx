@@ -12,6 +12,7 @@ import { useServices } from "./hook/useServices";
 import { useGetSMSNumber } from "./hook/useSms";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePollSms } from "./hook/usePolling";
+import { Card } from "../ui/card";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
@@ -34,7 +35,8 @@ const Input: React.FC<InputProps> = ({
   const [options, setOptions] = useState<any[]>([]);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
-  const stock = useRef("");
+  const [ stocksCount , setStocksCount ] = useState()
+  //const stock = useRef("");
   const actualCost = useRef<number>(0);
   const statusRef = useRef({ stat: "", req_id: "" });
   console.log(setOptions)
@@ -50,6 +52,7 @@ const Input: React.FC<InputProps> = ({
     email: userData.userEmail,
   });
 
+  console.log(options)
   const { data: countries, isLoading } = useCountries(provider);
   const { data: services, isLoading: serviceLoading } = useServices(
     target.country
@@ -94,7 +97,9 @@ const Input: React.FC<InputProps> = ({
         item.country_id === target.country &&
         item.application_id === target.service
     );
-    stock.current = match?.count || "";
+
+    setStocksCount(match?.count || "")
+    
   }, [target, services]);
 
   
@@ -111,13 +116,12 @@ const Input: React.FC<InputProps> = ({
     setTarget((prev: any) => ({ ...prev, provider: selectedProvider, country }));
   };
 
-  // 🧩 Country change handler
+ 
   const handleCountryChange = (selectedOption: OptionType | null) => {
     if (!selectedOption) return;
     setTarget((prev: any) => ({ ...prev, country: selectedOption.value }));
   };
 
-  // 🧩 Service change handler
   const extractCode = (selectedOption: SingleValue<OptionType>) => {
     const match = selectedOption?.label.match(/₦([\d,]+\.\d{2})/);
     const selectedId = selectedOption?.value;
@@ -128,7 +132,7 @@ const Input: React.FC<InputProps> = ({
     }
   };
 
-  // 🧩 Get number mutation trigger
+  
   const handleClick = () => {
     getSMSNumber(
       {
@@ -146,13 +150,15 @@ const Input: React.FC<InputProps> = ({
     );
   };
 
+
+
   return (
-    <Fieldset
+   <Card className="bg-[#EEF4FD]">
+
+     <Fieldset
       provider={`${provider} SMS`}
-      className={`w-full  border border-[#ccc] p-1 py-5 border-solid rounded-md h-fit min-h-[300px] grid space-y-4 bg-[#EEF4FD] md:w-[35%]`}
+      className="font-semibold "
     >
-     
-      <Fieldset provider="Service Provider">
         <Select
           id="providers"
           onChange={handleInputChange}
@@ -165,8 +171,8 @@ const Input: React.FC<InputProps> = ({
         />
       </Fieldset>
 
-      {/* Country */}
-      <Fieldset provider="Country">
+     
+      <Fieldset className="font-semibold " provider="Country">
         {isLoading ? (
           <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
             <ClipLoader size={20} />
@@ -195,10 +201,10 @@ const Input: React.FC<InputProps> = ({
         )}
       </Fieldset>
 
-      {/* Service */}
-      <Fieldset provider="Service">
+      
+      <Fieldset className="font-semibold " provider="Service">
         {serviceLoading ? (
-          <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
+          <div className="flex relativez-30 bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
             <ClipLoader size={20} />
             <span className="ml-2 text-sm text-gray-500">
               Loading services...
@@ -230,27 +236,42 @@ const Input: React.FC<InputProps> = ({
               };
             })}
             value={
-              options
-                .map((opt) => ({
-                  label: opt.label,
-                  value: opt.value,
+               Object.values(services ?? [])
+                .map((opt:any) => ({
+                  label: opt.application,
+                  value: opt.application_id,
                 }))
-                .find((opt) => opt.value === target.service) || null
+                .find((opt) => {
+                  
+                 return opt.value === target.service
+                }) 
+                || null
             }
           />
         )}
       </Fieldset>
 
-      {/* Stock */}
+     
       {target.country && target.service && (
-        <Fieldset provider="Stock">
-          <input
+        <Fieldset className="font-semibold grid place-items-center" provider="Stock">
+          {
+            stocksCount == "" ?
+            <div
+            className={`${
+                theme ? "bg-transparent" : "bg-white"
+              } text-gray-500 pl-5 w-[95%] mx-auto h-12 grid place-items-center rounded-xl border border-blue-200`}
+            > 
+            <ClipLoader size={20}/>
+            </div>  : 
+            (<input
             disabled
-            value={stock.current}
+            value={stocksCount}
             className={`${
               theme ? "bg-transparent" : "bg-white"
-            } text-gray-500 pl-5 w-[95%] mx-auto h-12 rounded-sm border border-blue-200`}
-          />
+            } text-gray-500 pl-5 w-[95%] mx-auto h-12 rounded-xl border border-blue-200`}
+          />)
+          }
+          
         </Fieldset>
       )}
 
@@ -266,7 +287,6 @@ const Input: React.FC<InputProps> = ({
         </button>
       )}
 
-      {/* Number + Code Display */}
       {numberInfo.number && (
         <div className="h-20 mb-2 rounded-md mx-auto border grid place-items-center border-gray-300 bg-white w-[90%]">
           <p className="text-sm w-[90%]">number: {numberInfo.number}</p>
@@ -281,7 +301,9 @@ const Input: React.FC<InputProps> = ({
           </p>
         </div>
       )}
-    </Fieldset>
+    
+   </Card>
+   
   );
 };
 

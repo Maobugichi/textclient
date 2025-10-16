@@ -10,19 +10,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import {
   Card,
   CardContent,
-} from "./ui/card";
+} from "../ui/card";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "sonner";
 
-import { useSmsInfo } from "../hooks/useSmsInfo";
-import { useCancelRequest } from "./popup/hook/useCancel";
-import { useCopyToClipboard } from "./popup/hook/useCopy";
+import { useSmsInfo } from "../../hooks/useSmsInfo";
+import { useCancelRequest } from "./hook/useCancel";
+import { useCopyToClipboard } from "./hook/useCopy";
 
 interface PopProps {
   show?: boolean;

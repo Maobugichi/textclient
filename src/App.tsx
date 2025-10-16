@@ -13,7 +13,7 @@ import Settings from "./route/settings";
 import { ContextProvider } from "./components/context-provider";
 import Login from "./route/login";
 import LandingPage from "./route/landing-page";
-import Payment from "./components/payment";
+import Payment from "./components/payment/payment";
 import 'react-loading-skeleton/dist/skeleton.css';
 import Esim from "./route/esim";
 import ScrollToTop from "./components/scrollToTheTop";

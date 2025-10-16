@@ -1,14 +1,12 @@
 import { useEffect, useState , useContext } from "react";
-import { ShowContext } from "./context-provider";
-import Form from "./form"
+import { ShowContext } from "../context-provider";
+import Form from "../form"
 import axios from "axios";
-import interwind from "../assets/Interwind.svg"
-import { Filter } from 'lucide-react';
-import Transactions from "./transactions";
-import { openFilter, filter, getTime } from "../action";
-import Filters from "./filter";
-import NowPay from "./dashboard/nowpayment";
+import { openFilter, filter } from "../../action";
+import NowPay from "../dashboard/nowpayment";
 import { motion } from "motion/react";
+import TransactionsList from "./transactionTable";
+import ClipLoader from "react-spinners/ClipLoader";
 
 
 const Payment = () => {
@@ -137,73 +135,28 @@ const Payment = () => {
                   <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is ₦1000</label>
                   <input onChange={handleChange} type="number" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
                   <button className="h-10 bg-[#0032a5] rounded-md grid place-items-center text-white" type="submit">
-                    {showLoader ?  <img className="h-10" src={interwind} alt="loader" /> : 'submit' }  
+                    {showLoader ?  <ClipLoader size={20}/> : 'submit' }  
                   </button>
               </div>
           </Form> :  <NowPay/> 
           
           }
         </div>
-        {
-          visibleTrans.length >= 1 ? ( 
-            <div className="grid gap-3 w-full ">
-                <div className="flex md:w-[55%] w-[90%] mx-auto md:mx-0 justify-between">
-                      <p className="font-bold text-lg">Recent Activities</p>
-                      <div className="md:w-1/2 w-[20%] relative">
-                        <button onClick={() => openFilter(setOpen)} className="border-gray-400 border border-solid md:w-[30%] w-full h-8 grid place-items-center rounded-md"><Filter/></button>
-                        <Filters
-                          handleClick={(e) => filter(e, setTrans, transactionHistory, setOpen)}
-                          open={open}
-                          right='left-0'
-                        />
-                      </div>
-                </div>
-                
-                {visibleTrans.map((item: any) => {
-                let colorClass = "";
-                const newDate =  getTime(item)
-                    switch(item.status) {
-                    case "successful":
-                        colorClass = "bg-green-200 text-green-600";
-                        break;
-                    case "refunded":
-                        colorClass = "bg-orange-200 text-orange-800";
-                        break;
-                    case "pending":
-                        colorClass = "bg-yellow-200 text-yellow-500";
-                        break;
-                    case "failed":
-                        colorClass = "text-red-600";
-                        break;
-                    default:
-                        colorClass = "text-gray-600";
-                    }
-                    return(
-                        <Transactions
-                        service={item.note}
-                        amount={item.amount}
-                        date={newDate}
-                        status={item.status}
-                        color={colorClass}
-                        />
-                    ) 
-                })} 
-                {visibleCount < filteredTrans.length && (
-                  <button
-                    className="mx-auto mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => setVisibleCount(prev => prev + 10)}
-                  >
-                    See More
-                  </button>
-                )}
-            </div> ) : (
-              <div className="grid h-fit gap-2">
-                <h2 className="text-xl">Recent Transactions</h2>
-                <p className="text-sm">No transactions available</p>
-                
-              </div>
-            )
-        }
+       
+       <div className="mt-4">
+      <TransactionsList
+      visibleTrans={visibleTrans}
+      filteredTrans={filteredTrans}
+      visibleCount={visibleCount}
+      setVisibleCount={setVisibleCount}
+      transactionHistory={transactionHistory}
+      filter={filter}
+      openFilter={openFilter}
+      setTrans={setTrans}
+      open={open}
+      setOpen={setOpen}
+  />
+    </div>
        
       </div>
        

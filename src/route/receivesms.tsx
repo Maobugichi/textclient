@@ -1,4 +1,4 @@
-import PopUp from "../components/pop-up";
+import PopUp from "../components/popup/pop-up";
 import Input from "../components/receiveSMS/input";
 import TableCont from "../components/table-cont";
 import { useEffect, useState , useContext } from "react";

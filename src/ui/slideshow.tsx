@@ -1,21 +1,22 @@
 import { motion } from "motion/react";
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
+import api from "../lib/axios-config";
 
 const SlideShow = () => {
   const [slides, setSlides] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
-  
+   
   useEffect(() => {
     if (slides.length === 0) return;
 
     const container = containerRef.current;
     if (!container) return;
+    console.log(index)
    
     const slideWidth = container.children[0]?.clientWidth || 0; // safer calculation
 
@@ -38,11 +39,10 @@ const SlideShow = () => {
   useEffect(() => {
     async function getAdData() {
       try {
-        const response = await axios.get('https://api.textflex.net/api/ads');
+        const response = await api.get('/api/ads');
         setSlides(response.data.data);
       } catch (err) {
         console.log(err);
-        console.log(index)
       }
     }
 
@@ -64,7 +64,7 @@ const SlideShow = () => {
       <div
         ref={containerRef}
         style={{ scrollSnapType: "x mandatory" }}
-        className="w-[95%] md:w-full overflow-x-scroll h-[80px] md:h-[120px] hide-scrollbar flex"
+        className="w-[85%] md:w-full overflow-x-scroll h-[80px] md:h-[120px] hide-scrollbar flex"
       >
         {slides.map((item: any) => {
           const cleanUrl = item.url.replace(/([^:]\/)\/+/g, "$1");

@@ -2,7 +2,7 @@ import RentInput from "../components/rentNumber/rentInput"
 import TableCont from "../components/table-cont"
 import { useContext , useState , useEffect } from "react"
 import { ShowContext } from "../components/context-provider"
-import PopUp from "../components/pop-up"
+import PopUp from "../components/popup/pop-up"
 import axios from "axios"
 import checkAuth from "../components/checkauth"
 const RentNumber = () => {

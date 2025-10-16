@@ -30,6 +30,8 @@ interface TransactionItemProps {
 const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const { note, amount, date, status, type = 'debit' } = transaction;
 
+  console.log(status)
+
   const statusConfig = {
     successful: {
       color: 'bg-green-100 text-green-700 border-green-200',
