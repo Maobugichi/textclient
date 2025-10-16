@@ -1,4 +1,4 @@
-import patt from "../../assets/sett.svg";
+import patt from "../../assets/Hex.svg";
 import { useEffect, useState } from "react";
 const WavePattern = () => {
    const [ width , setWidth ] = useState<any>(window.innerWidth)
@@ -12,7 +12,7 @@ const WavePattern = () => {
       return () =>  window.removeEventListener('resize' , handleWidth);
    },[])
    return(
-      <img className={`absolute top-[0px] object-cover md:left-0 h-fit  w-fit z-0 inset-0 ${width <= 400 ? 'left-0' : 'left-2'}`} src={patt} alt="circuit pattern"/>
+      <img className={`absolute top-[0px] object-fill md:left-0   z-0 inset-0 ${width <= 400 ? 'left-0' : 'left-2'}`} src={patt} alt="circuit pattern"/>
    )
    
 };

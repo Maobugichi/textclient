@@ -27,7 +27,7 @@ const Root = () => {
     />
         ));
     return(
-        <div className={`h-fit min-h-[100vh] relative top-14 pt-3  w-full ${theme ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+        <div className={`h-fit font-montserrat min-h-[100vh] relative top-14 pt-3  w-full ${theme ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
             <Header
              setIsShow={setIsShow}
              setShow={setShow}

@@ -60,7 +60,7 @@ const SideNav:React.FC<SideNavProps> = ({show , setIsShow , theme}) => {
                           {textlogo ? <img className="h-[58px] w-[180px] mx-auto" src={textlogo} alt="logo" /> : (<Skeleton className="w-[80%] h-32  md:h-32 rounded-md" baseColor="#333333" highlightColor="#f5f5f5" /> ) }
                         </Link>
                     </div>
-                    <div className={`h-[95%] ${theme ? 'text-gray-200' : 'text-black'}`}>
+                    <div className={`h-[95%] ${theme ? 'text-gray-200' : 'text-black'} `}>
                         <NavItems
                         closeNav={closeNav}
                         

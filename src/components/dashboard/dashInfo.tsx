@@ -3,7 +3,6 @@ import Blocks from "../../ui/blocks";
 import ForwardBlocks from "./forwardBlocks";
 import { Link  } from "react-router-dom";
 import {
-    DollarSign,
     Users,   
     CreditCard,
     ArrowUpRight,
@@ -28,7 +27,7 @@ interface DashProps {
 }
 
 const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  balance }) => {
-      console.log(userData)
+   
       const [ width , setWidth ] = useState<any>(window.innerWidth)
       const [ transs , setTrans ] = useState<any>([])
       const [links, setLinks] = useState<string>('');
@@ -73,7 +72,6 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
         {
             extra:'Balance',
             amount: balance ,
-            icon:<DollarSign size={17}/>,
             content:'Fund Wallet',
             btnIcon:<Plus size={17}/>,
             link:'/payment/1',
@@ -164,7 +162,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
           amount={`₦${balance}`}
           content={info.content}
           btnIcon={info.btnIcon}
-          className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-sm bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"
+          className="w-full h-[180px] md:h-[150px] lg:h-[210px] rounded-4xl bg-[#0032a5] md:w-[270px] lg:w-[350px] grid object-cover overflow-hidden place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={false}
         />
         </Link>
@@ -178,7 +176,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
           amount={info.amount ? info.amount : 0}
           content={info.content}
           btnIcon={info.btnIcon}
-          className=" h-fit  md:h-[80px] lg:h-[100px] py-3 min-h-[100px] overflow-hidden rounded-sm bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
+          className=" h-fit  md:h-[80px] lg:h-[100px] py-3 min-h-[100px] overflow-hidden rounded-4xl bg-[#0032a5] md:w-[250px] lg:w-[400px]  grid place-items-center border border-solid border-[#5252] text-white relative"
           isMerge={true}
         />
         </Link>
@@ -200,7 +198,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
     return(
         <div className={`h-fit font-montserrat lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
-                <h1 className="text-2xl font-semibold">Welcome {userData.username}</h1>
+                <h1 className="text-2xl font-semibold">Welcome {userData.username} <span className="inline-block animate-wave origin-[70%_70%]">👋</span></h1>
                  <BlockCont
                   theme={theme}
                  >

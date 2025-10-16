@@ -67,7 +67,7 @@ const NavItems:React.FC<NavProps> = ({ closeNav }) => {
     ))
 
     return(
-        <ul className=' h-[80%] flex flex-col gap-1 cursor-pointer'>
+        <ul className=' h-[80%] flex flex-col space-y-4 cursor-pointer'>
             {items}
         </ul>
     )
