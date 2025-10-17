@@ -1,5 +1,5 @@
 // src/pages/Dashboard.tsx
-import { useEffect, useContext, useState } from "react";
+import { useEffect,  useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import DashInfo from "../components/dashboard/dashInfo";
@@ -37,7 +37,7 @@ const DashBoard = () => {
     userData?.userId,
   );
 
-  const { data: exchangeRate, isLoading: loadingRate } = useExchangeRate();
+  const {  isLoading: loadingRate } = useExchangeRate();
   const {  isLoading: loadingCost } = useCostDiff();
 
  
@@ -98,7 +98,6 @@ const DashBoard = () => {
       />
     );
   }
-  console.log(!userData)
 
   if (!userData) {
       return <Navigate to={'/login'} replace/>

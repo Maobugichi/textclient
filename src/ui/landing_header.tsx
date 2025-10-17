@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "../components/button";
-import { ArrowRight } from 'lucide-react';
+
 import textlogo from "../assets/textflexLogo.png";
 
 const LandingHeader = () => {

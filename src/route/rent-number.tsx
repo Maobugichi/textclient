@@ -1,9 +1,8 @@
 import RentInput from "../components/rentNumber/rentInput"
 import TableCont from "../components/table-cont"
-import { useContext , useState , useEffect } from "react"
+import { useContext , useState  } from "react"
 import { ShowContext } from "../components/context-provider"
 import PopUp from "../components/popup/pop-up"
-import axios from "axios"
 import { useAuth } from "../context/authContext"
 import { useUserOrdersPolling } from "../components/receiveSMS/hook/useOrders"
 
@@ -13,7 +12,6 @@ const RentNumber = () => {
      if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
      const { theme } = myContext;
      const [ isShow , setIsShow ] = useState<boolean>(false);
-     const [ tableValues , setTableValues ] = useState<any>('');
      const [ numberInfo , setNumberInfo ] = useState<any>({
         number:'',
     });
