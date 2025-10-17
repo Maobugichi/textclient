@@ -66,7 +66,7 @@ const DataTable: React.FC<TableProps> = ({ tableValue, action }) => {
     <div className="rounded-lg border">
       <ScrollArea className="h-[400px] w-full">
         <Table>
-          <TableHeader className="sticky top-0 bg-background z-10">
+          <TableHeader className=" bg-background ">
             <TableRow>
               <TableHead className="font-semibold">Order ID</TableHead>
               <TableHead className="font-semibold">Number</TableHead>

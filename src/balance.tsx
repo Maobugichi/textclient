@@ -1,22 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useContext } from "react";
-import { ShowContext } from "./components/context-provider";
+import api from "./lib/axios-config";
+import { useAuth } from "./context/authContext";
 
-const API_BASE_URL = "https://api.textflex.net/api";
 
 export const useBalance = () => {
   const queryClient = useQueryClient();
-  const myContext = useContext(ShowContext);
+  const { user } = useAuth();
+  const userId = user?.userId;
 
-  if (!myContext) {
-    throw new Error("ShowContext must be used within a ContextProvider");
-  }
-
-  const { userData } = myContext;
-  const userId = userData?.userId;
-
-  
   const {
     data: balance = 0,
     isLoading,
@@ -27,8 +18,8 @@ export const useBalance = () => {
     queryFn: async () => {
       if (!userId) return 0;
 
-      const res = await axios.get(`${API_BASE_URL}/user-balance`, {
-        params: { user_id: userId },
+      const res = await api.get(`/api/user-balance`, {
+        headers: { "x-requires-auth": true }
       });
 
       return res.data?.balance ?? 0;
@@ -37,10 +28,12 @@ export const useBalance = () => {
     staleTime: 10000, 
     refetchInterval: 30000, 
     refetchOnWindowFocus: true,
-    retry: 3, // Retry 3 times on failure
+    retry: 3, 
   });
 
-  // Manual refresh function
+
+  console.log(error)
+
   const refreshBalance = async () => {
     await refetch();
   };

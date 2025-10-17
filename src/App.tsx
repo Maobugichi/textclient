@@ -58,7 +58,7 @@ function App() {
           <Toaster position="top-right" richColors closeButton/>
           <Routes>
             <Route path="signup/:1" element={<Signup />} />
-            <Route path="login/:1" element={<Login />} />
+            <Route path="login" element={<Login />} />
             <Route path="forgot-password/:1" element={<ForgotPassword />} />
             <Route path="reset-password/:1" element={<ResetPassword />} />
             <Route path="homepage/:1" element={<LandingPage />} />

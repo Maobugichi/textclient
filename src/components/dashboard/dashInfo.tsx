@@ -8,7 +8,6 @@ import {
     ArrowUpRight,
     Plus,
   } from 'lucide-react';
-import checkAuth from "../checkauth";
 import SlideShow from "../../ui/slideshow";
 import { useState, useEffect } from "react";
 import {Dispatch , SetStateAction } from 'react';
@@ -155,7 +154,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
 
   
     const blocks = blockInfo.slice(0, blockInfo.length - 2).map(info => (
-        <Link className="w-[90%] md:w-[45%]"   to={checkAuth() ? info.link : '/signup/:1'}>
+        <Link className="w-[90%] md:w-[45%]"   to={info.link }>
          <Blocks
           extra={info.extra}
           icon={info.icon}
@@ -169,7 +168,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
     ));
 
     const lastTwoBlocks =  blockInfo.slice(- 2).map(info => (
-        <Link className="w-full"  to={checkAuth() ? info.link : '/signup/:1'}>
+        <Link className="w-full"  to={info.link}>
          <Blocks
           extra={info.extra}
           icon={info.icon}

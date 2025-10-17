@@ -21,6 +21,8 @@ export const useGetSMSNumber = () => {
         ...target,
         price: cost,
         actual: actualCost,
+      }, {
+        headers: { "x-requires-auth": true }
       })
 
       if (data.phone?.error_msg) throw new Error(data.phone.error_msg)

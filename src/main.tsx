@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/utils.ts'
+import { AuthProvider } from './context/authContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-       <App />
+      <AuthProvider>
+         <App />
+      </AuthProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

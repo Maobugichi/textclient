@@ -1,14 +1,13 @@
 import PopUp from "../components/popup/pop-up";
 import Input from "../components/receiveSMS/input";
 import TableCont from "../components/table-cont";
-import { useEffect, useState , useContext } from "react";
+import {  useState , useContext } from "react";
 import { ShowContext } from "../components/context-provider";
-import checkAuth from "../components/checkauth";
 import { Card } from "../components/ui/card";
-import api from "../lib/axios-config";
+import { useAuth } from "../context/authContext";
+import { useUserOrdersPolling } from "../components/receiveSMS/hook/useOrders";
 
 const ReceiveSms = () => {
-    const [ tableValues , setTableValues ] = useState<any>('');
     const [ numberInfo , setNumberInfo ] = useState<any>({
         number:'',
         sms:''
@@ -20,25 +19,11 @@ const ReceiveSms = () => {
     const [ isCancel , setIsCancel ] = useState<boolean>(false)
     const myContext = useContext(ShowContext)
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const { userData , theme } = myContext;
-
-    useEffect(() => {
-        const getUserData = async () => {
-            const response = await api.get('https://api.textflex.net/api/orders', { 
-                params: { userId: userData.userId  }
-            });
-            const purchaseArray = response.data.data.filter((item:any) => (
-                item.purchased_number !== null
-            ))
-            setTableValues(purchaseArray);
-        }
-
-        if (checkAuth()) {
-            setInterval(() => {
-                getUserData();
-            }, 5000);    
-        }
-    },[])
+    const {  theme } = myContext;
+    const { user:userData } = useAuth();
+    const { data: orders = [], isLoading } = useUserOrdersPolling(userData?.userId);
+    if (isLoading) return <p>Loading...</p>;
+      
     return(
         <div className={`w-full overflow-hidden font-montserrat md:grid  flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
             <PopUp
@@ -48,15 +33,15 @@ const ReceiveSms = () => {
              error={error}
              errorInfo={errorInfo}
              setIsError={setIsError}
-             userId={userData.userId}
-             email={userData.userEmail}
+             userId={userData?.userId}
+             email={userData?.userEmail}
              setIsCancel={setIsCancel}
              cancel={isCancel}
             />
              <h2 className="font-semibold text-left text-2xl">Receive SMS</h2>
             <Card className="border-none shadow-none grid md:grid-cols-3 grid-cols-1  w-[90%] md:w-full mx-auto ">
                 <Input
-                 tableValues={tableValues}
+                 tableValues={orders}
                  numberInfo={numberInfo}
                  setNumberInfo={setNumberInfo}
                  setReqId={setReqId}
@@ -68,7 +53,7 @@ const ReceiveSms = () => {
                  cancel={isCancel}
                 />
                 <TableCont
-                 tableValues={tableValues}
+                 tableValues={orders}
                  theme={theme}
                 />
             </Card>

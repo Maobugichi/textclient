@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useMutation } from "@tanstack/react-query";
 import api from "../lib/axios-config";
-import { ShowContext } from "../components/context-provider";
 import logo from "../assets/textflexLogo.png";
 
 import {
@@ -21,6 +20,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner";
+import { useAuth } from "../context/authContext";
 
 
 const loginSchema = z.object({
@@ -32,13 +32,11 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
 
+  const {  login } = useAuth();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const myContext = useContext(ShowContext);
-  if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-  const { setUserData } = myContext;
-  
-
+ 
+ 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -50,7 +48,8 @@ const Login = () => {
       return data;
     },
     onSuccess: (data) => {
-      setUserData(data);
+      console.log(data)
+      login(data)
       const socket = io("https://api.textflex.net", {
         query: {
           userId: data.userId,
@@ -63,6 +62,7 @@ const Login = () => {
       navigate("/dashboard/1");
     },
     onError: (error: any) => {
+        console.log(error)
       toast.error(error.response?.data?.error)
       //setErrorMessage(error.response?.data?.error || "Login failed");
       setShow(true);

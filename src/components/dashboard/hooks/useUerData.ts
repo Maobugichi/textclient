@@ -1,47 +1,42 @@
-// hooks/useDashboardData.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "sonner";
 import { useBalance } from "../../../balance";
+import api from "../../../lib/axios-config";
 
-const API_BASE_URL = "https://api.textflex.net/api";
 
 
-export const useUserOrders = (userId: string | null, isEnabled: boolean) => {
-  //const { refreshBalance } = useBalance();
-
+export const useUserOrders = (userId: string | null | undefined) => {
   return useQuery({
-    queryKey: ["userOrders", userId],
+    queryKey: ["userOrders"],
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/orders`, {
-        params: { userId },
+      const response = await api.get(`/api/orders`, {
+        headers: { "x-requires-auth": true }
       });
       
       const purchaseArray = response.data.data.filter(
         (item: any) => item.purchased_number !== null
-      );
+      ); 
+      console.log(response)
       
       localStorage.setItem("arr-length", JSON.stringify(purchaseArray.length));
       
       return purchaseArray;
     },
-    enabled: isEnabled,
+    enabled: !!userId,
     staleTime: 30000,
     refetchOnWindowFocus: true,
   });
 };
 
-// ============================================
-// Transaction History Hook
-// ============================================
-export const useTransactionHistory = (userId: string | null, isEnabled: boolean) => {
+
+export const useTransactionHistory = (userId: string | null | undefined) => {
   const { refreshBalance } = useBalance();
 
   return useQuery({
     queryKey: ["transactions", userId],
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/get-transaction`, {
-        params: { user_id: userId },
+      const response = await api.get(`/api/get-transaction`, {
+        headers: { "x-requires-auth": true }
       });
       
       const filteredData = response.data.filter(
@@ -52,37 +47,37 @@ export const useTransactionHistory = (userId: string | null, isEnabled: boolean)
       
       return filteredData;
     },
-    enabled: isEnabled,
+    enabled: !!userId, 
     staleTime: 30000,
     refetchOnWindowFocus: true,
   });
 };
 
-// ============================================
-// Exchange Rate Hook
-// ============================================
+
 export const useExchangeRate = () => {
   return useQuery({
     queryKey: ["exchangeRate"],
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/get-rate`);
+      const response = await api.get(`/api/get-rate`, {
+        headers: { "x-requires-auth": true }
+      });
       const rate = response.data[0];
       localStorage.setItem("rate", JSON.stringify(rate));
       return rate;
     },
-    staleTime: 300000, // 5 minutes
+    staleTime: 300000, 
     refetchOnMount: false,
   });
 };
 
-// ============================================
-// Cost Difference Hook
-// ============================================
+
 export const useCostDiff = () => {
   return useQuery({
     queryKey: ["costDiff"],
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/costs`);
+      const response = await api.get(`/api/costs`, {
+        headers: { "x-requires-auth": true }
+      });
       const cost = response.data[0];
       localStorage.setItem("cost_diff", JSON.stringify(cost));
       return cost;
@@ -92,15 +87,12 @@ export const useCostDiff = () => {
   });
 };
 
-// ============================================
-// Squad Callback Mutation Hook
-// ============================================
 export const useSquadCallback = (options?: { onSuccess?: () => void | Promise<void> }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (transactionRef: string) => {
-      const response = await axios.post(`${API_BASE_URL}/squad-callback`, {
+      const response = await api.post(`/api/squad-callback`, {
         transaction_ref: transactionRef,
       });
       return response.data;
@@ -119,12 +111,12 @@ export const useSquadCallback = (options?: { onSuccess?: () => void | Promise<vo
         const newUrl = window.location.origin + window.location.pathname + window.location.hash;
         window.history.replaceState({}, "", newUrl);
         
-        // Call custom onSuccess callback if provided
+        
         if (options?.onSuccess) {
           await options.onSuccess();
         }
         
-        return true; // Signal success
+        return true; 
       }
       return false;
     },

@@ -31,6 +31,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
      const originalRequest = error.config;
+     console.log(error)
     if (error.response?.status === 401 && originalRequest?.headers["x-requires-auth"]) {
       
       localStorage.removeItem("authToken");

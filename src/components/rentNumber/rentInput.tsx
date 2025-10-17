@@ -234,11 +234,12 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     }, [limits])
     return(
         <Form
-         className={`w-[95%] mx-auto md:w-[32%] h-fit  p-2 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
+         className={` mx-auto w-full font-normal h-fit  py-5 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
          onSubmit={getNumber}
         >
             <Fieldset
              provider='Country'
+             className="font-semibold"
             > 
             <Select
              options={list} 
@@ -250,7 +251,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
             </Fieldset>
             <Fieldset
              provider='Duration'
-             className=" flex  flex-col w-[97%] gap-4"
+             className=" flex font-semibold flex-col w-[97%] gap-4"
             > 
                <Select
                 options={durationOptions}
@@ -272,18 +273,20 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
             </Fieldset>
             <Fieldset
              provider="Stock"
+             className="font-semibold"
             >
                 <div  className="relative w-full  flex items-center">
-                   <input className={`p-3.5  rounded-sm border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
+                   <input className={`p-3.5 rounded-xl  border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
                    {limits.count == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
             </Fieldset>
 
             <Fieldset
              provider="Price"
+            className="font-semibold"
             >
                 <div className="relative w-full  flex items-center">
-                 <input className={`p-3.5  rounded-sm border  border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
+                 <input className={`p-3.5  rounded-xl border  border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
                  {limits.cost == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
                 

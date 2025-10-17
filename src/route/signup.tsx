@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { ShowContext } from "../components/context-provider";
+import {  useEffect, useState } from "react";
 import logo from "../assets/textflexLogo.png";
 import {
   Form,
@@ -20,6 +19,7 @@ import { Input } from "../components/ui/input";
 import api from "../lib/axios-config";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner";
+import { useAuth } from "../context/authContext";
 
 // ✅ Define Zod schema
 const signupSchema = z.object({
@@ -34,10 +34,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const Signup = () => {
   const navigate = useNavigate();
-  const myContext = useContext(ShowContext);
-  if (!myContext)
-    throw new Error("ShowContext must be used within a ContextProvider");
-  const { setUserData } = myContext;
+  const { login } = useAuth();
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -66,7 +63,7 @@ const Signup = () => {
       return res.data;
     },
     onSuccess: (data) => {
-      setUserData(data);
+      login(data);
       toast.success('Welcome onboard')
       navigate("/dashboard/1");
 
