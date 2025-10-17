@@ -7,17 +7,20 @@ interface ForwardBlocksProps {
     theme:boolean;
     link:string;
     onClick?:(e:any) => void;
-    userId:string
+    userId:string;
+   
 }
 
-const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, link, onClick }) => {
+const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, link, onClick  }) => {
     const content = (
         <div
             onClick={(e) => onClick && onClick(e)}
             className={`w-full p-3 border border-solid rounded-md ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
         >
+          
             <p>{text}</p>
-            <p className="hover:underline text-blue-500 cursor-pointer text-sm">{forward}</p>
+            <p className="hover:underline text-blue-500 cursor-pointer text-sm">{forward}</p> 
+           
         </div>
     );
 

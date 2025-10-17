@@ -14,6 +14,8 @@ import {Dispatch , SetStateAction } from 'react';
 import axios from "axios";
 import TransactionsList from "./transations";
 
+import { toast } from "sonner";
+
 
 
 interface DashProps {
@@ -115,11 +117,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
     }
     try {
        await navigator.clipboard.writeText(referralCode);
-       await axios.post(`https://api.textflex.net/api/notify`, {
-            userId: userData.userId,
-            message: "referral code copied",
-            type: "info"
-        });
+       toast.success('Link copied to your clipboard!')
        
     } catch (err) {
         console.error("Clipboard copy failed", err);

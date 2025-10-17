@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/textflexLogo.png";
 import {
   Form,
@@ -96,7 +96,7 @@ const Signup = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between w-[95%] gap-4 h-fit"
         >
-          {/* Username */}
+         
           <FormField
             control={form.control}
             name="username"
@@ -117,7 +117,7 @@ const Signup = () => {
             )}
           />
 
-          {/* Email */}
+        
           <FormField
             control={form.control}
             name="email"
@@ -221,7 +221,7 @@ const Signup = () => {
       <span className="text-center text-gray-700">
         Already have an account?{" "}
         <Link className="text-blue-500 underline" to="/login/:1">
-          Sign in
+         Login
         </Link>
       </span>
 
