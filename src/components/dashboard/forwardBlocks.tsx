@@ -7,7 +7,6 @@ interface ForwardBlocksProps {
     theme:boolean;
     link:string;
     onClick?:(e:any) => void;
-    userId:string;
    
 }
 

@@ -1,4 +1,4 @@
-// src/pages/Dashboard.tsx
+
 import { useEffect,  useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,10 +12,10 @@ import {
   useSquadCallback,
 } from "../components/dashboard/hooks/useUerData";
 import { usePaymentPolling } from "../components/dashboard/hooks/usePolling";
-import { useTokenManager } from "../components/dashboard/hooks/useTokenManager";
+
 import { useBalance } from "../balance";
 import { useAuth } from "../context/authContext";
-import { Navigate } from "react-router-dom";
+
 
 
 const DashBoard = () => {
@@ -24,13 +24,8 @@ const DashBoard = () => {
   
   const { user:userData } = useAuth();
 
-  useEffect(() => {
-    console.log("user:" + userData)
-  },[userData])
-  
   const { balance, isLoading: loadingBalance, invalidateBalance } = useBalance();
 
-  
   const { data:userOrders = [], isLoading: loadingOrders,error  } = useUserOrders( userData?.userId,);
 
   const { data:transactionHistory = [], isLoading: loadingTransactions } = useTransactionHistory(
@@ -47,7 +42,7 @@ const DashBoard = () => {
     },
   });
 
-  console.log(userOrders)
+  
   console.log(error)
   const handlePaymentSuccess = () => {
     setRef(null);
@@ -64,8 +59,7 @@ const DashBoard = () => {
 
 
   
-  
-  useTokenManager(userData);
+
 
   
   useEffect(() => {
@@ -99,11 +93,6 @@ const DashBoard = () => {
     );
   }
 
-  if (!userData) {
-      return <Navigate to={'/login'} replace/>
-  }
-  
-  
   return (
     <DashInfo
       info={userOrders}

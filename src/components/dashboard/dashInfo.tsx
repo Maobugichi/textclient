@@ -15,6 +15,7 @@ import axios from "axios";
 import TransactionsList from "./transations";
 
 import { toast } from "sonner";
+import api from "../../lib/axios-config";
 
 
 
@@ -99,11 +100,12 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
     useEffect(() => {
       const fetchReferral = async () => {
         try {
-            const response = await axios.get(`https://api.textflex.net/api/ref?userId=${userData.userId}`);
+            const response = await api.get(`/api/ref`);
             setReferralCode(response.data);
             return response.data
-        } catch (err) {
-            console.error("Error fetching referral", err);
+        } catch (err:any) {
+            console.error(err?.status);
+
         }
      };
 
@@ -121,7 +123,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
        
     } catch (err) {
         console.error("Clipboard copy failed", err);
-        alert("Failed to copy code");
+        toast.error("Failed to copy code");
     }
    };
 
@@ -187,7 +189,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
          theme={theme}
          link={item.link}
          onClick={generateReferralCode}
-         userId={userData.userId}
+        
         />
     ))
 
@@ -195,7 +197,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
     return(
         <div className={`h-fit font-montserrat lg:ml-10 w-[95%] mx-auto  lg:w-[85%] flex flex-col  gap-12 ${theme ? 'text-white' : 'text-black'}`}>
             <div className="h-fit grid  gap-6">
-                <h1 className="text-2xl font-semibold">Welcome {userData.username} <span className="inline-block animate-wave origin-[70%_70%]">👋</span></h1>
+                <h1 className="text-2xl font-semibold">Welcome {userData?.username} <span className="inline-block animate-wave origin-[70%_70%]">👋</span></h1>
                  <BlockCont
                   theme={theme}
                  >

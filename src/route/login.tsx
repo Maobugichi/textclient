@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
 import { useMutation } from "@tanstack/react-query";
 import api from "../lib/axios-config";
 import logo from "../assets/textflexLogo.png";
@@ -50,21 +49,11 @@ const Login = () => {
     onSuccess: (data) => {
       console.log(data)
       login(data)
-      const socket = io("https://api.textflex.net", {
-        query: {
-          userId: data.userId,
-          eventType: data.eventTag,
-        },
-      });
-
-      socket.emit("client-ready");
-      toast.success('Welcome back!')
+    
       navigate("/dashboard/1");
     },
     onError: (error: any) => {
-        console.log(error)
       toast.error(error.response?.data?.error)
-      //setErrorMessage(error.response?.data?.error || "Login failed");
       setShow(true);
     },
   });

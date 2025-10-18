@@ -7,7 +7,7 @@ import api from "../../../lib/axios-config";
 
 export const useUserOrders = (userId: string | null | undefined) => {
   return useQuery({
-    queryKey: ["userOrders"],
+    queryKey: ["userOrders", userId],
     queryFn: async () => {
       const response = await api.get(`/api/orders`, {
         headers: { "x-requires-auth": true }
@@ -22,7 +22,6 @@ export const useUserOrders = (userId: string | null | undefined) => {
       
       return purchaseArray;
     },
-    enabled: !!userId,
     staleTime: 30000,
     refetchOnWindowFocus: true,
   });
