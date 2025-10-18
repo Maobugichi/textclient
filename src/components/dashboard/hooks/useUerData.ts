@@ -15,11 +15,8 @@ export const useUserOrders = (userId: string | null | undefined) => {
       
       const purchaseArray = response.data.data.filter(
         (item: any) => item.purchased_number !== null
-      ); 
-      console.log(response)
-      
+      );  
       localStorage.setItem("arr-length", JSON.stringify(purchaseArray.length));
-      
       return purchaseArray;
     },
     staleTime: 30000,

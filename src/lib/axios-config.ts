@@ -3,8 +3,6 @@ import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-console.log('api' + API_BASE)
-
 export const api = axios.create({
   baseURL: API_BASE,
   withCredentials: true, 
@@ -31,14 +29,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
      const originalRequest = error.config;
-     console.log(error)
+    
     if (error.response?.status === 401 && originalRequest?.headers["x-requires-auth"]) {
-      
       localStorage.removeItem("authToken");
       localStorage.removeItem("auth")
-     
+      console.log(error.status)
+      console.log(originalRequest?.headers["x-requires-auth"])
+      
       if (!window.location.pathname.includes("/login")) {
-        window.location.href = "#/login";
+          console.log('hello')
+          window.location.href = "#/login";
       }
     }
     return Promise.reject(error);

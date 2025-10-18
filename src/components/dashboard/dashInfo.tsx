@@ -1,7 +1,7 @@
 import BlockCont from "./block-cont";
 import Blocks from "../../ui/blocks";
 import ForwardBlocks from "./forwardBlocks";
-import { Link  } from "react-router-dom";
+import { Link, Navigate  } from "react-router-dom";
 import {
     Users,   
     CreditCard,
@@ -105,7 +105,7 @@ const DashInfo:React.FC<DashProps> = ({info , theme , transaction , userData ,  
             return response.data
         } catch (err:any) {
             console.error(err?.status);
-
+            return <Navigate to={`/login`} replace/>
         }
      };
 

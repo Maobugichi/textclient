@@ -43,7 +43,7 @@ const DashBoard = () => {
   });
 
   
-  console.log(error)
+  console.log("err" + error)
   const handlePaymentSuccess = () => {
     setRef(null);
    
@@ -58,10 +58,6 @@ const DashBoard = () => {
   });
 
 
-  
-
-
-  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const refParam = params.get("reference");
