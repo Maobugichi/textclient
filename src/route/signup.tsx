@@ -20,12 +20,13 @@ import api from "../lib/axios-config";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner";
 import { useAuth } from "../context/authContext";
+import { Eye, EyeOff } from "lucide-react";
 
-// ✅ Define Zod schema
+
 const signupSchema = z.object({
   username: z.string().min(2, "Username is required"),
   number: z.string().min(10, "Valid phone number required"),
-  email: z.email("Enter a valid email"),
+  email: z.string().email("Enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   referralCode: z.string().optional(),
 });
@@ -48,7 +49,7 @@ const Signup = () => {
   });
 
   const [show, setShow] = useState(false);
- 
+  const [showPassword, setShowPassword] = useState(false); // 👈 new state
 
   useEffect(() => {
     if (show) {
@@ -64,13 +65,12 @@ const Signup = () => {
     },
     onSuccess: (data) => {
       login(data);
-      toast.success('Welcome onboard')
+      toast.success("Welcome onboard");
       navigate("/dashboard/1");
-
     },
     onError: (err: any) => {
-       toast.error(err.response?.data?.message)
-       setShow(true);
+      toast.error(err.response?.data?.message);
+      setShow(true);
     },
   });
 
@@ -80,8 +80,6 @@ const Signup = () => {
 
   return (
     <div className="w-[90%] mx-auto md:w-[40%] text-center gap-3 mt-16 min-h-[45vh] grid place-items-center md:min-h-[80vh]">
-      
-      
       <img src={logo} alt="textflex logo" className="w-32" />
 
       <div className="text-center space-y-2">
@@ -96,7 +94,7 @@ const Signup = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between w-[95%] gap-4 h-fit"
         >
-         
+          {/* Username */}
           <FormField
             control={form.control}
             name="username"
@@ -117,7 +115,7 @@ const Signup = () => {
             )}
           />
 
-        
+          {/* Email */}
           <FormField
             control={form.control}
             name="email"
@@ -139,7 +137,7 @@ const Signup = () => {
             )}
           />
 
-         
+          {/* Phone Number */}
           <FormField
             control={form.control}
             name="number"
@@ -161,7 +159,7 @@ const Signup = () => {
             )}
           />
 
-        
+          {/* Password with toggle 👇 */}
           <FormField
             control={form.control}
             name="password"
@@ -170,20 +168,35 @@ const Signup = () => {
                 <FormLabel className="block text-left text-gray-700 ">
                   Password
                 </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Enter your password"
-                    type="password"
-                    className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300"
-                  />
-                </FormControl>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Enter your password"
+                      type={showPassword ? "text" : "password"}
+                      className="text-lg h-14 placeholder:text-lg p-3 rounded-xl border-gray-300 pr-12"
+                    />
+                  </FormControl>
+
+                  {/* 👁️ Show/hide toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={22} />
+                    ) : (
+                      <Eye size={22} />
+                    )}
+                  </button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-         
+          {/* Referral Code */}
           <FormField
             control={form.control}
             name="referralCode"
@@ -203,14 +216,14 @@ const Signup = () => {
             )}
           />
 
-        
+          {/* Submit button */}
           <Button
             type="submit"
             disabled={mutation.isPending}
             className="w-full grid place-items-center text-lg tracking-wide bg-[#0032a5] text-white p-3 rounded-sm h-12"
           >
             {mutation.isPending ? (
-             <ClipLoader size={20} color="white"/>
+              <ClipLoader size={20} color="white" />
             ) : (
               "Sign up"
             )}
@@ -221,7 +234,7 @@ const Signup = () => {
       <span className="text-center text-gray-700">
         Already have an account?{" "}
         <Link className="text-blue-500 underline" to="/login/:1">
-         Login
+          Login
         </Link>
       </span>
 

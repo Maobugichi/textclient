@@ -22,7 +22,7 @@ const Hero = () => {
                         
                         />
                         </Link> 
-                        <Link className="md:w-[23%] w-[40%] h-11 text-sm grid place-content-center" to="/login/:1">
+                        <Link className="md:w-[23%] w-[40%] h-11 text-sm grid place-content-center" to="/login">
                             <Button
                              content={<span className="flex w-full items-center gap-2 justify-center text-lg">Login <ArrowRight size={13}/></span>}
                             />

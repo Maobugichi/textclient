@@ -1,12 +1,13 @@
 import { useEffect, useState , useContext } from "react";
 import { ShowContext } from "../context-provider";
 import Form from "../form"
-import axios from "axios";
 import { openFilter, filter } from "../../action";
-import NowPay from "../dashboard/nowpayment";
+import NowPay from "./nowpayment";
 import { motion } from "motion/react";
 import TransactionsList from "./transactionTable";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useQueryClient } from "@tanstack/react-query";
+import api from "../../lib/axios-config";
 
 
 const Payment = () => {
@@ -28,6 +29,7 @@ const Payment = () => {
   const [ isActive , setIsActive ] = useState<any>(0)
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
+      
       setErr(false)
       setData((prev:any) => ({
       ...prev ,
@@ -59,7 +61,7 @@ const Payment = () => {
       
       setShowLoader(true)
       
-      const response = await axios.post('https://api.textflex.net/api/initialize-transaction', data)
+      const response = await api.post('/api/initialize-transaction', data)
       const url = response.data.data.data.checkout_url
       const ref = response.data.data.data.transaction_ref
     
@@ -76,7 +78,7 @@ const Payment = () => {
   function active(index:number) {
     setIsActive(index)
   }
-
+   const queryClient = useQueryClient();
   useEffect(() => {
     if (err) {
       const myTimeOut = setTimeout(() => {
@@ -89,7 +91,7 @@ const Payment = () => {
 
   useEffect(() => {
     async function getTransaction() {
-      const response = await axios.get('https://api.textflex.net/api/get-transaction', {
+      const response = await api.get('/api/get-transaction', {
         params:{
           user_id:userData.userId
         }
@@ -103,6 +105,11 @@ const Payment = () => {
       getTransaction()
     
   },[])
+
+  useEffect(() => {
+    // Set rate data when component mounts
+    queryClient.setQueryData(['rate'], { cryptomin: 5, rate: 1600 });
+  }, []);
    const rate:any = localStorage.getItem("rate");
    const rateObj = JSON.parse(rate)
     return(

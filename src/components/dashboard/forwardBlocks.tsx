@@ -14,7 +14,7 @@ const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, lin
     const content = (
         <div
             onClick={(e) => onClick && onClick(e)}
-            className={`w-full p-3 border border-solid rounded-md ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
+            className={`w-full p-3 border border-solid rounded-lg ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
         >
           
             <p>{text}</p>

@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,8 +14,8 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import api from "../../lib/axios-config";
+import { useAuth } from "../../context/authContext";
 
-// ✅ Validation schemas
 const profileSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
   userNumber: z
@@ -35,15 +34,17 @@ type PasswordForm = z.infer<typeof passwordSchema>;
 const SettingsContent = () => {
   const myContext = useContext(ShowContext);
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-  const { userData, setUserData, theme } = myContext;
-  const { userEmail, userId, userNumber, username } = userData;
+  const { user } = useAuth();
+  console.log(user)
+  const { setUserData, theme } = myContext;
+ 
 
   
   const profileForm = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      username,
-      userNumber,
+      username:user?.username,
+      userNumber:user?.userNumber,
     },
   });
 
@@ -59,7 +60,9 @@ const SettingsContent = () => {
   
   const onSubmitProfile = async (values: ProfileForm) => {
     try {
-      const response = await axios.patch(`https://api.textflex.net/api/update/${userId}`, values);
+      const response = await api.patch(`/api/update/`, values,{
+        headers: { "x-requires-auth": true }
+      });
       setUserData((prev: any) => ({
         ...prev,
         username: values.username,
@@ -77,7 +80,7 @@ const SettingsContent = () => {
   const onSubmitPassword = async (values: PasswordForm) => {
     try {
       const response = await api.patch(
-        `/api/password/${userId}`,
+        `/api/password`,
         values
       );
       passwordForm.reset();
@@ -87,8 +90,8 @@ const SettingsContent = () => {
     }
   };
 
-  // Keep theme class
-  const themeClass = theme ? "text-white" : "text-black";
+
+  const themeClass = theme ? "text-white bg-black" : "text-black bg-white";
 
   return (
     <div className={`w-full md:w-[65%] h-full flex flex-col justify-between ${themeClass}`}>
@@ -141,7 +144,7 @@ const SettingsContent = () => {
 
             <div>
               <FormLabel>Email</FormLabel>
-              <Input value={userEmail} disabled className="text-gray-400 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide h-12 rounded-xl cursor-not-allowed" />
+              <Input value={user?.userEmail} disabled className="text-gray-400 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide h-12 rounded-xl cursor-not-allowed" />
             </div>
 
             <Button type="submit" className="w-fit h-12 rounded-xl text-lg tracking-wide md:w-[30%] bg-[#0032a5] text-white">

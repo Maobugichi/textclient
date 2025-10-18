@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import Button from "../components/button";
-
 import textlogo from "../assets/textflexLogo.png";
 
 const LandingHeader = () => {
@@ -18,7 +17,7 @@ const LandingHeader = () => {
                     
                     />
                  </Link>  
-                 <Link className="bg-[#0032a5] rounded-sm h-12 md:h-13 grid place-items-center text-white w-[90%] md:w-[25%]" to={ `/dashboard/:1`}>
+                 <Link className="bg-[#0032a5] rounded-xl tracking-widest h-12 md:h-13 grid place-items-center text-lg text-white w-[90%] md:w-[25%]" to={ `/dashboard/:1`}>
                     <Button
                      content={ `Dashboard`}
                      

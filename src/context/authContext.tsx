@@ -5,6 +5,7 @@ interface User {
   userId: string ;
   userEmail:string;
   username: string;
+  userNumber:string
   avatar_url?: string;
 }
 

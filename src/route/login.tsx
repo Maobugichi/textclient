@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import api from "../lib/axios-config";
 import logo from "../assets/textflexLogo.png";
-
 import {
   Form,
   FormControl,
@@ -20,22 +19,21 @@ import { Button } from "../components/ui/button";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner";
 import { useAuth } from "../context/authContext";
-
+import { Eye, EyeOff } from "lucide-react"; // 👈 for visibility toggle icons
 
 const loginSchema = z.object({
-  email: z.email("Please enter a valid email"),
+  email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
-
-  const {  login } = useAuth();
+  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
- 
- 
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -47,18 +45,15 @@ const Login = () => {
       return data;
     },
     onSuccess: (data) => {
-      console.log(data)
-      login(data)
-    
+      login(data);
       navigate("/dashboard/1");
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.error)
+      toast.error(error.response?.data?.error);
       setShow(true);
     },
   });
 
- 
   useEffect(() => {
     if (show) {
       const timeout = setTimeout(() => setShow(false), 8000);
@@ -74,8 +69,6 @@ const Login = () => {
 
   return (
     <div className="relative font-montserrat w-[90%] mx-auto md:w-[40%] mt-20 grid place-items-center">
-   
-
       <div className="text-center pb-5 grid gap-4 place-items-center">
         <img src={logo} alt="textflex logo" className="w-32" />
         <p className="text-lg font-semibold">
@@ -88,7 +81,7 @@ const Login = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-5 w-[95%]"
         >
-        
+          {/* Email field */}
           <FormField
             control={form.control}
             name="email"
@@ -100,7 +93,7 @@ const Login = () => {
                     {...field}
                     type="email"
                     placeholder="Enter your email"
-                    className="border border-gray-300 rounded-xl h-11  text-lg placeholder:text-lg "
+                    className="border border-gray-300 rounded-xl h-11 text-lg placeholder:text-lg"
                   />
                 </FormControl>
                 <FormMessage />
@@ -108,37 +101,45 @@ const Login = () => {
             )}
           />
 
-         
+          {/* Password field with visibility toggle */}
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    placeholder="Enter your password"
-                    className="border border-gray-300 rounded-xl h-11  text-lg placeholder:text-lg"
-                  />
-                </FormControl>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="border border-gray-300 rounded-xl h-11 text-lg placeholder:text-lg pr-10"
+                    />
+                  </FormControl>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-         
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full rounded-xl text-lg bg-[#0032a5] h-12 text-white font-medium"
           >
-            {isLoading ? (
-              <ClipLoader size={20} color="white"/>
-            ) : (
-              "Login"
-            )}
+            {isLoading ? <ClipLoader size={20} color="white" /> : "Login"}
           </Button>
         </form>
       </Form>
