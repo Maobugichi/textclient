@@ -1,8 +1,7 @@
 import Fieldset from "../fieldset";
 import { SingleValue } from "react-select";
-import React, { useRef, useState, useEffect, useContext } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Select from "../select";
-import { ShowContext } from "../context-provider";
 import type { InputProps } from "./types";
 import spinner from "../../assets/dualring.svg";
 import { OptionType } from "../select";
@@ -14,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePollSms } from "./hook/usePolling";
 import { Card } from "../ui/card";
 import { toast } from "sonner";
+import { useAuth } from "../../context/authContext";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
@@ -27,10 +27,8 @@ const Input: React.FC<InputProps> = ({
   const [provider, setProvider] = useState<any>("Swift");
   const queryClient = useQueryClient();
 
-  const myContext = useContext(ShowContext);
-  if (!myContext)
-  throw new Error("ShowContext must be used within a ContextProvider");
-  const { userData } = myContext;
+  const { user:userData } = useAuth();
+  
   const balance = tableValues[0]?.balance;
 
   const [options, setOptions] = useState<any[]>([]);
@@ -49,8 +47,8 @@ const Input: React.FC<InputProps> = ({
     provider,
     country: "5",
     service: "",
-    user_id: userData.userId,
-    email: userData.userEmail,
+    user_id: userData?.userId,
+    email: userData?.userEmail,
   });
 
   console.log(options)
@@ -63,7 +61,7 @@ const Input: React.FC<InputProps> = ({
  
   usePollSms({
     cost,
-    userId: userData.userId,
+    userId: userData?.userId,
     actualCost,
     statusRef,
     setNumberInfo,

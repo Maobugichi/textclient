@@ -17,7 +17,7 @@ import api from "../../lib/axios-config";
     }, 8000);
   };
 
-  const refund = async (user_id: string, cost: number, debitRef: string, request_id: string) => {
+  const refund = async (user_id: string | undefined, cost: number, debitRef: string, request_id: string) => {
     await api.post("/api/refund-user", {
       user_id,
       cost,

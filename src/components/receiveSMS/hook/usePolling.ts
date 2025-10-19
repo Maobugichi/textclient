@@ -6,7 +6,7 @@ import api from "../../../lib/axios-config";
 
 interface PollSmsProps {
   cost: number;
-  userId: string;
+  userId: string | undefined;
   actualCost: React.MutableRefObject<number>;
   statusRef: React.MutableRefObject<{ stat: string; req_id: string }>;
   setNumberInfo: React.Dispatch<React.SetStateAction<any>>;
@@ -35,7 +35,7 @@ export const usePollSms = ({
   const attemptsRef = useRef(0);
   const isStoppedRef = useRef(false);
 
-  // More robust enabled condition
+ 
   const enabled = Boolean(
     req_id && 
     !cancel && 
@@ -80,14 +80,13 @@ export const usePollSms = ({
     console.log("Stopping polling for:", key);
     isStoppedRef.current = true;
     
-    // Cancel ongoing queries
+   
     queryClient.cancelQueries({ queryKey: ["pollSms", key] });
     
-    // Remove queries from cache
     queryClient.removeQueries({ queryKey: ["pollSms", key] });
     queryClient.removeQueries({ queryKey: ["smsRequest"] });
     
-    // Reset attempts
+    
     attemptsRef.current = 0;
   };
 
@@ -127,7 +126,7 @@ export const usePollSms = ({
     setIsShow(true);
   };
 
-  // Handle successful SMS code
+  
   useEffect(() => {
     if (query.data?.sms_code) {
       console.log("✅ SMS code received:", query.data.sms_code);
@@ -142,7 +141,7 @@ export const usePollSms = ({
     }
   }, [query.data?.sms_code]);
 
-  // Handle max attempts reached
+  
   useEffect(() => {
     if (attemptsRef.current >= MAX_ATTEMPTS && !isStoppedRef.current) {
       console.log("🚫 Max attempts reached");
@@ -157,7 +156,7 @@ export const usePollSms = ({
     }
   }, [query.error]);
 
-  // Handle manual cancel
+ 
   useEffect(() => {
     if (cancel && !isStoppedRef.current) {
       console.log("❌ Manual cancel triggered");
@@ -170,7 +169,7 @@ export const usePollSms = ({
     }
   }, [cancel]);
 
-  // Cleanup on unmount
+  
   useEffect(() => {
     return () => {
       if (req_id && !query.data?.sms_code) {
