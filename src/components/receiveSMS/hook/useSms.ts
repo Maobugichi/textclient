@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../../../lib/axios-config'
+import { toast } from 'sonner'
 
 interface GetSMSParams {
   target: any
@@ -42,10 +43,13 @@ export const useGetSMSNumber = () => {
         sms,
         createdAt: Date.now(),
       })
+
+      toast.success("number purchased successfully")
     },
 
     onError: (error: any) => {
       console.error("SMS fetch failed:", error)
+      toast.error(error)
     }
   })
 }
