@@ -193,7 +193,7 @@ const DashInfo: React.FC<DashProps> = ({ info, theme,  userData, balance }) => {
     ));
 
     const forward = forwardInfo.map((item, index) => (
-        <div className="w-1/2 " key={index} data-tour={item.tourId}>
+        <div className="md:w-1/2 " key={index} data-tour={item.tourId}>
             <ForwardBlocks
                 text={item.text}
                 forward={item.forward}
@@ -270,7 +270,7 @@ const DashInfo: React.FC<DashProps> = ({ info, theme,  userData, balance }) => {
             </div>
 
             <div className="h-auto flex flex-col gap-4 w-full">
-                <div className="flex flex-col md:flex-row justify-between gap-4 ">
+                <div className="flex flex-col w-full md:flex-row justify-between gap-4 ">
                     {forward}
                 </div>
 
