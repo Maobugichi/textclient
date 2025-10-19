@@ -6,23 +6,16 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Filter } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface FilterProps {
   handleClick: (e: React.MouseEvent<HTMLLIElement>) => void;
-  open: boolean;
+  open?: boolean;
   right?: string;
 }
 
-const Filters: React.FC<FilterProps> = ({ handleClick, open, right }) => {
-  const [isOpen, setIsOpen] = useState(open);
-
-  useEffect(() => {
-    setIsOpen(open);
-  }, [open]);
-
+const Filters: React.FC<FilterProps> = ({ handleClick, right }) => {
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
@@ -37,10 +30,10 @@ const Filters: React.FC<FilterProps> = ({ handleClick, open, right }) => {
         align={right ? "end" : "start"}
         className="w-40 rounded-xl border border-gray-300 shadow-md"
       >
-        {["successful", "refunded", "pending", "clear"].map((status) => (
+        {["successful", "refunded","failed", "clear"].map((status) => (
           <DropdownMenuItem
             key={status}
-            onClick={(e:any) => handleClick(e as any)}
+            onClick={(e: any) => handleClick(e as any)}
             className="capitalize cursor-pointer hover:bg-gray-100 text-center py-1"
           >
             {status}

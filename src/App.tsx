@@ -71,7 +71,7 @@ function App() {
               <Route path="sms/:id" element={<ReceiveSms />} />
               <Route path="number/:id" element={<RentNumber />} />
               <Route path="esim/:id" element={<Esim />} />
-              <Route path="esimplan/:id" element={<EsimPlans />} />
+              <Route path="e-plans/:id" element={<EsimPlans />} />
               <Route path="settings/:1" element={<Settings />} />
             </Route>
           </Routes>

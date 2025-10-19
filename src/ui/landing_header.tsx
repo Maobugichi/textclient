@@ -10,8 +10,8 @@ const LandingHeader = () => {
                      <img className="h-[58px] w-[100px] md:w-[180px] mx-auto" src={textlogo} alt="logo" />
                 </Link>
                 
-                <div className="flex w-1/2 justify-end text-sm tracking-wide">
-                 <Link  className="h-14 hidden md:grid  w-[25%] place-content-center" to={ `/dashboard/:1` }>
+                <div className="flex w-1/2 justify-end space-x-6 text-sm tracking-wide">
+                 <Link  className="h-14 hidden md:grid  text-lg tracking-widest w-[25%] place-content-center" to={ `/dashboard/:1` }>
                     <Button
                      content={'Contact Us' }
                     

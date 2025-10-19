@@ -41,7 +41,7 @@ const NavItems: React.FC<NavProps> = ({ closeNav }) => {
         {
             icon: <Package size={17} />,
             text: 'eSIM Plans',
-            link: '/esimplan/1'
+            link: '/e-plans/1'
         },
         {
             icon: <Settings size={17} />,
@@ -67,18 +67,18 @@ const NavItems: React.FC<NavProps> = ({ closeNav }) => {
                             to={item.link}
                             onClick={closeNav}
                             className={cn(
-                                "flex h-10 items-center gap-3 rounded-lg mx-auto w-[90%] px-4 transition-all duration-200 relative group",
+                                "flex h-10 items-center gap-3 rounded-lg mx-auto w-[90%] px-4 transition-all duration-200 tracking-wider relative group",
                                 isActive
                                     ? "bg-[#0032a5] text-white shadow-md shadow-[#0032a5]/20"
                                     : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50"
                             )}
                         >
-                            {/* Active indicator */}
+                          
                             {isActive && (
                                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full" />
                             )}
 
-                            {/* Icon */}
+                           
                             <span className={cn(
                                 "transition-transform group-hover:scale-110",
                                 isActive ? "text-white" : ""
@@ -86,15 +86,15 @@ const NavItems: React.FC<NavProps> = ({ closeNav }) => {
                                 {item.icon}
                             </span>
 
-                            {/* Text */}
+                           
                             <span className={cn(
-                                "text-sm font-medium",
+                                "text-md font-medium",
                                 isActive ? "text-white" : ""
                             )}>
                                 {item.text}
                             </span>
 
-                            {/* Hover effect for non-active items */}
+                           
                             {!isActive && (
                                 <div className="absolute inset-0 bg-[#0032a5] opacity-0 group-hover:opacity-5 transition-opacity rounded-lg" />
                             )}

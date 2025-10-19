@@ -1,31 +1,31 @@
 import { useEffect, useState , useContext } from "react";
 import { ShowContext } from "../context-provider";
 import Form from "../form"
-import { openFilter, filter } from "../../action";
 import NowPay from "./nowpayment";
 import { motion } from "motion/react";
 import TransactionsList from "./transactionTable";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/axios-config";
+import { useAuth } from "../../context/authContext";
 
 
 const Payment = () => {
+  const { user:userData } = useAuth();
+ 
   const myContext = useContext(ShowContext)
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-  const { userData , theme } = myContext;
+  const {  theme } = myContext;
+  
   const [data , setData ] = useState<any>({
-    id:userData.userId,
-    email:userData.userEmail,
+    id:userData?.userId,
+    email:userData?.userEmail,
     amount:'',
     currency:'NGN',
   } );
   const options = ['Pay in NGN', 'Pay in Crypto']
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
-  const [ transactionHistory , setTransactionHistory ] = useState<any>([])
-  const [ transs , setTrans ] = useState<any>([])
   const [ err ,setErr] = useState<boolean>(false)
-  const [ open , setOpen ] = useState<boolean>(false)
   const [ isActive , setIsActive ] = useState<any>(0)
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
@@ -37,18 +37,7 @@ const Payment = () => {
      }))
   }
 
-  const [visibleCount, setVisibleCount] = useState(10);
-
-  const filteredTrans = transs
-    .filter((item: any) => item.status === "successful" || item.status === "refunded")
-    .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-  const visibleTrans = filteredTrans.slice(0, visibleCount);
-
-  useEffect(() => {
-      setTrans(transactionHistory)
-    },[transactionHistory])
-  
+ 
   
   async function payment(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -89,22 +78,7 @@ const Payment = () => {
   },[err])
 
 
-  useEffect(() => {
-    async function getTransaction() {
-      const response = await api.get('/api/get-transaction', {
-        params:{
-          user_id:userData.userId
-        }
-      });
-      const newData = response.data.filter((item:any) => (
-        item.user_id == userData.userId
-      ))
-     
-      setTransactionHistory(newData)
-    }
-      getTransaction()
-    
-  },[])
+ 
 
   useEffect(() => {
     // Set rate data when component mounts
@@ -151,18 +125,7 @@ const Payment = () => {
         </div>
        
        <div className="mt-4">
-      <TransactionsList
-      visibleTrans={visibleTrans}
-      filteredTrans={filteredTrans}
-      visibleCount={visibleCount}
-      setVisibleCount={setVisibleCount}
-      transactionHistory={transactionHistory}
-      filter={filter}
-      openFilter={openFilter}
-      setTrans={setTrans}
-      open={open}
-      setOpen={setOpen}
-  />
+      <TransactionsList userId={userData?.userId}/>
     </div>
        
       </div>

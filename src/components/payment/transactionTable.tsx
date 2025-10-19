@@ -16,32 +16,16 @@ import {
   XCircle,
   RefreshCw,
   ChevronDown,
-
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import Filters from "../filter";
+import { getTime } from "../../action";
+import { useTransactionFilter } from "./hook/useGetTransations";
+import { useState } from "react";
 
-import { getTime } from "../../action"; 
-
-interface Transaction {
-  id?: string | number;
-  note: string;
-  amount: number;
-  status: "successful" | "refunded" | "pending" | "failed";
-  created_at?: string;
-}
 
 interface TransactionsListProps {
-  visibleTrans: Transaction[];
-  filteredTrans: Transaction[];
-  visibleCount: number;
-  setVisibleCount: React.Dispatch<React.SetStateAction<number>>;
-  transactionHistory: Transaction[];
-  filter: Function;
-  openFilter: Function;
-  setTrans: Function;
-  open: boolean;
-  setOpen: Function;
+  userId: string | undefined | null;
 }
 
 const statusConfig = {
@@ -67,18 +51,45 @@ const statusConfig = {
   },
 };
 
-export default function TransactionsList({
-  visibleTrans,
-  filteredTrans,
-  visibleCount,
-  setVisibleCount,
-  transactionHistory,
-  filter,
+export default function TransactionsList({ userId }: TransactionsListProps) {
+  const {
+    filteredTransactions,
+    visibleTransactions,
+    visibleCount,
+    setVisibleCount,
+    filterStatus,
+    handleFilter,
+    clearFilter,
+    isLoading,
+  } = useTransactionFilter(userId);
 
-  setTrans,
-  open,
-  setOpen,
-}: TransactionsListProps) {
+  const [open, setOpen] = useState(false);
+
+  // Handler for filter clicks
+  const onFilterClick = (e: React.MouseEvent<HTMLLIElement>) => {
+    const target = e.currentTarget.textContent?.toLowerCase();
+    
+    if (target === 'clear' || target === 'all') {
+      clearFilter();
+    } else if (target && ['successful', 'refunded', 'pending', 'failed'].includes(target)) {
+      handleFilter(target as any);
+    }
+    
+    setOpen(false);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardContent className="py-12">
+          <div className="flex justify-center">
+            <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
@@ -87,17 +98,18 @@ export default function TransactionsList({
             Recent Activities
           </CardTitle>
           <CardDescription className="text-xs md:text-sm">
-            {filteredTrans.length} total transactions
+            {filteredTransactions.length} total transactions
+            {filterStatus !== "all" && (
+              <Badge variant="secondary" className="ml-2 text-[10px]">
+                {filterStatus}
+              </Badge>
+            )}
           </CardDescription>
         </div>
 
         <div className="relative md:w-auto w-full flex justify-end">
-          
-
           <Filters
-            handleClick={(e: any) =>
-              filter(e, setTrans, transactionHistory, setOpen)
-            }
+            handleClick={onFilterClick}
             open={open}
             right="left-0"
           />
@@ -105,7 +117,7 @@ export default function TransactionsList({
       </CardHeader>
 
       <CardContent>
-        {visibleTrans.length === 0 ? (
+        {visibleTransactions.length === 0 ? (
           <div className="text-center py-12">
             <div className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4">
               <Clock className="w-full h-full" />
@@ -119,11 +131,16 @@ export default function TransactionsList({
           </div>
         ) : (
           <div className="space-y-1">
-            {visibleTrans.map((item, index) => {
-              const config = statusConfig[item.status];
+            {visibleTransactions.map((item, index) => {
+              const config = statusConfig[item.status as keyof typeof statusConfig] || statusConfig.failed;
               const StatusIcon = config.icon;
               const date = getTime(item);
-              const isCredit = item.status === "refunded";
+              
+              // Determine transaction type based on note and status
+              const isDeposit = item.note?.toLowerCase().includes('deposit') && item.status === "successful";
+              const isRefund = item.status === "refunded";
+              const isCredit = isDeposit; // Only deposits are credits (green with +)
+              
               const numericAmount = Number(item.amount) || 0;
 
               return (
@@ -136,11 +153,15 @@ export default function TransactionsList({
                       <div
                         className={cn(
                           "rounded-full p-2 flex-shrink-0 transition-transform group-hover:scale-110",
-                          isCredit ? "bg-green-100" : "bg-red-100"
+                          isDeposit ? "bg-green-100" : 
+                          isRefund ? "bg-orange-100" : 
+                          "bg-red-100"
                         )}
                       >
-                        {isCredit ? (
+                        {isDeposit ? (
                           <ArrowDownLeft className="h-4 w-4 text-green-600" />
+                        ) : isRefund ? (
+                          <RefreshCw className="h-4 w-4 text-orange-600" />
                         ) : (
                           <ArrowUpRight className="h-4 w-4 text-red-600" />
                         )}
@@ -160,7 +181,9 @@ export default function TransactionsList({
                       <p
                         className={cn(
                           "font-semibold text-xs md:text-sm whitespace-nowrap",
-                          isCredit ? "text-green-600" : "text-red-600"
+                          isDeposit ? "text-green-600" : 
+                          isRefund ? "text-orange-600" : 
+                          "text-red-600"
                         )}
                       >
                         {isCredit ? "+" : "-"}₦
@@ -182,14 +205,14 @@ export default function TransactionsList({
                       </Badge>
                     </div>
                   </div>
-                  {index < visibleTrans.length - 1 && (
+                  {index < visibleTransactions.length - 1 && (
                     <Separator className="my-2" />
                   )}
                 </div>
               );
             })}
 
-            {visibleCount < filteredTrans.length && (
+            {visibleCount < filteredTransactions.length && (
               <div className="pt-4 flex justify-center">
                 <Button
                   variant="outline"
@@ -198,7 +221,7 @@ export default function TransactionsList({
                   size="sm"
                 >
                   <span>
-                    Show More ({filteredTrans.length - visibleCount} left)
+                    Show More ({filteredTransactions.length - visibleCount} left)
                   </span>
                   <ChevronDown className="h-3 w-3" />
                 </Button>

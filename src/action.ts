@@ -65,21 +65,7 @@ const providers = [
         setOpen((prev:any) => !prev)
 }
 
-  const filter = (e:React.MouseEvent<HTMLLIElement>, setTrans:Dispatch<SetStateAction<any>>, transaction:[],setOpen:Dispatch<SetStateAction<boolean>>) => {
-        const target = e.currentTarget.textContent;
-        if (target !== 'clear') {
-             const newTransaction = transaction.filter((item:any) => {
-            console.log(target)
-            return item.status == target
-            });
-         setTrans(newTransaction)
-        } else {
-            setTrans(transaction)
-        }
-       
-        setOpen(false)
-  }
-
+  
  const getTime = (item:any) => {
      let time = ''
     let months = [ 'Jan' , 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'July' , 'Aug' , 'Sep' ,'Oct' , 'Nov' , 'Dec']
@@ -99,4 +85,4 @@ const providers = [
  
 
 const listItem = ['Light' , 'Dark' , 'System']
-export { modalOptions , providers , listItem , openFilter , filter , getTime }
+export { modalOptions , providers , listItem , openFilter ,  getTime }
