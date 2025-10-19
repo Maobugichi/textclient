@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import api from '../../../lib/axios-config';
+import { useBalance } from '../../../balance';
 
 interface Transaction {
   id?: string | number;
@@ -18,18 +19,20 @@ interface Transaction {
 type FilterStatus = "successful" | "refunded" | "pending" | "failed" | "all";
 
 export const useTransactionFilter = (userId: string | undefined | null) => {
+  const { refreshBalance } = useBalance();
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [visibleCount, setVisibleCount] = useState(10);
 
-  // Fetch transactions with TanStack Query
+ 
   const { data: transactions = [], isLoading, error } = useQuery<Transaction[]>({
+    
     queryKey: ["userTransactions", userId],
     queryFn: async () => {
       if (!userId) return [];
       const response = await api.get('/api/get-transaction', {
         headers: { "x-requires-auth": true }
       });
-      // Filter by userId and only include specific statuses with valid amounts
+      await refreshBalance();
       return response.data.filter((item: any) => 
         item.user_id == userId && 
         ['successful', 'refunded', 'failed'].includes(item.status) &&
@@ -43,28 +46,30 @@ export const useTransactionFilter = (userId: string | undefined | null) => {
     staleTime: 0,
   });
 
-  // Filtered transactions based on selected status
+ 
   const filteredTransactions = useMemo(() => {
     if (filterStatus === "all") return transactions;
     return transactions.filter(txn => txn.status === filterStatus);
   }, [transactions, filterStatus]);
 
-  // Visible transactions with pagination
+
   const visibleTransactions = useMemo(() => {
     return filteredTransactions.slice(0, visibleCount);
   }, [filteredTransactions, visibleCount]);
 
-  // Filter handler
+
   const handleFilter = (status: FilterStatus) => {
     setFilterStatus(status);
-    setVisibleCount(10); // Reset visible count when filter changes
+    setVisibleCount(10); 
   };
 
-  // Clear filter
+ 
   const clearFilter = () => {
     setFilterStatus("all");
     setVisibleCount(10);
   };
+
+  
 
   return {
     transactions,

@@ -14,7 +14,7 @@ const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, lin
     const content = (
         <div
             onClick={(e) => onClick && onClick(e)}
-            className={`w-full p-3 border border-solid rounded-lg ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
+            className={`w-full  p-3 border border-solid rounded-lg ${theme ? 'bg-transparent text-white border-gray-500' : 'bg-white border-[#5252]'}`}
         >
           
             <p>{text}</p>
@@ -23,7 +23,7 @@ const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, theme, lin
         </div>
     );
 
-    return <Link className="w-full md:w-[49.5%]" to={link}>{content}</Link>
+    return <Link className="w-full " to={link}>{content}</Link>
         
 };
 

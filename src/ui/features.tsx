@@ -41,7 +41,7 @@ const Features = () => {
             <Link to="signup/:1">
                 <Button
                 content="Get Started"
-                className="bg-[#0032a5] w-[40%] ml-4 md:ml-0 md:w-[15%] h-11 rounded-sm text-white text-sm"
+                className="bg-[#0032a5] w-[40%] ml-4 md:ml-0 md:w-[15%] h-11 rounded-xl  text-white text-lg tracking-wider"
                 />
              </Link>   
         </div>

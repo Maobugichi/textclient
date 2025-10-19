@@ -52,16 +52,17 @@ export const useTransactionHistory = (userId: string | null | undefined) => {
 
 export const useExchangeRate = () => {
   return useQuery({
-    queryKey: ["exchangeRate"],
+    queryKey: ["rate"],
     queryFn: async () => {
       const response = await api.get(`/api/get-rate`, {
         headers: { "x-requires-auth": true }
       });
+
       const rate = response.data[0];
-      localStorage.setItem("rate", JSON.stringify(rate));
+      console.log(rate)
       return rate;
     },
-    staleTime: 300000, 
+    staleTime: 5 * 60 * 1000, 
     refetchOnMount: false,
   });
 };

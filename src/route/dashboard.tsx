@@ -1,7 +1,4 @@
-
 import { useEffect,  useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-
 import DashInfo from "../components/dashboard/dashInfo";
 import LoadingScreen from "../components/loader";
 import {
@@ -20,15 +17,15 @@ import { useAuth } from "../context/authContext";
 
 const DashBoard = () => {
   const [ref, setRef] = useState<string | null>(null);
-  const queryClient = useQueryClient();
-  
+ 
+ 
   const { user:userData } = useAuth();
 
   const { balance, isLoading: loadingBalance, invalidateBalance } = useBalance();
 
-  const { data:userOrders = [], isLoading: loadingOrders,error  } = useUserOrders( userData?.userId,);
+  const { data:userOrders = [], isLoading: loadingOrders  } = useUserOrders( userData?.userId,);
 
-  const { data:transactionHistory = [], isLoading: loadingTransactions } = useTransactionHistory(
+  const {  isLoading: loadingTransactions } = useTransactionHistory(
     userData?.userId,
   );
 
@@ -42,8 +39,6 @@ const DashBoard = () => {
     },
   });
 
-  
-  console.log("err" + error)
   const handlePaymentSuccess = () => {
     setRef(null);
    
@@ -93,11 +88,8 @@ const DashBoard = () => {
     <DashInfo
       info={userOrders}
       theme={false}
-      transaction={transactionHistory}
       balance={balance} 
-      setTransaction={(newTransactions: any) => {
-        queryClient.setQueryData(["transactions", userData?.userId], newTransactions);
-      }}
+      
       userData={userData}
     />
   );

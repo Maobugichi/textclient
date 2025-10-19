@@ -9,6 +9,7 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
+import { useExchangeRate } from '../dashboard/hooks/useUerData';
 
 interface Currency {
   code: string;
@@ -69,7 +70,9 @@ function NowPay() {
     },
   });
 
-  // Fetch sorted currencies with merchant data
+  const { data:rate  } = useExchangeRate()
+  
+  console.log(rate)
   const { data: sortedCurrencies = [] } = useQuery({
     queryKey: ['sortedCurrencies', currencies],
     queryFn: async () => {
@@ -96,10 +99,10 @@ function NowPay() {
     enabled: currencies.length > 0,
   });
 
-  // Get active invoice from cache
+ 
   const activeInvoice = queryClient.getQueryData<InvoiceResponse>(['activeInvoice']);
 
-  // Poll payment status
+  
   const { data: paymentStatus } = useQuery<PaymentStatusResponse>({
     queryKey: ['paymentStatus', activeInvoice?.payment_id],
     queryFn: async () => {
@@ -112,7 +115,7 @@ function NowPay() {
     refetchInterval: 8000,
   });
 
-  // Create invoice mutation
+ 
   const createInvoiceMutation = useMutation({
     mutationFn: async (formData: typeof form) => {
       const { data } = await api.post<InvoiceResponse>(
@@ -154,7 +157,6 @@ function NowPay() {
     }
   }, [paymentStatus, activeInvoice, queryClient, userData]);
 
-  // Timer management
   const startTimer = () => {
     const expirationTime = queryClient.getQueryData<number>(['invoiceExpiration']);
     if (!expirationTime) return;
@@ -232,6 +234,8 @@ function NowPay() {
     setTimeLeft(0);
   };
 
+ 
+
   const handleCopy = (text: string, field: 'address' | 'outcome_amount') => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied((prev) => ({ ...prev, [field]: true }));
@@ -241,7 +245,7 @@ function NowPay() {
     });
   };
 
-  const myrate = (queryClient.getQueryData(['rate']) as { cryptomin: number; rate: number } | undefined) || { cryptomin: 5, rate: 1600 };
+  const myrate = (queryClient.getQueryData(['rate']) as { cryptomin: number; rate: number } | undefined) || rate
 
   return (
     <div className="w-[95%] mx-auto">

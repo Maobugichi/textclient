@@ -20,16 +20,11 @@ const Service = () => {
   
   const bearer = 'CwxD7iISBBCT7bsTffTONmFk0X0+SXFVtEgJQnc4odY=';
 
-  // Fetch brands using TanStack Query
+ 
   const { data: brands, isLoading: brandsLoading } = useQuery({
     queryKey: ["brands"],
     queryFn: async () => {
-      // Check localStorage first
-      const cached = localStorage.getItem("brands");
-      if (cached) {
-        return JSON.parse(cached);
-      }
-
+     
       const allBrandData: any[] = [];
       const seenBrands: Set<string> = new Set();
 
@@ -66,7 +61,7 @@ const Service = () => {
     staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
   });
 
-  // Fetch countries using TanStack Query
+ 
   const { data: countries, isLoading: countriesLoading } = useQuery({
     queryKey: ["countries"],
     queryFn: async () => {
@@ -75,7 +70,7 @@ const Service = () => {
       );
       return response.data.slice(14, 26);
     },
-    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   function handleClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -100,7 +95,7 @@ const Service = () => {
           <h2 className="text-2xl md:text-4xl font-semibold">
             Supported Services and Countries
           </h2>
-          <p className="w-[80%] md:w-[45%] text-lg text-gray-400 mx-auto text-center">
+          <p className="w-[90%] md:w-[45%] text-lg text-gray-400 mx-auto text-center">
             Easily access temporary, disposable numbers for secure SMS
             verification, account sign-ups, and service-specific registrations
             across multiple countries
@@ -108,7 +103,7 @@ const Service = () => {
           <div className="flex w-full items-center justify-center cursor-pointer gap-4">
             <div
               onClick={handleClick}
-              className={`px-6 py-2 rounded-lg transition-all ${
+              className={`px-6 py-2 text-lg tracking-wider rounded-lg transition-all ${
                 isActive.service
                   ? "bg-[#0032a5] text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
@@ -118,7 +113,7 @@ const Service = () => {
             </div>
             <div
               onClick={handleClick}
-              className={`px-6 py-2 rounded-lg transition-all ${
+              className={`px-6 py-2 text-lg tracking-wider rounded-lg transition-all ${
                 isActive.country
                   ? "bg-[#0032a5] text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
@@ -215,7 +210,7 @@ const Service = () => {
 
         <Button
           content="See all services"
-          className="bg-[#0032a5] rounded-sm h-10 text-white w-[40%] md:w-[15%]"
+          className="bg-[#0032a5] rounded-xl text-lg tracking-wider h-10 text-white px-4 "
         />
       </div>
     </div>

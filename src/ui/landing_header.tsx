@@ -11,12 +11,12 @@ const LandingHeader = () => {
                 </Link>
                 
                 <div className="flex w-1/2 justify-end space-x-6 text-sm tracking-wide">
-                 <Link  className="h-14 hidden md:grid  text-lg tracking-widest w-[25%] place-content-center" to={ `/dashboard/:1` }>
+                 <a href="mailto:support@textflex.net"  className="h-14 hidden md:grid  text-lg tracking-widest w-[25%] place-content-center" >
                     <Button
                      content={'Contact Us' }
                     
                     />
-                 </Link>  
+                 </a>  
                  <Link className="bg-[#0032a5] rounded-xl tracking-widest h-12 md:h-13 grid place-items-center text-lg text-white w-[90%] md:w-[25%]" to={ `/dashboard/:1`}>
                     <Button
                      content={ `Dashboard`}

@@ -5,7 +5,6 @@ import {
     Phone,
     Package,
     Settings,
-    HelpCircle
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
@@ -47,11 +46,6 @@ const NavItems: React.FC<NavProps> = ({ closeNav }) => {
             icon: <Settings size={17} />,
             text: 'Settings',
             link: '/settings/1'
-        },
-        {
-            icon: <HelpCircle size={17} />,
-            text: 'Tutorials',
-            link: '/help/1'
         },
     ];
 
