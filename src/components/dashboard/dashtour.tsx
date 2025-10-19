@@ -79,19 +79,10 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
 
         setTooltipPosition({ top, left });
 
-        // Use instant scroll on mobile for better performance
-        if (isMobile) {
-          targetElement.scrollIntoView({ 
-            behavior: 'auto', 
-            block: 'nearest',
-            inline: 'nearest'
-          });
-        } else {
-          targetElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
-          });
-        }
+        targetElement.scrollIntoView({ 
+          behavior: isMobile ? 'auto' : 'smooth', 
+          block: 'center' 
+        });
       }
     };
 
