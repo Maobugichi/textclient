@@ -8,6 +8,7 @@ interface TourStep {
   title: string;
   description: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
+  mobilePosition?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 interface DashboardTourProps {
@@ -21,7 +22,16 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightRect, setHighlightRect] = useState<DOMRect | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
-  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,8 +42,10 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
         const rect = targetElement.getBoundingClientRect();
         setHighlightRect(rect);
 
-       
-        const position = steps[currentStep].position || 'bottom';
+        const currentStepData = steps[currentStep];
+        const position = isMobile && currentStepData.mobilePosition 
+          ? currentStepData.mobilePosition 
+          : (currentStepData.position || 'bottom');
         const tooltipWidth = 320;
         const tooltipHeight = 200;
         const padding = 16;
@@ -60,7 +72,6 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
             break;
         }
 
-     
         const maxLeft = window.innerWidth - tooltipWidth - padding;
         const maxTop = window.innerHeight - tooltipHeight - padding;
         left = Math.max(padding, Math.min(left, maxLeft));
@@ -80,7 +91,7 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
       window.removeEventListener('resize', updateHighlight);
       window.removeEventListener('scroll', updateHighlight);
     };
-  }, [currentStep, steps, isOpen]);
+  }, [currentStep, steps, isOpen, isMobile]);
 
   if (!isOpen) return null;
 
@@ -104,7 +115,6 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
 
   return (
     <div className="fixed inset-0 z-[9999] pointer-events-none">
-     
       <svg className="absolute inset-0 w-full h-full pointer-events-auto">
         <defs>
           <mask id="tour-mask">
@@ -131,14 +141,12 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
         />
       </svg>
 
-   
       {highlightRect && (
         <div
           className="absolute rounded-lg border-4 border-blue-500 pointer-events-none transition-all duration-300 ease-in-out"
           style={{
             top: `${highlightRect.top - 8}px`,
             left: `${highlightRect.left - 7.5}px`,
-           
             width: `${highlightRect.width + 16}px`,
             height: `${highlightRect.height + 16}px`,
             boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 0 9999px rgba(0, 0, 0, 0.7)',
@@ -146,7 +154,6 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
         />
       )}
 
-    
       <Card
         className="absolute w-80 shadow-2xl pointer-events-auto animate-in fade-in zoom-in-95 duration-200"
         style={{
@@ -222,21 +229,23 @@ export function DashboardTour({ steps, onComplete, onSkip, isOpen }: DashboardTo
 // Usage Example
 // ============================================
 
-export function DashboardWithTour() {
+export default function DashboardWithTour() {
   const [showTour, setShowTour] = useState(false);
 
   const tourSteps: TourStep[] = [
     {
       target: '[data-tour="balance"]',
-      title: 'Your Balance',
-      description: 'This shows your current account balance. You can top up anytime using crypto payments.',
-      position: 'bottom',
+      title: 'Your Wallet Balance',
+      description: 'This shows your current wallet balance. Click "Fund Wallet" to deposit funds using cryptocurrency or fiat payments.',
+      position: 'right',
+      mobilePosition: 'bottom',
     },
     {
       target: '[data-tour="deposit"]',
       title: 'Make a Deposit',
       description: 'Click here to deposit funds using cryptocurrency. We support multiple payment methods.',
       position: 'right',
+      mobilePosition: 'bottom',
     },
     {
       target: '[data-tour="transactions"]',
@@ -249,60 +258,57 @@ export function DashboardWithTour() {
       title: 'Filter Transactions',
       description: 'Use filters to view only successful, refunded, or failed transactions.',
       position: 'left',
+      mobilePosition: 'bottom',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header with tour trigger */}
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
           <Button onClick={() => setShowTour(true)} variant="outline">
             Start Tour
           </Button>
         </div>
 
-        {/* Balance Card - Add data-tour attribute */}
         <Card data-tour="balance" className="bg-gradient-to-br from-blue-600 to-blue-700 text-white">
           <CardContent className="p-6">
             <p className="text-sm opacity-90 mb-1">Total Balance</p>
-            <h2 className="text-4xl font-bold">₦25,000.00</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">₦25,000.00</h2>
           </CardContent>
         </Card>
 
-        {/* Action buttons */}
         <div className="grid grid-cols-2 gap-4">
           <Card data-tour="deposit" className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <CardContent className="p-4 md:p-6 text-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </div>
-              <h3 className="font-semibold">Deposit</h3>
+              <h3 className="font-semibold text-sm md:text-base">Deposit</h3>
               <p className="text-xs text-slate-500 mt-1">Add funds to wallet</p>
             </CardContent>
           </Card>
 
           <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <CardContent className="p-4 md:p-6 text-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </div>
-              <h3 className="font-semibold">Withdraw</h3>
+              <h3 className="font-semibold text-sm md:text-base">Withdraw</h3>
               <p className="text-xs text-slate-500 mt-1">Send funds out</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Transactions section */}
         <Card data-tour="transactions">
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Recent Transactions</h3>
+              <h3 className="text-base md:text-lg font-semibold">Recent Transactions</h3>
               <Button data-tour="filter" variant="outline" size="sm">
                 Filter
               </Button>
@@ -311,13 +317,13 @@ export function DashboardWithTour() {
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-full" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-full" />
                     <div>
                       <p className="font-medium text-sm">Deposit</p>
                       <p className="text-xs text-slate-500">2 hours ago</p>
                     </div>
                   </div>
-                  <p className="font-semibold text-green-600">+₦5,000</p>
+                  <p className="font-semibold text-green-600 text-sm md:text-base">+₦5,000</p>
                 </div>
               ))}
             </div>
@@ -325,14 +331,11 @@ export function DashboardWithTour() {
         </Card>
       </div>
 
-      {/* Tour Component */}
       <DashboardTour
         steps={tourSteps}
         isOpen={showTour}
         onComplete={() => {
           setShowTour(false);
-          // Save tour completion to prevent showing again
-          localStorage.setItem('dashboardTourCompleted', 'true');
         }}
         onSkip={() => {
           setShowTour(false);

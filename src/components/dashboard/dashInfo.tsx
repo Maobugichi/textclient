@@ -211,6 +211,7 @@ const DashInfo: React.FC<DashProps> = ({ info, theme,  userData, balance }) => {
             title: 'Your Wallet Balance',
             description: 'This shows your current wallet balance. Click "Fund Wallet" to deposit funds using cryptocurrency or fiat payments.',
             position: 'right' as const,
+            mobilePosition:'bottom' as const
         },
         {
             target: '[data-tour="purchase"]',
