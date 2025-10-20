@@ -39,15 +39,15 @@ const DataTable: React.FC<TableProps> = ({ tableValue, action }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Number</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Country</TableHead>
-              <TableHead>Service</TableHead>
-              <TableHead>Provider</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-              {action && <TableHead>{action}</TableHead>}
+              <TableHead className="font-semibold rounded-tl-xl">Order ID</TableHead>
+              <TableHead className="font-semibold">Number</TableHead>
+              <TableHead className="font-semibold ">Code</TableHead>
+              <TableHead className="font-semibold ">Country</TableHead>
+              <TableHead className="font-semibold ">Service</TableHead>
+              <TableHead className="font-semibold ">Provider</TableHead>
+              <TableHead className="font-semibold">Amount</TableHead>
+              <TableHead className="font-semibold rounded-tr-xl">Status</TableHead>
+              {action && <TableHead className="font-semibold rounded-tr-xl">{action}</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -65,18 +65,18 @@ const DataTable: React.FC<TableProps> = ({ tableValue, action }) => {
   return (
     <div className="rounded-xl border">
       <ScrollArea className="h-[400px] w-full">
-        <Table className="rounded-xl">
+        <Table className="rounded-xl border-collapse-separate border-spacing-0">
           <TableHeader className=" bg-background rounded-xl">
-            <TableRow className="rounded-xl">
-              <TableHead className="font-semibold">Order ID</TableHead>
+            <TableRow >
+              <TableHead className="font-semibold rounded-tl-xl">Order ID</TableHead>
               <TableHead className="font-semibold">Number</TableHead>
               <TableHead className="font-semibold">Code</TableHead>
               <TableHead className="font-semibold">Country</TableHead>
               <TableHead className="font-semibold">Service</TableHead>
               <TableHead className="font-semibold">Provider</TableHead>
               <TableHead className="font-semibold">Amount</TableHead>
-              <TableHead className="font-semibold">Status</TableHead>
-              {action && <TableHead className="font-semibold">{action}</TableHead>}
+              <TableHead className="font-semibold rounded-tr-xl">Status</TableHead>
+              {action && <TableHead className="font-semibold rounded-tr-xl">{action}</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
