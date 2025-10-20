@@ -27,7 +27,7 @@ const Root = () => {
     />
         ));
     return(
-        <div className={`h-fit font-montserrat min-h-[100vh] relative top-14 pt-3  w-full ${theme ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+        <main className={`h-fit font-montserrat min-h-[100vh] relative top-14 pt-3  w-full dark:bg-[#242424] bg-white`}>
             <Header
              setIsShow={setIsShow}
              setShow={setShow}
@@ -47,7 +47,7 @@ const Root = () => {
               setIsShow={setIsShow}
               theme={theme}
              />
-             <div className={`relative w-[95%] mx-auto   md:w-[76%]  md:left-[10%] ${theme ? 'bg-[#1a1a1a]' : 'bg-white'} `}>
+             <div className={`relative w-[95%] mx-auto   md:w-[76%]  md:left-[10%]  dark:bg-[#242424] bg-white `}>
               <Outlet
               
               />
@@ -55,7 +55,7 @@ const Root = () => {
             
             </div>
             <TelIcon/>
-        </div>
+        </main>
     )
 }
 

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import HeroImg from "./hero-img";
 const Hero = () => {
     return(
-        <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit  min-h-screen grid place-items-center relative z-10 mt-24">
+        <div className="w-full bg-[linear-gradient(to_right,_#f9fbfd,_#eef4fd)]  h-fit  min-h-screen grid place-items-center relative z-10 mt-24 dark:text-black">
             <div className="h-[130vh] md:h-[110vh] w-[90%] md:w-full mx-auto flex md:flex-row flex-col items-center md:gap-0 gap-10">
                 <div className=" h-[55%]  relative md:left-20  w-full md:w-[50%]  grid gap-4 place-items-center">
                     <div className="w-[95%] ">

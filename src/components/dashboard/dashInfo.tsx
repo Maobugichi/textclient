@@ -240,7 +240,7 @@ const DashInfo: React.FC<DashProps> = ({ info, theme,  userData, balance }) => {
     ];
 
     return (
-        <div className={`h-fit font-montserrat lg:ml-10 w-[95%] mx-auto lg:w-[85%] flex flex-col gap-12 ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`h-fit font-montserrat lg:ml-10 w-[95%] mx-auto lg:w-[85%] flex flex-col gap-12 dark:text-white dark:bg-[#242424]`}>
             <div className="h-fit grid gap-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">

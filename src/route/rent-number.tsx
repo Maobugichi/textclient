@@ -21,7 +21,7 @@ const RentNumber = () => {
     const { data: orders = [], isLoading } = useUserOrdersPolling(userData?.userId);
     if (isLoading) return <p>Loading...</p>;
     return(
-        <div className={`flex flex-col gap-4 h-fit pb-10  w-full overflow-hidden ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`flex flex-col gap-4 h-fit pb-10  w-full overflow-hidden dark:text-white  text-black`}>
             <PopUp
              setIsShow={setIsShow}
              show={isShow}
@@ -30,7 +30,6 @@ const RentNumber = () => {
             <h2 className="font-semibold text-2xl">Rent Number</h2>
             <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
              <RentInput
-              theme={theme}
               balance=""
               setNumberInfo={setNumberInfo}
               setIsShow={setIsShow}

@@ -8,10 +8,9 @@ import { AnimatePresence, motion } from 'motion/react';
 interface ProviderProps {
     showProviders: boolean;
     setProviders:Dispatch<SetStateAction<boolean>> ;
-    theme:boolean;
 }
 
-const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme}) => {
+const Provider:React.FC<ProviderProps> = ({showProviders, setProviders }) => {
     const [ isActive , setActive ] = useState('sm');
     const [ showCheck , setShowCheck ] = useState(false);
 
@@ -22,7 +21,7 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme})
             initialActive?.querySelector('.check')?.classList.add('hidden')
             return
          }
-         //console.log(initialActive)
+         
          initialActive?.classList.add('bg-[#f1f5f9]');
          initialActive?.querySelector('.check')?.classList.remove('hidden');
     },[showCheck])
@@ -63,7 +62,7 @@ const Provider:React.FC<ProviderProps> = ({showProviders, setProviders , theme})
     
     
     return(
-        <div onClick={openProviderList} className={`cursor-pointer ${ theme ? 'bg-[#333333]' : 'bg-[#f4f7fa]'} h-10  w-32 rounded-md flex items-center justify-center gap-4 relative z-10`}>
+        <div onClick={openProviderList} className={`cursor-pointer dark:bg-[#171717]  bg-[#f4f7fa] h-10  w-32 rounded-md flex items-center justify-center gap-4 relative z-10`}>
             <p className='flex flex-col text-[11px]'>
                 <span className='text-[9px] md:text-[10px]'>Provider</span>
                 <span className='font-semibold'>Dynamic SMS</span>

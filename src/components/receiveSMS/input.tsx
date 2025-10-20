@@ -14,12 +14,12 @@ import { usePollSms } from "./hook/usePolling";
 import { Card } from "../ui/card";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
+import { useTheme } from "next-themes";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
   setNumberInfo,
   setIsShow,
-  theme,
   numberInfo,
   setReqId,
   cancel,
@@ -149,8 +149,10 @@ const Input: React.FC<InputProps> = ({
     );
   };
 
+   const { theme } = useTheme(); 
+   const isDark = theme === "dark";
   return (
-   <Card className="bg-[#EEF4FD]  h-fit">
+   <Card className="dark:bg-[#171717] bg-[#EEF4FD]  h-fit">
      <Fieldset
       provider={`${provider} SMS`}
       className="font-semibold "
@@ -158,7 +160,7 @@ const Input: React.FC<InputProps> = ({
         <Select
           id="providers"
           onChange={handleInputChange}
-          theme={theme}
+        
           options={[
             { label: "Swift SMS", value: "Swift" },
             { label: "Dynamic SMS", value: "Dynamic" },
@@ -169,9 +171,9 @@ const Input: React.FC<InputProps> = ({
 
       <Fieldset className="font-semibold " provider="Country">
         {isLoading ? (
-          <div className="flex bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
-            <ClipLoader size={20} />
-            <span className="ml-2 text-sm text-gray-500">
+          <div className="flex bg-white dark:bg-[#242424] w-[95%] dark:text-white dark:border-blue-400 rounded-xl mx-auto h-12 items-center justify-center py-4">
+            <ClipLoader size={20} color={isDark ? '#fff' : '#000'}/>
+            <span className="ml-2 text-sm dark:text-white text-gray-500">
               Loading countries...
             </span>
           </div>
@@ -179,7 +181,7 @@ const Input: React.FC<InputProps> = ({
           <Select
             id="country"
             onChange={handleCountryChange}
-            theme={theme}
+            
             options={Object.values(countries ?? []).map((item: any) => ({
               label: item.title,
               value: item.id.toString(),
@@ -198,9 +200,9 @@ const Input: React.FC<InputProps> = ({
       
       <Fieldset className="font-semibold " provider="Service">
         {serviceLoading ? (
-          <div className="flex relativez-30 bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
-            <ClipLoader size={20} />
-            <span className="ml-2 text-sm text-gray-500">
+          <div className="flex rounded-xl border dark:bg-[#242424] dark:text-white dark:border-blue-400 bg-white w-[95%] mx-auto h-12 items-center justify-center py-4">
+            <ClipLoader size={20} color={isDark ? '#fff' : '#000'}/>
+            <span className="ml-2 text-sm dark:text-white text-gray-500">
               Loading services...
             </span>
           </div>
@@ -208,7 +210,7 @@ const Input: React.FC<InputProps> = ({
           <Select
             id="services"
             onChange={extractCode}
-            theme={theme}
+           
             isDisabled={error}
             options={(services ?? []).map((opt) => {
               const rate: any = localStorage.getItem("rate");

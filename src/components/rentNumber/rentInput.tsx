@@ -11,7 +11,6 @@ import spinner from "../../assets/dualring.svg";
 import { OptionType } from "../select";
 
 interface RentProps {
-    theme:boolean;
     balance:string;
     setNumberInfo:Dispatch<SetStateAction<any>> ;
     setIsShow:Dispatch<SetStateAction<any>> ;
@@ -19,7 +18,7 @@ interface RentProps {
 }
 
 
-const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , tableValue }) => {
+const RentInput:React.FC<RentProps> = ({   setNumberInfo , setIsShow , tableValue }) => {
     const myContext = useContext(ShowContext);
     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
     const { userData } = myContext;
@@ -234,7 +233,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
     }, [limits])
     return(
         <Form
-         className={` mx-auto w-full font-normal h-fit  py-5 rounded-lg flex flex-col gap-4 justify-center border border-solid border-[#5252] ${theme ? 'bg-transparent border-blue-200' : 'bg-[#EEF4FD]'}`}
+         className={` mx-auto dark:bg-[#171717] bg-[#EEF4FD]  w-full font-normal h-fit  py-5 rounded-xl flex flex-col gap-4 justify-center border border-solid border-[#5252]  dark:text-white`}
          onSubmit={getNumber}
         >
             <Fieldset
@@ -245,7 +244,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
              options={list} 
              onChange={getCountryId}
              value={list.length && list.find((option:any) => option.value === info.countryId) || null}
-             theme={theme}
+           
             />
                
             </Fieldset>
@@ -258,14 +257,14 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
                 onChange={changeDuration}
                 value={durationOptions.find(option => option.value === info.duration) || null}
                 className="ml-3"
-                theme={theme}
+             
                 placeholder="Select a time"
                 />
               <Select 
                 onChange={changePeriod}
                 options={periodOptions}
                 value={periodOptions.find(opt => opt.value === info.period) || null}
-                theme={theme}
+               
                 className={`${info.duration !== '' ? 'block ml-3' : 'hidden'}`}
                 placeholder="Select a period"
                 />
@@ -276,7 +275,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
              className="font-semibold"
             >
                 <div  className="relative w-full  flex items-center">
-                   <input className={`p-3.5 rounded-xl  border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
+                   <input className={`p-3 rounded-xl  border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
                    {limits.count == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
             </Fieldset>
@@ -286,7 +285,7 @@ const RentInput:React.FC<RentProps> = ({ theme ,  setNumberInfo , setIsShow , ta
             className="font-semibold"
             >
                 <div className="relative w-full  flex items-center">
-                 <input className={`p-3.5  rounded-xl border  border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  ${theme ? 'bg-transparent border-blue-200' : 'bg-white border-[#5252]'} w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
+                 <input className={`p-3 rounded-xl border  border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
                  {limits.cost == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
                 

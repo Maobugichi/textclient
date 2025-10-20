@@ -25,7 +25,7 @@ const ReceiveSms = () => {
     if (isLoading) return <p>Loading...</p>;
       
     return(
-        <div className={`w-full overflow-hidden font-montserrat md:grid  flex flex-col gap-4 h-fit ${theme ? 'text-white' : 'text-black'}`}>
+        <div className={`w-full overflow-hidden font-montserrat md:grid  flex flex-col gap-4 h-fit  dark:text-white  text-black`}>
             <PopUp
              
              show={isShow}
@@ -39,7 +39,7 @@ const ReceiveSms = () => {
              cancel={isCancel}
             />
              <h2 className="font-semibold text-left text-2xl">Receive SMS</h2>
-            <Card className="border-none shadow-none grid md:grid-cols-3 grid-cols-1  w-[90%] md:w-full mx-auto ">
+            <Card className="border-none shadow-none dark:bg-[#242424] grid md:grid-cols-3 grid-cols-1  w-[90%] md:w-full mx-auto ">
                 <Input
                  tableValues={orders}
                  numberInfo={numberInfo}

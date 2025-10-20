@@ -30,13 +30,12 @@ const SideNav: React.FC<SideNavProps> = ({ show, setIsShow, theme }) => {
     const NavContent = () => (
         <>
             <div className={cn(
-                "h-fit min-h-[64px] flex items-center justify-around border-b border-solid",
-                theme ? 'border-blue-100' : 'border-[#5252]'
+                "h-fit p-1 flex items-center justify-around border-b border-solid dark:border-blue-100  border-[#5252]"
             )}>
-                <Link to="/homepage/1" className="w-full flex py-2">
+                <Link to="/homepage/1" className="w-full flex ">
                     {textlogo ? (
                         <img 
-                            className="h-[58px] w-[180px] object-contain" 
+                            className="h-[52px] w-[180px] object-contain" 
                             src={textlogo} 
                             alt="logo" 
                         />
@@ -67,7 +66,7 @@ const SideNav: React.FC<SideNavProps> = ({ show, setIsShow, theme }) => {
                 />
             </div>
 
-            <div className="p-3 border-t border-solid border-gray-200 dark:border-gray-700">
+            <div className="p-3 border-t border-solid border-gray-200 dark:border-blue-100">
                 <SignOut />
             </div>
         </>
@@ -83,8 +82,7 @@ const SideNav: React.FC<SideNavProps> = ({ show, setIsShow, theme }) => {
                         exit={{ x: -500 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
                         className={cn(
-                            "fixed z-20 font-montserrat w-[70%] sm:w-[60%] h-[100vh] top-0 flex flex-col border-r border-solid",
-                            theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'
+                            "fixed z-20 font-montserrat w-[70%] sm:w-[60%] h-[100vh] top-0 flex flex-col border-r border-solid dark:bg-[#242424] dark:border-blue-100 bg-[#f9fbfd] border-[#5252]"
                         )}
                     >
                         <NavContent />
@@ -93,8 +91,7 @@ const SideNav: React.FC<SideNavProps> = ({ show, setIsShow, theme }) => {
             ) : (
                 <nav
                     className={cn(
-                        "fixed font-montserrat z-20 w-[20%] h-[100vh] top-0 flex flex-col border-r border-solid",
-                        theme ? 'bg-[#242424] border-blue-100' : 'bg-[#f9fbfd] border-[#5252]'
+                        "fixed font-montserrat z-20 w-[20%] h-[100vh] top-0 flex flex-col border-r border-solid dark:bg-[#242424] dark:border-blue-100 bg-[#f9fbfd] border-[#5252]"
                     )}
                 >
                     <NavContent />

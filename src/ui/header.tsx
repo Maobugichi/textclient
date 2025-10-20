@@ -1,10 +1,10 @@
-import { modalOptions , listItem } from "../action";
+import { modalOptions  } from "../action";
 import ModalSelect from "./modalSelect";
-import Provider from "./provider";
+
 import { useEffect, useState } from "react";
-import Theme from "./theme";
 import { Menu } from "lucide-react";
 import axios from "axios";
+import { ThemeSwitch } from "../components/nav/toggle";
 
 interface HeaderProps {
      setIsShow: React.Dispatch<React.SetStateAction<any>>;
@@ -15,10 +15,10 @@ interface HeaderProps {
      userData:any
 }
 
-const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow , theme , setTheme, userData }) => {
+const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow ,  userData }) => {
     const isItem = modalOptions;
     const [ level , setLevel ] = useState<any>('');
-    const [ showProviders, setProviders ] = useState(false);
+    
     const [ icon , setIcon ] = useState<any>({
         icon:'',
         text:''
@@ -50,26 +50,17 @@ const Header:React.FC<HeaderProps> = ({ setIsShow ,  setShow , theme , setTheme,
       })
     },[])
     return(
-        <header className={`fixed w-full top-0 h-16 grid place-items-center ${theme ? 'bg-[#191919] border-blue-100 text-white' : 'bg-white border-[#5252] text-black'} border-b border-solid  z-20`}>
+        <header className={`fixed w-full top-0 py-5 grid place-items-center dark:bg-[#242424] dark:border-blue-100 dark:text-white bg-white border-[#5252] text-black border-b border-solid  z-20`}>
             <div className="flex items-center h-[80%] w-[95%] justify-between pl-3 md:justify-end gap-5">
                 <Menu className="md:hidden" onClick={openNav}/>
-                <div className="flex items-center w-[70%] md:w-[50%] justify-between md:justify-end gap-5">
+                <div className="flex items-center w-[70%] md:w-[50%]  justify-end gap-5">
                     <ModalSelect
-                     icon={icon.icon}
-                     text={icon.text}
-                     setShow={setShow}
-                     theme={theme}
+                        icon={icon.icon}
+                        text={icon.text}
+                        setShow={setShow}
                     />
-                    <Provider
-                    showProviders={showProviders}
-                    setProviders={setProviders}
-                    theme={theme}
-                    />
-                    <Theme
-                    listItem={listItem}
-                    theme={theme}
-                    setTheme={setTheme}
-                    />
+                    
+                    <ThemeSwitch/>
             </div>
             </div>
            

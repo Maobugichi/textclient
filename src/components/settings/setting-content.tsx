@@ -36,7 +36,7 @@ const SettingsContent = () => {
   if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
   const { user } = useAuth();
   console.log(user)
-  const { setUserData, theme } = myContext;
+  const { setUserData } = myContext;
  
 
   
@@ -91,10 +91,10 @@ const SettingsContent = () => {
   };
 
 
-  const themeClass = theme ? "text-white bg-black" : "text-black bg-white";
+ 
 
   return (
-    <div className={`w-full md:w-[65%] h-full flex flex-col justify-between ${themeClass}`}>
+    <div className={`w-full md:w-[65%] h-full flex flex-col justify-between `}>
     
       <div className="h-1/2 flex flex-col justify-between space-y-6">
         <h2 className="text-2xl font-semibold">Settings</h2>
@@ -113,9 +113,7 @@ const SettingsContent = () => {
                   <FormControl>
                     <Input
                       {...field}
-                      className={`${ 
-                        theme ? "border-blue-200" : "border-gray-300"
-                      } focus:ring-2 h-12 rounded-xl text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide focus:ring-blue-500`}
+                      className={` dark:bg-[#242424]  dark:border-blue-400 border-gray-300 focus:ring-2 h-12 rounded-xl text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide focus:ring-blue-500`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -132,9 +130,7 @@ const SettingsContent = () => {
                   <FormControl>
                     <Input
                       {...field}
-                      className={`${
-                        theme ? "border-blue-200" : "border-gray-300"
-                      } focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
+                      className={`dark:bg-[#242424]  dark:border-blue-400 border-gray-300 focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -144,7 +140,7 @@ const SettingsContent = () => {
 
             <div>
               <FormLabel>Email</FormLabel>
-              <Input value={user?.userEmail} disabled className="text-gray-400 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide h-12 rounded-xl cursor-not-allowed" />
+              <Input value={user?.userEmail} disabled className="text-gray-400 text-lg placeholder:text-lg dark:bg-[#242424]  dark:border-blue-400 tracking-wide placeholder:tracking-wide h-12 rounded-xl cursor-not-allowed" />
             </div>
 
             <Button type="submit" className="w-fit h-12 rounded-xl text-lg tracking-wide md:w-[30%] bg-[#0032a5] text-white">
@@ -174,9 +170,7 @@ const SettingsContent = () => {
                       type="password"
                       {...field}
                       placeholder="Enter old password"
-                      className={`${
-                        theme ? "border-blue-200" : "border-gray-300"
-                      } focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
+                      className={`dark:bg-[#242424] dark:text-white dark:border-blue-400 border-gray-300 focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -195,9 +189,7 @@ const SettingsContent = () => {
                       type="password"
                       {...field}
                       placeholder="Enter new password"
-                      className={`${
-                        theme ? "border-blue-200" : "border-gray-300"
-                      } focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
+                       className={`dark:bg-[#242424] dark:text-white dark:border-blue-400 border-gray-300 focus:ring-2 h-12 rounded-xl focus:ring-blue-500 text-lg placeholder:text-lg tracking-wide placeholder:tracking-wide`}
                     />
                   </FormControl>
                   <FormMessage />

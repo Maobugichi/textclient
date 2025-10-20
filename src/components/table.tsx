@@ -63,11 +63,11 @@ const DataTable: React.FC<TableProps> = ({ tableValue, action }) => {
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-xl border">
       <ScrollArea className="h-[400px] w-full">
-        <Table>
-          <TableHeader className=" bg-background ">
-            <TableRow>
+        <Table className="rounded-xl">
+          <TableHeader className=" bg-background rounded-xl">
+            <TableRow className="rounded-xl">
               <TableHead className="font-semibold">Order ID</TableHead>
               <TableHead className="font-semibold">Number</TableHead>
               <TableHead className="font-semibold">Code</TableHead>
