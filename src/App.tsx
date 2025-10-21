@@ -46,16 +46,16 @@ function App() {
     },
   });
 
-  async function initErudaIfDebug() {
+  /*async function initErudaIfDebug() {
   if (localStorage.getItem("debug") === "true") {
     const eruda = await import("eruda");
     eruda.default.init();
     console.log("%c🪄 Debug mode active", "color: lime;");
   }
-}
+}*/
 
 
-initErudaIfDebug();
+//initErudaIfDebug();
 
 
   return (
