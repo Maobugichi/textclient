@@ -15,6 +15,7 @@ import { Card } from "../ui/card";
 import { toast } from "sonner";
 import { useAuth } from "../../context/authContext";
 import { useTheme } from "next-themes";
+import { useExchangeRate } from "../dashboard/hooks/useUerData";
 
 const Input: React.FC<InputProps> = ({
   tableValues,
@@ -38,6 +39,7 @@ const Input: React.FC<InputProps> = ({
   //const stock = useRef("");
   const actualCost = useRef<number>(0);
   const statusRef = useRef({ stat: "", req_id: "" });
+  const { data:rateObj } = useExchangeRate();
   console.log(setOptions)
   console.log(setError)
   const raw = localStorage.getItem("cost_diff");
@@ -213,8 +215,7 @@ const Input: React.FC<InputProps> = ({
            
             isDisabled={error}
             options={(services ?? []).map((opt) => {
-              const rate: any = localStorage.getItem("rate");
-              const rateObj = JSON.parse(rate);
+             
               const usd = opt.cost / 100;
               const nairaCost = usd * rateObj.rate;
               const gains =
