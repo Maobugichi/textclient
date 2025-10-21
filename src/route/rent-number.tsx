@@ -1,16 +1,13 @@
 import RentInput from "../components/rentNumber/rentInput"
 import TableCont from "../components/table-cont"
-import { useContext , useState  } from "react"
-import { ShowContext } from "../components/context-provider"
+
 import PopUp from "../components/popup/pop-up"
 import { useAuth } from "../context/authContext"
 import { useUserOrdersPolling } from "../components/receiveSMS/hook/useOrders"
 
 
 const RentNumber = () => {
-     const myContext = useContext(ShowContext)
-     if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-     const { theme } = myContext;
+    
      const [ isShow , setIsShow ] = useState<boolean>(false);
      const [ numberInfo , setNumberInfo ] = useState<any>({
         number:'',
@@ -36,7 +33,7 @@ const RentNumber = () => {
               tableValue={orders}
              />
              <TableCont
-              theme={theme}
+              
               action="Action"
 
              />
