@@ -276,7 +276,7 @@ const RentInput:React.FC<RentProps> = ({   setNumberInfo , setIsShow , tableValu
              className="font-semibold"
             >
                 <div  className="relative w-full  flex items-center">
-                   <input className={`p-2 rounded-xl  border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.count ?? ''}/>
+                   <input className={`p-2 rounded-xl  border border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400 bg-white`} disabled type="text" value={limits.count ?? ''}/>
                    {limits.count == '' && showBtn && <img className="w-8 absolute left-[43%] top-[20%]" src={spinner} alt="Loading" width="20" />}
                 </div>
             </Fieldset>
@@ -286,7 +286,7 @@ const RentInput:React.FC<RentProps> = ({   setNumberInfo , setIsShow , tableValu
             className="font-semibold"
             >
                 <div className="relative w-full border-none rounded-xl  flex items-center">
-                 <input className={`p-2 rounded-xl border  border-gray-300 border-solid focus:ring-2 focus:ring-blue-500 focus:outline-none outline-1  dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
+                 <input className={`p-2 rounded-xl border  border-gray-300 border-solid focus:ring-2 bg-white focus:ring-blue-500 focus:outline-none dark:bg-[#242424] dark:text-white dark:border-blue-400 w-[95%] mx-auto cursor-not-allowed text-gray-400`} disabled type="text" value={limits.cost ?? ''}/>
                  {limits.cost == '' && showBtn && <ClipLoader color="#fff"/>}
                 </div>
                 
