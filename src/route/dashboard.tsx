@@ -1,4 +1,4 @@
-import { useEffect,  useState } from "react";
+import { useEffect } from "react";
 import DashInfo from "../components/dashboard/dashInfo";
 import LoadingScreen from "../components/loader";
 import {
@@ -9,71 +9,50 @@ import {
   useSquadCallback,
 } from "../components/dashboard/hooks/useUerData";
 import { usePaymentPolling } from "../components/dashboard/hooks/usePolling";
-
+import { usePaymentRef } from "../components/dashboard/hooks/useUerData";
 import { useBalance } from "../balance";
 import { useAuth } from "../context/authContext";
 
-
-
 const DashBoard = () => {
-  const [ref, setRef] = useState<string | null>(null);
- 
- 
-  const { user:userData } = useAuth();
+  const { ref, setPaymentRef, clearPaymentRef } = usePaymentRef();
+  const { user: userData } = useAuth();
 
   const { balance, isLoading: loadingBalance, invalidateBalance } = useBalance();
+  const { data: userOrders = [], isLoading: loadingOrders } = useUserOrders(userData?.userId);
+  const { isLoading: loadingTransactions } = useTransactionHistory(userData?.userId);
+  const { isLoading: loadingRate } = useExchangeRate();
+  const { isLoading: loadingCost } = useCostDiff();
 
-  const { data:userOrders = [], isLoading: loadingOrders  } = useUserOrders( userData?.userId,);
-
-  const {  isLoading: loadingTransactions } = useTransactionHistory(
-    userData?.userId,
-  );
-
-  const {  isLoading: loadingRate } = useExchangeRate();
-  const {  isLoading: loadingCost } = useCostDiff();
-
- 
   const squadCallback = useSquadCallback({
     onSuccess: async () => {
-       invalidateBalance();
+      await invalidateBalance();
     },
   });
 
-  const handlePaymentSuccess = () => {
-    setRef(null);
-   
-  };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refParam = params.get("reference");
+    
+    
+    if (refParam && refParam !== ref) {
+      setPaymentRef(refParam);
+    }
+  }, []); 
 
   const { isPolling } = usePaymentPolling({
     transactionRef: ref,
-    onSuccess: handlePaymentSuccess,
+    onSuccess: clearPaymentRef,
     mutateAsync: squadCallback.mutateAsync,
     maxTrials: 15,
     interval: 3000,
   });
 
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const refParam = params.get("reference");
-    const storedRef = localStorage.getItem("ref");
-    
-    const finalRef = refParam || storedRef;
-    if (finalRef) {
-      setRef(finalRef);
-      localStorage.setItem("ref", finalRef);
-    }
-  }, []);
-
-  
- 
   const isInitialLoading = 
     loadingOrders || 
     loadingTransactions || 
     loadingRate || 
     loadingCost || 
     loadingBalance;
-
 
   if (isInitialLoading) {
     return (
@@ -89,7 +68,6 @@ const DashBoard = () => {
       info={userOrders}
       theme={false}
       balance={balance} 
-      
       userData={userData}
     />
   );

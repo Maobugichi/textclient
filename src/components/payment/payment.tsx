@@ -1,5 +1,4 @@
-import { useEffect, useState , useContext } from "react";
-import { ShowContext } from "../context-provider";
+import { useEffect, useState  } from "react";
 import Form from "../form"
 import NowPay from "./nowpayment";
 import { motion } from "motion/react";
@@ -8,15 +7,13 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/axios-config";
 import { useAuth } from "../../context/authContext";
+import { PendingPaymentsList } from "./pendingPayment";
+import { usePendingPayments } from "./hook/usePendingPayment";
 
 
 const Payment = () => {
-  const { user:userData } = useAuth();
- 
-  const myContext = useContext(ShowContext)
-  if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-  const {  theme } = myContext;
-  
+  const { user:userData } = useAuth(); 
+  const { addPendingPayment } = usePendingPayments();
   const [data , setData ] = useState<any>({
     id:userData?.userId,
     email:userData?.userEmail,
@@ -27,6 +24,7 @@ const Payment = () => {
   const [ showLoader, setShowLoader ] = useState<boolean>(false)
   const [ err ,setErr] = useState<boolean>(false)
   const [ isActive , setIsActive ] = useState<any>(0)
+  
   function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
      const { name , value } = e.target;
       
@@ -37,15 +35,13 @@ const Payment = () => {
      }))
   }
 
- 
-  
   async function payment(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const { id ,email , amount , currency } = data;
     if (id !== '' && email !== '' && amount !== '' && currency !== '') {
       if (amount < 1000) {
-        setErr(true)
-        return
+        //setErr(true)
+        //return
       }
       
       setShowLoader(true)
@@ -57,8 +53,15 @@ const Payment = () => {
       if (response.data) {
          setShowLoader(false)
       }
+      
       if (url && ref) {
-         localStorage.setItem('transactionRef', ref);
+        
+         addPendingPayment({
+           ref,
+           amount,
+           currency,
+         });
+         
          window.location.href = url;
       }
     }
@@ -67,7 +70,9 @@ const Payment = () => {
   function active(index:number) {
     setIsActive(index)
   }
-   const queryClient = useQueryClient();
+  
+  const queryClient = useQueryClient();
+  
   useEffect(() => {
     if (err) {
       const myTimeOut = setTimeout(() => {
@@ -77,20 +82,18 @@ const Payment = () => {
     }
   },[err])
 
-
- 
-
   useEffect(() => {
-    // Set rate data when component mounts
     queryClient.setQueryData(['rate'], { cryptomin: 5, rate: 1600 });
   }, []);
+
    const rate:any = localStorage.getItem("rate");
    const rateObj = JSON.parse(rate)
+   
     return(
-      <div className={`h-[50vh] md:h-[80vh] w-full flex flex-col  gap-10 ${theme ? 'text-white' : 'text-black'}`}>
+      <div className={`h-screen  md:h-[80vh] w-full flex flex-col gap-10  text-black`}>
         <div className="md:w-[40%]  flex flex-col gap-4">
-            <h3 className="font-semibold text-2xl">Fund Wallet</h3>
-           <span>Choose a payment method to fund wallet</span>
+            <h3 className="font-semibold text-3xl dark:text-white">Fund Wallet</h3>
+           <span className="dark:text-white">Choose a payment method to fund wallet</span>
           <div className="flex gap-2 cursor-pointer">
            {
             options.map((value:string,i:number) => {
@@ -106,9 +109,10 @@ const Payment = () => {
             })
            }
           </div>
+          
            { isActive === 0  ?   
            <Form onSubmit={payment}>
-              <div className="w-full flex flex-col gap-3">
+              <div className="dark:text-white w-full flex flex-col gap-3">
                   <div className="text-[12px] flex justify-between w-full ">
                     <label htmlFor="amount" className="font-semibold">Enter Amount</label>
                     <span className="text-gray-400">Min is {rateObj.squadmin}</span>
@@ -120,16 +124,16 @@ const Payment = () => {
                   </button>
               </div>
           </Form> :  <NowPay/> 
-          
           }
         </div>
        
-       <div className="mt-4">
-      <TransactionsList userId={userData?.userId}/>
-    </div>
+        {/* Pending Payments Section */}
+        <PendingPaymentsList />
        
+        <div className="mt-4">
+          <TransactionsList userId={userData?.userId}/>
+        </div>
       </div>
-       
     )
 }
 

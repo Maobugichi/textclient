@@ -38,7 +38,7 @@ const ReceiveSms = () => {
              setIsCancel={setIsCancel}
              cancel={isCancel}
             />
-             <h2 className="font-semibold text-left text-2xl">Receive SMS</h2>
+             <h2 className="font-semibold text-left text-3xl">Receive SMS</h2>
             <Card className="border-none shadow-none dark:bg-[#242424] grid md:grid-cols-3 grid-cols-1  w-[90%] md:w-full mx-auto ">
                 <Input
                  tableValues={orders}

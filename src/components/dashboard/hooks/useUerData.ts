@@ -84,6 +84,38 @@ export const useCostDiff = () => {
   });
 };
 
+
+export const usePaymentRef = () => {
+  const queryClient = useQueryClient();
+
+  const { data: ref = null } = useQuery({
+    queryKey: ['paymentRef'],
+    queryFn: () => {
+      // Initialize from URL parameter only
+      const params = new URLSearchParams(window.location.search);
+      return params.get("reference") || null;
+    },
+    staleTime: Infinity, // Don't auto-refetch while query is active
+    refetchOnMount: false, // Don't refetch when component remounts
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnReconnect: false, // Don't refetch on reconnect
+  });
+
+  const setPaymentRef = (newRef: string | null) => {
+    queryClient.setQueryData(['paymentRef'], newRef);
+  };
+
+  const clearPaymentRef = () => {
+    queryClient.setQueryData(['paymentRef'], null);
+    
+    // Clean URL
+    const newUrl = window.location.origin + window.location.pathname + window.location.hash;
+    window.history.replaceState({}, "", newUrl);
+  };
+
+  return { ref, setPaymentRef, clearPaymentRef };
+};
+
 export const useSquadCallback = (options?: { onSuccess?: () => void | Promise<void> }) => {
   const queryClient = useQueryClient();
 
@@ -99,27 +131,31 @@ export const useSquadCallback = (options?: { onSuccess?: () => void | Promise<vo
         toast.success("Payment confirmed successfully!");
         
         // Invalidate all related queries
-        queryClient.invalidateQueries({ queryKey: ["userOrders"] });
-        queryClient.invalidateQueries({ queryKey: ["transactions"] });
-        queryClient.invalidateQueries({ queryKey: ["userBalance"] }); // NEW: Invalidate balance
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["userOrders"] }),
+          queryClient.invalidateQueries({ queryKey: ["transactions"] }),
+          queryClient.invalidateQueries({ queryKey: ["userBalance"] }),
+        ]);
         
-        localStorage.removeItem("ref");
+        // Clear payment ref
+        queryClient.setQueryData(['paymentRef'], null);
         
+        // Clean URL
         const newUrl = window.location.origin + window.location.pathname + window.location.hash;
         window.history.replaceState({}, "", newUrl);
-        
         
         if (options?.onSuccess) {
           await options.onSuccess();
         }
         
-        return true; 
+        return true;
       }
       return false;
     },
     onError: (error) => {
       console.error("Callback error:", error);
       toast.error("Failed to confirm payment");
+      return false;
     },
   });
 };

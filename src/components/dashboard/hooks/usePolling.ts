@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 interface UsePaymentPollingProps {
@@ -17,44 +17,95 @@ export const usePaymentPolling = ({
   interval = 3000,
 }: UsePaymentPollingProps) => {
   const count = useRef(0);
-  const [isPolling, setIsPolling] = useState(false);
+  const isPollingRef = useRef(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!transactionRef) return;
+   
+    if (!transactionRef) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      isPollingRef.current = false;
+      count.current = 0;
+      return;
+    }
 
-    setIsPolling(true);
+    
+    if (isPollingRef.current) {
+      return;
+    }
+
+    isPollingRef.current = true;
     count.current = 0;
 
     const pollCallback = async () => {
       try {
         const result = await mutateAsync(transactionRef);
+        
         if (result) {
+        
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          isPollingRef.current = false;
+          count.current = 0;
           onSuccess();
-          setIsPolling(false);
+          return true;
         }
+        
         count.current++;
+        
+     
+        if (count.current >= maxTrials) {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          isPollingRef.current = false;
+          toast.info("Payment verification timeout. Please check your transaction history.");
+          onSuccess(); 
+          return false;
+        }
+        
+        return false;
       } catch (error) {
         count.current++;
         console.error("Polling error:", error);
+        
+      
+        if (count.current >= maxTrials) {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          isPollingRef.current = false;
+          toast.error("Payment verification failed. Please check your transaction history.");
+          onSuccess(); 
+          return false;
+        }
+        
+        return false;
       }
     };
 
-    const intervalId = setInterval(() => {
-      if (count.current >= maxTrials) {
-        clearInterval(intervalId);
-        setIsPolling(false);
-        toast.info("Payment verification timeout. Please check your transaction history.");
-        localStorage.removeItem("ref");
-      } else {
-        pollCallback();
-      }
+    
+    pollCallback();
+    
+    intervalRef.current = setInterval(() => {
+      pollCallback();
     }, interval);
 
     return () => {
-      clearInterval(intervalId);
-      setIsPolling(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      isPollingRef.current = false;
     };
-  }, [transactionRef, maxTrials, interval]);
+  }, [transactionRef, maxTrials, interval, mutateAsync, onSuccess]);
 
-  return { isPolling };
+  return { isPolling: isPollingRef.current };
 };
