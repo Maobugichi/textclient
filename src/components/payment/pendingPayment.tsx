@@ -29,7 +29,7 @@ export const PendingPaymentsList = () => {
   };
 
   return (
-    <Card className="w-full border-yellow-200 bg-yellow-50/50">
+    <Card className="w-full border-yellow-200 dark:text-black dark:bg-white bg-yellow-50/50">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <AlertCircle className="h-5 w-5 text-yellow-600" />

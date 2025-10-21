@@ -41,7 +41,7 @@ const Root = () => {
             >
                 {modalDetails}
             </Modal>
-            <div className="w-full h-auto min-h-[85vh] mt-5  flex gap-5">
+            <div className="w-full dark:bg-[#242424] h-auto min-h-[85vh] mt-5  flex gap-5">
              <SideNav
               show={isShow}
               setIsShow={setIsShow}

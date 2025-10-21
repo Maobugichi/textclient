@@ -59,7 +59,7 @@ export const VerifyPaymentButton = ({
       size="sm"
       onClick={handleVerify}
       disabled={isVerifying}
-      className="gap-2"
+      className="gap-2 dark:bg-amber-500"
     >
       {isVerifying ? (
         <>

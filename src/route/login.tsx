@@ -146,6 +146,18 @@ const Login = () => {
         </form>
       </Form>
 
+       <button 
+          className="bg-black text-white px-4 py-2 rounded" 
+          onClick={() => {
+              localStorage.setItem("debug", "true");
+              location.reload();
+          }}
+          type="button"
+      >
+          Enable Debug Mode
+      </button>
+
+
       <Link className="text-blue-400 underline mt-5" to="/forgot-password/:1">
         Forgot password?
       </Link>

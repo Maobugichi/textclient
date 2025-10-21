@@ -5,15 +5,16 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import api from '../../lib/axios-config';
+import { usePendingPayments } from './hook/usePendingPayment';
 
 interface PaymentFormProps {
-  onSubmit: (data: PaymentFormData) => Promise<void> | void;
   minAmount?: number;
   isLoading?: boolean;
 }
 
 export const PaymentForm = ({ 
-  onSubmit, 
+ 
   minAmount = 1000,
   isLoading = false 
 }: PaymentFormProps) => {
@@ -26,10 +27,32 @@ export const PaymentForm = ({
     mode: 'onChange',
   });
 
-  const handleFormSubmit = async (data: PaymentFormData) => {
-    await onSubmit(data);
-  };
+  const { addPendingPayment } = usePendingPayments();
+  
 
+   async function handleFormSubmit(data:any) {
+      
+      const { id ,email , amount , currency } = data;
+      if (id !== '' && email !== '' && amount !== '' && currency !== '') {
+        
+        const response = await api.post('/api/initialize-transaction', data)
+        const url = response.data.data.data.checkout_url
+        const ref = response.data.data.data.transaction_ref
+      
+       
+        if (url && ref) {
+          
+           addPendingPayment({
+             ref,
+             amount,
+             currency,
+           });
+          setTimeout(() => {
+              window.location.href = url;
+            }, 100);
+        }
+      }
+    }
   const showLoader = isLoading || isSubmitting;
 
   return (

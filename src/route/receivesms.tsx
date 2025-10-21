@@ -1,8 +1,7 @@
 import PopUp from "../components/popup/pop-up";
 import Input from "../components/receiveSMS/input";
 import TableCont from "../components/table-cont";
-import {  useState , useContext } from "react";
-import { ShowContext } from "../components/context-provider";
+import {  useState } from "react";
 import { Card } from "../components/ui/card";
 import { useAuth } from "../context/authContext";
 import { useUserOrdersPolling } from "../components/receiveSMS/hook/useOrders";
@@ -17,9 +16,7 @@ const ReceiveSms = () => {
     const [ error , setIsError ] = useState<boolean>(false);
     const [ errorInfo , setErrorInfo ] = useState<any>('');
     const [ isCancel , setIsCancel ] = useState<boolean>(false)
-    const myContext = useContext(ShowContext)
-    if (!myContext) throw new Error("ShowContext must be used within a ContextProvider");
-    const {  theme } = myContext;
+   
     const { user:userData } = useAuth();
     const { data: orders = [], isLoading } = useUserOrdersPolling(userData?.userId);
     if (isLoading) return <p>Loading...</p>;
@@ -49,12 +46,12 @@ const ReceiveSms = () => {
                  req_id={req_id}
                  setErrorInfo={setErrorInfo}
                  setIsError={setIsError}
-                 theme={theme}
+                
                  cancel={isCancel}
                 />
                 <TableCont
                  tableValues={orders}
-                 theme={theme}
+                
                 />
             </Card>
         </div>

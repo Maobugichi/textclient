@@ -8,7 +8,6 @@ interface InputProps {
   setIsError: Dispatch<SetStateAction<any>>;
   setErrorInfo: Dispatch<SetStateAction<any>>;
   setReqId: Dispatch<SetStateAction<any>>;
-  theme: boolean;
   cancel: boolean;
   req_id: string;
 }
