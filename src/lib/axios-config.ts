@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const api = axios.create({
@@ -31,6 +30,7 @@ api.interceptors.response.use(
      const originalRequest = error.config;
     
     if (error.response?.status === 401 && originalRequest?.headers["x-requires-auth"]) {
+       console.log("hahhahaha")
       localStorage.removeItem("authToken");
       localStorage.removeItem("auth")
       console.log(error.status)

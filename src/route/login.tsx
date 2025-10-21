@@ -42,6 +42,7 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormData) => {
       const { data } = await api.post("/api/login", values);
+      
       return data;
     },
     onSuccess: (data) => {
@@ -49,6 +50,7 @@ const Login = () => {
       navigate("/dashboard/1");
     },
     onError: (error: any) => {
+      console.log(error)
       toast.error(error.response?.data?.error);
       setShow(true);
     },

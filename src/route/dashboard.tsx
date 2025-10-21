@@ -33,7 +33,6 @@ const DashBoard = () => {
     const params = new URLSearchParams(window.location.search);
     const refParam = params.get("reference");
     
-    
     if (refParam && refParam !== ref) {
       setPaymentRef(refParam);
     }

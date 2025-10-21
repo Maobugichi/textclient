@@ -9,11 +9,9 @@ export const PendingPaymentsList = () => {
   const { pendingPayments, clearOldPayments } = usePendingPayments();
 
   console.log(pendingPayments)
-
   useEffect(() => {
-   
     clearOldPayments();
-  }, []);
+  }, []); 
 
   if (pendingPayments.length === 0) {
     return null;

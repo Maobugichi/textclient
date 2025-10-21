@@ -26,23 +26,28 @@ export const VerifyPaymentButton = ({
     },
   });
 
+  console.log(transactionRef)
+
   const handleVerify = async () => {
     setIsVerifying(true);
     
     try {
       const result = await squadCallback.mutateAsync(transactionRef);
-      
+      console.log(result)
       if (result) {
-       
         removePendingPayment(transactionRef);
-        toast.success('Payment verified successfully!');
+        if (result.message == "Transaction not successful" || result.message == 'Payment verification failed') {
+           toast.error(`${result.message}`);
+        } else {
+           toast.success(`${result.message}`);
+        }
+       
       } else {
-        // Payment still pending or failed
         toast.info('Payment is still being processed. Please try again in a few moments.');
       }
     } catch (error) {
       console.error('Verification error:', error);
-      toast.error('Failed to verify payment. Please try again.');
+     
     } finally {
       setIsVerifying(false);
     }

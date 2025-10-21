@@ -62,8 +62,9 @@ const Payment = () => {
            amount,
            currency,
          });
-         
-         window.location.href = url;
+        setTimeout(() => {
+            window.location.href = url;
+          }, 100);
       }
     }
   }
