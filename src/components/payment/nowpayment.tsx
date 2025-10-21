@@ -248,7 +248,7 @@ function NowPay() {
   const myrate = (queryClient.getQueryData(['rate']) as { cryptomin: number; rate: number } | undefined) || rate
 
   return (
-    <div className="w-[95%] mx-auto">
+    <div className="w-[95%] mx-auto ">
       <AnimatePresence>
         {(paymentStatus?.payment_status === 'sending' || success) && (
           <motion.div
@@ -325,7 +325,7 @@ function NowPay() {
         {!activeInvoice && (
           <Button
             type='submit'
-            className="bg-[#0032a5] w-full"
+            className="bg-[#0032a5] w-full dark:text-white"
             disabled={createInvoiceMutation.isPending}
           >
             {createInvoiceMutation.isPending ? (

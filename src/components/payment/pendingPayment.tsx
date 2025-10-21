@@ -8,8 +8,10 @@ import { useEffect } from 'react';
 export const PendingPaymentsList = () => {
   const { pendingPayments, clearOldPayments } = usePendingPayments();
 
+  console.log(pendingPayments)
+
   useEffect(() => {
-    // Clear old payments on mount
+   
     clearOldPayments();
   }, []);
 

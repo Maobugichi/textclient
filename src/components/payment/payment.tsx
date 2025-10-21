@@ -9,6 +9,7 @@ import api from "../../lib/axios-config";
 import { useAuth } from "../../context/authContext";
 import { PendingPaymentsList } from "./pendingPayment";
 import { usePendingPayments } from "./hook/usePendingPayment";
+import { useExchangeRate } from "../dashboard/hooks/useUerData";
 
 
 const Payment = () => {
@@ -83,11 +84,10 @@ const Payment = () => {
   },[err])
 
   useEffect(() => {
-    queryClient.setQueryData(['rate'], { cryptomin: 5, rate: 1600 });
-  }, []);
+     queryClient.invalidateQueries({ queryKey: ["rate"] });
+  },[queryClient])
 
-   const rate:any = localStorage.getItem("rate");
-   const rateObj = JSON.parse(rate)
+   const { data:rateObj } = useExchangeRate();
    
     return(
       <div className={`h-screen  md:h-[80vh] w-full flex flex-col gap-10  text-black`}>

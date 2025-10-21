@@ -25,7 +25,7 @@ const DashBoard = () => {
 
   const squadCallback = useSquadCallback({
     onSuccess: async () => {
-      await invalidateBalance();
+      invalidateBalance();
     },
   });
 

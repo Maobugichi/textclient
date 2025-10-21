@@ -59,11 +59,11 @@ export const useExchangeRate = () => {
       });
 
       const rate = response.data[0];
-      console.log(rate)
+      
       return rate;
     },
     staleTime: 5 * 60 * 1000, 
-    refetchOnMount: false,
+    refetchOnMount: "always",
   });
 };
 
@@ -95,8 +95,8 @@ export const usePaymentRef = () => {
       const params = new URLSearchParams(window.location.search);
       return params.get("reference") || null;
     },
-    staleTime: Infinity, // Don't auto-refetch while query is active
-    refetchOnMount: false, // Don't refetch when component remounts
+    staleTime: Infinity, 
+    refetchOnMount: false, 
     refetchOnWindowFocus: false, // Don't refetch on window focus
     refetchOnReconnect: false, // Don't refetch on reconnect
   });

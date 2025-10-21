@@ -39,7 +39,7 @@ export const usePendingPayments = () => {
   };
 
   const clearOldPayments = () => {
-    // Remove payments older than 24 hours
+   
     const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
     const updated = pendingPayments.filter(p => p.timestamp > oneDayAgo);
     queryClient.setQueryData(['pendingPayments'], updated);
