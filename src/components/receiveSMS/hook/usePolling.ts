@@ -1,190 +1,320 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
-import { refund } from "../util";
-import { useSmsInfo } from "../../../hooks/useSmsInfo";
-import api from "../../../lib/axios-config";
+import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import api from '../../../lib/axios-config';
+import { useEffect, useRef } from 'react';
 
-interface PollSmsProps {
-  cost: number;
-  userId: string | undefined;
-  actualCost: React.MutableRefObject<number>;
-  statusRef: React.MutableRefObject<{ stat: string; req_id: string }>;
-  setNumberInfo: React.Dispatch<React.SetStateAction<any>>;
-  setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
-  cancel: boolean;
+interface SMSStatusResponse {
+  status: 'idle' | 'polling' | 'pending' | 'completed' | 'error' | 'timeout';
+  sms_code?: string;
+  attempts: number;
+  elapsed_seconds: number;
+  last_checked?: string;
+  order: Order;
 }
 
-const MAX_ATTEMPTS = 15;
-const POLL_INTERVAL = 6000;
+interface Order {
+  id: number;
+  user_id: number;
+  purchased_number: string;
+  reference_code: string;
+  country: string;
+  service: string;
+  provider: string;
+  amount: string;
+  status: string;
+  polling_attempts: number;
+  last_polled_at?: string;
+  error_message?: string;
+  sms_code?: string;
+  received_at?: string;
+  created_at: string;
+  elapsed_seconds?: number;
+}
 
-export const usePollSms = ({
-  cost,
-  userId,
-  actualCost,
-  statusRef,
-  setNumberInfo,
-  setIsShow,
-  cancel,
-}: PollSmsProps) => {
+interface ManualCheckResponse {
+  success: boolean;
+  sms_code?: string;
+  message: string;
+  data?: any;
+}
+
+interface PurchaseNumberData {
+  provider: string;
+  country: string;
+  service: string;
+  email: string;
+  price: number;
+}
+
+interface PurchaseNumberResponse {
+  phone: {
+    number: string;
+    request_id: string;
+  };
+  table: Order;
+  debitRef: string;
+  message?: string;
+}
+
+interface SMSPollingOptions {
+  onSuccess?: (code: string, order?: Order) => void;
+  onError?: (error: string) => void;
+  onTimeout?: () => void;
+  enabled?: boolean;
+}
+
+interface PurchaseNumberOptions {
+  onSuccess?: (data: PurchaseNumberResponse) => void;
+  onError?: (error: string) => void;
+}
+
+interface MyOrdersOptions {
+  refetchInterval?: number | false;
+}
+
+const checkSMSStatus = async (requestId: string): Promise<SMSStatusResponse> => {
+  const { data } = await api.get<SMSStatusResponse>(`/api/sms/status/${requestId}`);
+  return data;
+};
+
+const manualCheckSMS = async (requestId: string): Promise<ManualCheckResponse> => {
+  const { data } = await api.post<ManualCheckResponse>(`/api/sms/check/${requestId}`);
+  return data;
+};
+
+const purchaseNumber = async (purchaseData: PurchaseNumberData): Promise<PurchaseNumberResponse> => {
+  console.log(purchaseData);
+  const { data } = await api.post<PurchaseNumberResponse>('/api/sms/get-number', purchaseData, {
+    headers: { "x-requires-auth": true }
+  });
+  return data;
+};
+
+const fetchMyOrders = async (): Promise<Order[]> => {
+  const { data } = await api.get<{ orders: Order[] }>('/api/sms/my-orders');
+  return data.orders;
+};
+
+export const useSMSPolling = (requestId: string | null, options: SMSPollingOptions = {}) => {
+  const {
+    onSuccess,
+    onError,
+    onTimeout,
+    enabled = true,
+  } = options;
+
   const queryClient = useQueryClient();
-  const smsInfo = useSmsInfo();
   
-  const req_id = smsInfo?.request_id;
-  const lastDebitRef = smsInfo?.debitRef;
-  
-  const attemptsRef = useRef(0);
-  const isStoppedRef = useRef(false);
+  // Track which callbacks have been called to prevent duplicates
+  const callbacksCalledRef = useRef({
+    success: false,
+    timeout: false,
+    error: false,
+  });
 
- 
-  const enabled = Boolean(
-    req_id && 
-    !cancel && 
-    !isStoppedRef.current &&
-    attemptsRef.current < MAX_ATTEMPTS
-  );
+  // Reset callbacks when requestId changes
+  useEffect(() => {
+    callbacksCalledRef.current = {
+      success: false,
+      timeout: false,
+      error: false,
+    };
+  }, [requestId]);
 
   const query = useQuery({
-    queryKey: ["pollSms", req_id],
-    enabled,
-    refetchInterval: (data:any) => {
-      
-      if (data?.sms || attemptsRef.current >= MAX_ATTEMPTS || isStoppedRef.current) {
+    queryKey: ['sms-status', requestId],
+    queryFn: () => checkSMSStatus(requestId!),
+    enabled: enabled && !!requestId,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return 5000;
+      if (['completed', 'error', 'timeout'].includes(data.status)) {
         return false;
       }
-      return POLL_INTERVAL;
+      return 5000;
     },
-    retry: false,
-    queryFn: async () => {
-      if (attemptsRef.current >= MAX_ATTEMPTS) {
-        throw new Error("Max attempts reached");
-      }
+    refetchIntervalInBackground: true,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
 
-      attemptsRef.current += 1;
-      console.log(`Polling attempt ${attemptsRef.current}/${MAX_ATTEMPTS}`);
+  const data = query.data;
+  const error = query.error;
+
+  // Handle success callback (only once)
+  useEffect(() => {
+    if (data?.status === 'completed' && data.sms_code && !callbacksCalledRef.current.success) {
+      callbacksCalledRef.current.success = true;
+      onSuccess?.(data.sms_code, data.order);
+    }
+  }, [data?.status, data?.sms_code, data?.order, onSuccess]);
+
+  // Handle timeout callback (only once)
+  useEffect(() => {
+    if (data?.status === 'timeout' && !callbacksCalledRef.current.timeout) {
+      callbacksCalledRef.current.timeout = true;
+      onTimeout?.();
+    }
+  }, [data?.status, onTimeout]);
+
+  // Handle error callback (only once)
+  useEffect(() => {
+    if (error && !callbacksCalledRef.current.error) {
+      callbacksCalledRef.current.error = true;
+      const errorMessage = (error as any)?.response?.data?.message || (error as Error).message;
+      onError?.(errorMessage);
+    }
+  }, [error, onError]);
+
+  // Manual check mutation
+  const manualCheck = useMutation({
+    mutationFn: () => manualCheckSMS(requestId!),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['sms-status', requestId] });
       
-      const res = await api.get(`/api/sms/status/${req_id}`, {
-        params: {
-          cost,
-          user_id: userId,
-          debitref: lastDebitRef,
-          actual: actualCost.current,
-        },
-      });
-      
-      console.log("Poll response:", res.data);
-      return res.data;
+      if (data.success && data.sms_code && !callbacksCalledRef.current.success) {
+        callbacksCalledRef.current.success = true;
+        onSuccess?.(data.sms_code);
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error.message;
+      onError?.(errorMessage);
     },
   });
 
-  const stopPolling = (key: string) => {
-    console.log("Stopping polling for:", key);
-    isStoppedRef.current = true;
-    
-   
-    queryClient.cancelQueries({ queryKey: ["pollSms", key] });
-    
-    queryClient.removeQueries({ queryKey: ["pollSms", key] });
-    queryClient.removeQueries({ queryKey: ["smsRequest"] });
-    
-    
-    attemptsRef.current = 0;
-  };
-
-  const handleTimeout = async () => {
-    console.log("⏰ Timeout reached - refunding");
-    stopPolling(req_id || "");
-    
-    try {
-      await refund(userId, cost, lastDebitRef || "", req_id || "");
-    } catch (error) {
-      console.error("Refund failed:", error);
-    }
-    
-    setNumberInfo((prev: any) => ({ 
-      ...prev, 
-      sms: "⏰ Timeout: No code received" 
-    }));
-    statusRef.current.stat = "timeout";
-    setIsShow(true);
-  };
-
-  const handleError = async (error: any) => {
-    console.error("❌ Polling error:", error);
-    stopPolling(req_id || "");
-    
-    try {
-      await refund(userId, cost, lastDebitRef || "", req_id || "");
-    } catch (refundError) {
-      console.error("Refund failed:", refundError);
-    }
-    
-    setNumberInfo((prev: any) => ({ 
-      ...prev, 
-      sms: "❌ Error polling SMS" 
-    }));
-    statusRef.current.stat = "error";
-    setIsShow(true);
-  };
-
-  
-  useEffect(() => {
-    if (query.data?.sms_code) {
-      console.log("✅ SMS code received:", query.data.sms_code);
-      stopPolling(req_id || "");
-      
-      setNumberInfo((prev: any) => ({ 
-        ...prev, 
-        sms: query.data.sms_code 
-      }));
-      statusRef.current.stat = "used";
-      setIsShow(true);
-    }
-  }, [query.data?.sms_code]);
-
-  
-  useEffect(() => {
-    if (attemptsRef.current >= MAX_ATTEMPTS && !isStoppedRef.current) {
-      console.log("🚫 Max attempts reached");
-      handleTimeout();
-    }
-  }, [attemptsRef.current]);
-
-  // Handle query errors
-  useEffect(() => {
-    if (query.error && !isStoppedRef.current) {
-      handleError(query.error);
-    }
-  }, [query.error]);
-
- 
-  useEffect(() => {
-    if (cancel && !isStoppedRef.current) {
-      console.log("❌ Manual cancel triggered");
-      stopPolling(req_id || "");
-      setNumberInfo((prev: any) => ({ 
-        ...prev, 
-        sms: "" 
-      }));
-      statusRef.current.stat = "cancelled";
-    }
-  }, [cancel]);
-
-  
-  useEffect(() => {
-    return () => {
-      if (req_id && !query.data?.sms_code) {
-        console.log("🧹 Cleanup: Stopping polling on unmount");
-        stopPolling(req_id);
-      }
-    };
-  }, [req_id, query.data?.sms_code]);
-
   return {
-    ...query,
-    attempts: attemptsRef.current,
-    isStopped: isStoppedRef.current,
-    maxAttempts: MAX_ATTEMPTS,
+    status: query.data?.status || 'idle',
+    smsCode: query.data?.sms_code,
+    attempts: query.data?.attempts || 0,
+    elapsedTime: query.data?.elapsed_seconds || 0,
+    order: query.data?.order,
+    
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+    isFetching: query.isFetching,
+    isPolling: query.fetchStatus === 'fetching',
+    
+    manualCheck: manualCheck.mutate,
+    isManualChecking: manualCheck.isPending,
+    
+    refetch: query.refetch,
+    stopPolling: () => queryClient.cancelQueries({ queryKey: ['sms-status', requestId] }),
   };
 };
 
-export default usePollSms;
+export const usePurchaseNumber = (options: PurchaseNumberOptions = {}) => {
+  const { onSuccess, onError } = options;
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (purchaseData: PurchaseNumberData) => purchaseNumber(purchaseData),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['my-orders'] });
+      onSuccess?.(data);
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error.message;
+      onError?.(errorMessage);
+    },
+  });
+
+  return {
+    purchaseNumber: mutation.mutate,
+    purchaseNumberAsync: mutation.mutateAsync,
+    isPurchasing: mutation.isPending,
+    isSuccess: mutation.isSuccess,
+    isError: mutation.isError,
+    error: mutation.error,
+    data: mutation.data,
+  };
+};
+
+export const useMyOrders = (options: MyOrdersOptions = {}) => {
+  const { refetchInterval = false } = options;
+
+  const query = useQuery({
+    queryKey: ['my-orders'],
+    queryFn: fetchMyOrders,
+    refetchInterval,
+    staleTime: 30000,
+  });
+
+  return {
+    orders: query.data || [],
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+    refetch: query.refetch,
+    isFetching: query.isFetching,
+  };
+};
+
+export const useOrder = (
+  requestId: string | null, 
+  options?: Omit<UseQueryOptions<SMSStatusResponse>, 'queryKey' | 'queryFn'>
+) => {
+  const query = useQuery({
+    queryKey: ['order', requestId],
+    queryFn: () => checkSMSStatus(requestId!),
+    enabled: !!requestId,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return 5000;
+      if (['completed', 'error', 'timeout'].includes(data.status)) {
+        return false;
+      }
+      return 5000;
+    },
+    ...options,
+  });
+
+  return query;
+};
+
+interface CancelRequestData {
+  request_id: string;
+  debitref: string;
+  user_id: string;
+  email: string;
+}
+
+interface CancelRequestOptions {
+  onSuccess?: () => void;
+  onError?: (error: string) => void;
+}
+
+const cancelRequest = async (cancelData: CancelRequestData): Promise<any> => {
+  const { data } = await api.post('/api/sms/cancel', cancelData);
+  return data;
+};
+
+export const useCancelRequest = (options: CancelRequestOptions = {}) => {
+  const { onSuccess, onError } = options;
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (cancelData: CancelRequestData) => cancelRequest(cancelData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['sms-status'] });
+      queryClient.removeQueries({ queryKey: ['smsRequest'] });
+      
+      onSuccess?.();
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error.message;
+      onError?.(errorMessage);
+    },
+  });
+
+  return {
+    cancelRequest: mutation.mutate,
+    cancelRequestAsync: mutation.mutateAsync,
+    isCancelling: mutation.isPending,
+    isSuccess: mutation.isSuccess,
+    isError: mutation.isError,
+    error: mutation.error,
+    data: mutation.data,
+  };
+};

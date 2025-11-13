@@ -19,7 +19,7 @@ import { Button } from "../components/ui/button";
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner";
 import { useAuth } from "../context/authContext";
-import { Eye, EyeOff } from "lucide-react"; // 👈 for visibility toggle icons
+import { Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -30,8 +30,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const { login } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [show, setShow] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const form = useForm<LoginFormData>({
@@ -103,7 +103,7 @@ const Login = () => {
             )}
           />
 
-          {/* Password field with visibility toggle */}
+        
           <FormField
             control={form.control}
             name="password"
