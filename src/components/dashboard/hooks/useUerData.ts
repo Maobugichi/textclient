@@ -57,13 +57,11 @@ export const useExchangeRate = () => {
       const response = await api.get(`/api/get-rate`, {
         headers: { "x-requires-auth": true }
       });
-
-      const rate = response.data[0];
-      
-      return rate;
+      return response.data[0];
     },
     staleTime: 5 * 60 * 1000, 
     refetchOnMount: "always",
+    initialData: { squadmin: 0, cryptomin: 0 }, 
   });
 };
 

@@ -82,7 +82,7 @@ const manualCheckSMS = async (requestId: string): Promise<ManualCheckResponse> =
 };
 
 const purchaseNumber = async (purchaseData: PurchaseNumberData): Promise<PurchaseNumberResponse> => {
-  console.log(purchaseData);
+  
   const { data } = await api.post<PurchaseNumberResponse>('/api/sms/get-number', purchaseData, {
     headers: { "x-requires-auth": true }
   });
@@ -104,14 +104,14 @@ export const useSMSPolling = (requestId: string | null, options: SMSPollingOptio
 
   const queryClient = useQueryClient();
   
-  // Track which callbacks have been called to prevent duplicates
+
   const callbacksCalledRef = useRef({
     success: false,
     timeout: false,
     error: false,
   });
 
-  // Reset callbacks when requestId changes
+
   useEffect(() => {
     callbacksCalledRef.current = {
       success: false,
@@ -140,7 +140,6 @@ export const useSMSPolling = (requestId: string | null, options: SMSPollingOptio
   const data = query.data;
   const error = query.error;
 
-  // Handle success callback (only once)
   useEffect(() => {
     if (data?.status === 'completed' && data.sms_code && !callbacksCalledRef.current.success) {
       callbacksCalledRef.current.success = true;
@@ -148,7 +147,6 @@ export const useSMSPolling = (requestId: string | null, options: SMSPollingOptio
     }
   }, [data?.status, data?.sms_code, data?.order, onSuccess]);
 
-  // Handle timeout callback (only once)
   useEffect(() => {
     if (data?.status === 'timeout' && !callbacksCalledRef.current.timeout) {
       callbacksCalledRef.current.timeout = true;
@@ -156,7 +154,7 @@ export const useSMSPolling = (requestId: string | null, options: SMSPollingOptio
     }
   }, [data?.status, onTimeout]);
 
-  // Handle error callback (only once)
+
   useEffect(() => {
     if (error && !callbacksCalledRef.current.error) {
       callbacksCalledRef.current.error = true;
@@ -165,7 +163,7 @@ export const useSMSPolling = (requestId: string | null, options: SMSPollingOptio
     }
   }, [error, onError]);
 
-  // Manual check mutation
+
   const manualCheck = useMutation({
     mutationFn: () => manualCheckSMS(requestId!),
     onSuccess: (data) => {
@@ -215,6 +213,7 @@ export const usePurchaseNumber = (options: PurchaseNumberOptions = {}) => {
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error.message;
+      console.log(error)
       onError?.(errorMessage);
     },
   });

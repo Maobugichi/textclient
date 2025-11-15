@@ -85,11 +85,10 @@ const Payment = () => {
     }
   },[err])
 
-  useEffect(() => {
-     queryClient.invalidateQueries({ queryKey: ["rate"] });
-  },[queryClient])
+  
 
-   const { data:rateObj } = useExchangeRate();
+   const { data:rateObj , isLoading } = useExchangeRate();
+   console.log(rateObj)
    
     return(
       <div className={`h-screen  md:h-[80vh] w-full flex flex-col gap-10  text-black`}>
@@ -117,7 +116,9 @@ const Payment = () => {
               <div className="dark:text-white w-full flex flex-col gap-3">
                   <div className="text-[12px] flex justify-between w-full ">
                     <label htmlFor="amount" className="font-semibold">Enter Amount</label>
-                    <span className="text-gray-400">Min is {rateObj.squadmin}</span>
+                    <span className="text-gray-400">
+                      Min is {isLoading || !rateObj ? '****' : `₦${rateObj.squadmin}`}
+                    </span>
                   </div>
                   <label className={`${err ? 'block' : 'hidden'} text-red-500`}>min amount is ₦1000</label>
                   <input onChange={handleChange} type="number" placeholder="enter amount" name='amount' value={data.amount} className="border border-gray-300 rounded-md focus:ring-2 border-solid focus:ring-blue-500 focus:outline-none h-10 pl-3"/>
@@ -129,7 +130,7 @@ const Payment = () => {
           }
         </div>
        
-        {/* Pending Payments Section */}
+      
         <PendingPaymentsList />
        
         <div className="mt-4">

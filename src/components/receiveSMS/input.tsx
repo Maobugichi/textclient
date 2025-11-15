@@ -18,7 +18,7 @@ import { useCancelRequest } from "./hook/usePolling";
 import { refund } from "./util";
 import api from "../../lib/axios-config";
 
-// Helper functions for localStorage persistence
+
 const STORAGE_KEY = 'sms_active_request';
 
 interface ActiveRequest {
@@ -140,6 +140,7 @@ const Input: React.FC<InputProps> = ({
       console.log("Purchase data:", data);
     },
     onError: (error) => {
+   
       toast.error(`Purchase failed: ${error}`);
     },
   });
