@@ -4,7 +4,6 @@ import NowPay from "./nowpayment";
 import { motion } from "motion/react";
 import TransactionsList from "./transactionTable";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useQueryClient } from "@tanstack/react-query";
 import api from "../../lib/axios-config";
 import { useAuth } from "../../context/authContext";
 import { PendingPaymentsList } from "./pendingPayment";
