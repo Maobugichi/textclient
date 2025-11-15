@@ -14,11 +14,11 @@ const ForwardBlocks: React.FC<ForwardBlocksProps> = ({ text, forward, link, onCl
     const content = (
         <div
             onClick={(e) => onClick && onClick(e)}
-            className={`w-full  p-3 border border-solid rounded-lg dark:bg-[#171717] dark:text-white dark:border-gray-500 bg-white border-[#5252]`}
+            className={`w-full  p-3 border border-solid rounded-3xl dark:bg-[#171717] dark:text-white dark:border-gray-500 bg-white border-[#5252]`}
         >
           
-            <p>{text}</p>
-            <p className="hover:underline text-blue-500 cursor-pointer text-sm">{forward}</p> 
+            <p className="tracking-wider">{text}</p>
+            <p className="hover:underline transition-all duration-300 text-blue-500 cursor-pointer text-sm">{forward}</p> 
            
         </div>
     );

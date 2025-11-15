@@ -11,7 +11,7 @@ const SlideShow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   console.log(index)
-  // ✅ Fetch slides using TanStack Query
+
   const {
     data: slides = [],
     isLoading,
@@ -23,10 +23,10 @@ const SlideShow = () => {
       const response = await api.get("/api/ads");
       return response.data.data;
     },
-    refetchInterval: 10000, // auto refetch every 10s
+    refetchInterval: 10000, 
   });
 
-  // ✅ Auto-scroll animation
+
   useEffect(() => {
     if (!slides || slides.length === 0) return;
 
@@ -57,7 +57,7 @@ const SlideShow = () => {
     );
   }
 
-  // ✅ Skeleton loading placeholder
+  
   if (isLoading) {
     return (
       <div
@@ -80,29 +80,29 @@ const SlideShow = () => {
     );
   }
 
-  // ✅ Main render
+
   return (
     <div
       ref={containerRef}
       style={{ scrollSnapType: "x mandatory" }}
-      className="w-[85%] md:w-full overflow-x-scroll h-[80px] md:h-[120px] hide-scrollbar flex"
+      className="w-[85%] md:w-full overflow-x-scroll h-[80px] md:h-[120px] hide-scrollbar flex gap-3"
     >
       {slides.map((item: any) => {
         const cleanUrl = item.url.replace(/([^:]\/)\/+/g, "$1");
         return (
-          <Link key={item.id} className="min-w-full h-full" to={item.link}>
+          <Link key={item.id} className="min-w-full h-full rounded-4xl" to={item.link}>
             <motion.div
               style={{ scrollSnapAlign: "start" }}
-              className={`rounded-lg ${item.bg} w-full h-full flex justify-between`}
+              className={` ${item.bg} w-full h-full flex justify-between`}
             >
               <div className="w-[35%] md:w-[50%]">
                 <img
                   src={cleanUrl}
-                  className="rounded-l-md object-cover h-full w-full"
+                  className="rounded-l-3xl object-cover h-full w-full"
                   alt=""
                 />
               </div>
-              <div className="w-[65%] md:w-[50%] bg-blue-200 border border-gray-500 rounded-r-md grid place-items-center h-full">
+              <div className="w-[65%] md:w-[50%] bg-blue-200 border border-gray-500 rounded-r-3xl grid place-items-center h-full">
                 <div className="flex flex-col items-end justify-center pl-2 h-full pr-2 md:pr-5 gap-2 w-full">
                   <p className="w-[90%] text-[12px] md:text-xl">
                     {item.content}
