@@ -74,7 +74,7 @@ const Payment = () => {
     setIsActive(index)
   }
   
-  const queryClient = useQueryClient();
+
   
   useEffect(() => {
     if (err) {
