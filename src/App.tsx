@@ -1,5 +1,5 @@
 import {
-  HashRouter,
+  BrowserRouter,
   Route,
   Routes,
   Navigate,
@@ -31,12 +31,11 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { Toaster } from "sonner";
 
 function App() {
-  // Create persister for browser storage
+
   const persister = createSyncStoragePersister({
     storage: window.sessionStorage, // Or window.localStorage
   });
 
-  // Create query client
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -46,16 +45,6 @@ function App() {
     },
   });
 
-  /*async function initErudaIfDebug() {
-  if (localStorage.getItem("debug") === "true") {
-    const eruda = await import("eruda");
-    eruda.default.init();
-    console.log("%c🪄 Debug mode active", "color: lime;");
-  }
-}*/
-
-
-//initErudaIfDebug();
 
 
   return (
@@ -63,7 +52,7 @@ function App() {
       client={queryClient}
       persistOptions={{ persister }}
     >
-      <HashRouter>
+      <BrowserRouter>
         <ContextProvider>
           <ScrollToTop />
           <NotificationsInitializer />
@@ -88,7 +77,7 @@ function App() {
             </Route>
           </Routes>
         </ContextProvider>
-      </HashRouter>
+      </BrowserRouter>
     </PersistQueryClientProvider>
   );
 }
