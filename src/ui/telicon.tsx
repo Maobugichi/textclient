@@ -11,13 +11,15 @@ const TelIcon = () => {
   const fetchLinks = async () => {
     try {
       const res = await axios.get("https://api.textflex.net/api/links");
-      setLinks(res.data[0].link);
+      setLinks(res.data[0].link ?? '');
     } catch (err) {
     }
   };
-  
+
+    if (!links) return null;
+ 
     return(
-        <Link to={links}>
+        <Link to={links} aria-label="Open Telegram chat">
           <motion.div 
           layout
           initial={{ scale: 0}}
