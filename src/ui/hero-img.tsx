@@ -1,4 +1,4 @@
-import heroImg from "../assets/hero-tex.png"
+import heroImg from "../assets/adju.webp"
 import Skeleton from "react-loading-skeleton"
 const HeroImg = () => {
     return(

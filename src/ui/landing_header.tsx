@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "../components/button";
-import textlogo from "../assets/textflexLogo.png";
+import textlogo from "../assets/newlogo.webp";
 
 const LandingHeader = () => {
     return(
