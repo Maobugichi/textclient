@@ -70,10 +70,7 @@ const Input: React.FC<InputProps> = ({
   const queryClient = useQueryClient();
 
   const { user: userData } = useAuth();
-  
   const balance = tableValues[0]?.balance;
-
-  const [options, setOptions] = useState<any[]>([]);
   const [cost, setCost] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
   const [stocksCount, setStocksCount] = useState();
@@ -81,7 +78,7 @@ const Input: React.FC<InputProps> = ({
   const actualCost = useRef<number>(0);
   const { data: rateObj } = useExchangeRate();
   
-  console.log(setOptions);
+ 
   console.log(setError);
   
   const raw = localStorage.getItem("cost_diff");
@@ -95,14 +92,13 @@ const Input: React.FC<InputProps> = ({
     email: userData?.userEmail,
   });
 
-  console.log(options);
+
   
   const { data: countries, isLoading } = useCountries(provider);
   const { data: services, isLoading: serviceLoading } = useServices(
     target.country
   );
 
-  // Restore active request on mount
   useEffect(() => {
     const activeRequest = getActiveRequest();
     if (activeRequest) {
@@ -190,7 +186,7 @@ const Input: React.FC<InputProps> = ({
       };
       setNumberInfo(updatedNumberInfo);
       
-      // Update localStorage
+  
       const activeRequest = getActiveRequest();
       if (activeRequest) {
         saveActiveRequest({

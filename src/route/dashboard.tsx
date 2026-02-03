@@ -12,6 +12,7 @@ import { usePaymentPolling } from "../components/dashboard/hooks/usePolling";
 import { usePaymentRef } from "../components/dashboard/hooks/useUerData";
 import { useBalance } from "../balance";
 import { useAuth } from "../context/authContext";
+import { useTheme } from "next-themes";
 
 const DashBoard = () => {
   const { ref, setPaymentRef, clearPaymentRef } = usePaymentRef();
@@ -38,6 +39,9 @@ const DashBoard = () => {
     }
   }, []); 
 
+  const { theme } = useTheme(); 
+  const isDark = theme === "dark";
+
   const { isPolling } = usePaymentPolling({
     transactionRef: ref,
     onSuccess: clearPaymentRef,
@@ -56,7 +60,7 @@ const DashBoard = () => {
   if (isInitialLoading) {
     return (
       <LoadingScreen 
-        theme={false ? 'bg-black' : 'bg-white'} 
+        theme={isDark ? 'bg-black' : 'bg-white'} 
         message={isPolling ? "Verifying payment..." : "Loading your dashboard..."} 
       />
     );

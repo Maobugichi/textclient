@@ -17,11 +17,13 @@ const LandingHeader = () => {
                     
                     />
                  </a>  
-                 <Link className="bg-[#0032a5] rounded-xl tracking-widest h-12 md:h-13 grid place-items-center text-lg text-white w-[90%] md:w-[25%]" to={ `/dashboard/:1`}>
-                    <Button
-                     content={ `Dashboard`}
-                     
-                    />
+                 <Link 
+                 className="bg-[#0032a5] rounded-xl tracking-widest h-12 md:h-13 grid place-items-center text-lg text-white w-[90%] md:w-[25%]" 
+                 to={ `/dashboard/:1`}
+                 aria-label="Go to Dashboard"
+                 >
+                     Dashboard
+            
                   </Link>  
                 </div>
                 

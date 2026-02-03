@@ -34,7 +34,7 @@ const Blocks: React.FC<BlocksProps> = ({
         localStorage.setItem("showBalance", String(showBalance));
     }, [showBalance]);
 
-    // ✅ Stop propagation to prevent navigation
+   
     const toggleBalance = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
