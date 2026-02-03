@@ -15,9 +15,9 @@ const FeatureBlock:React.FC<FeatureProp> = ({ text ,content , src} ) => {
                      <div className="absolute bottom-0 left-0 w-full h-[70%] bg-gradient-to-t from-gray-200 to-transparent pointer-events-none" />
                 </div>
                 <div className="grid space-y-4">
-                    <h4 className="font-semibold text-xl">
+                    <h3 className="font-semibold text-xl">
                         {text}
-                    </h4>
+                    </h3>
                     <p className="text-md tracking-wide leading-6 text-gray-500">{content}</p>
                 </div>
             </div>  

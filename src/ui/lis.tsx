@@ -17,7 +17,7 @@ const Lis:React.FC<LisProps> = ({ content , more }) => {
                 </div>
                 
                
-                <p className="text-gray-400  md:w-[60%] text-md tracking-wide leading-8 md:text-lg font-light "> {more}  </p>
+                <p className="text-gray-500  md:w-[60%] text-md tracking-wide leading-8 md:text-lg font-light "> {more}  </p>
             </div>
            
         </div>

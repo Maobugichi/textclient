@@ -95,7 +95,7 @@ const Service = () => {
           <h2 className="text-2xl md:text-4xl font-semibold">
             Supported Services and Countries
           </h2>
-          <p className="w-[90%] md:w-[45%] text-lg text-gray-400 mx-auto text-center">
+          <p className="w-[90%] md:w-[45%] text-lg text-gray-500 mx-auto text-center">
             Easily access temporary, disposable numbers for secure SMS
             verification, account sign-ups, and service-specific registrations
             across multiple countries

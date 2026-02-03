@@ -6,8 +6,8 @@ const LandingHeader = () => {
     return(
         <header className="h-24 fixed top-0 w-full  z-20 backdrop-blur-2xl grid place-items-center">
             <div className="flex  w-[90%] h-[50%] mx-auto justify-between">
-                <Link to="/homepage/1">
-                     <img className="h-[58px] w-[100px] md:w-[180px] mx-auto" src={textlogo} alt="logo" />
+                <Link to="/homepage/1" aria-label="Back to Homepage">
+                     <img className="h-[58px] w-[100px] md:w-[180px] mx-auto" src={textlogo} alt="Textflex Logo" />
                 </Link>
                 
                 <div className="flex w-1/2 justify-end space-x-6 text-sm tracking-wide">

@@ -32,12 +32,12 @@ const SideNav: React.FC<SideNavProps> = ({ show, setIsShow, theme }) => {
             <div className={cn(
                 "h-fit p-1 flex items-center justify-around border-b border-solid dark:border-blue-100  border-[#5252]"
             )}>
-                <Link to="/homepage/1" className="w-full flex ">
+                <Link to="/homepage/1" aria-label="Back to Homepage" className="w-full flex ">
                     {textlogo ? (
                         <img 
                             className="h-[52px] w-[180px] object-contain" 
                             src={textlogo} 
-                            alt="logo" 
+                            alt="TextFlex logo" 
                         />
                     ) : (
                         <Skeleton 

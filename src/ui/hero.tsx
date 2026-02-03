@@ -14,7 +14,7 @@ const Hero = () => {
                     </div>
                     
                     <h1 className="text-4xl w-full md:text-6xl md:w-[95%] font-bold">Premium Virtual SMS Authentication Solution</h1>
-                    <p className="text-gray-400 w-[95%] leading-8 tracking-wider text-lg">Get SMS messages online with trusted virtual phone numbers from around the globe. Our platform offers fast, secure, and dependable SMS verification for any purpose.</p>
+                    <p className="text-gray-500 w-[95%] leading-8 tracking-wider text-lg">Get SMS messages online with trusted virtual phone numbers from around the globe. Our platform offers fast, secure, and dependable SMS verification for any purpose.</p>
                     <div className="w-[95%]  flex">
                        <Link  className="bg-[#0032a5] w-[40%] md:w-[23%] h-11 rounded-xl grid text-lg tracking-widest  place-content-center text-white " to="/signup/:1">
                         <Button
